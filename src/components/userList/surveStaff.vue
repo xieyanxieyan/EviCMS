@@ -41,7 +41,7 @@
                     <td>{{item.expirationDate}}</td>
                     <td>{{item.complimentary}}</td>
                     <td>{{item.status}}</td>
-                    <td><span style="margin-right:20px;border:1px solid #437DFF;color:#437DFF;" @click="dialogTableVisibl">{{item.operation.edit}}</span>
+                    <td><span style="margin-right:20px;border:1px solid #437DFF;color:#437DFF;">{{item.operation.edit}}</span>
                     <span style="border:1px solid #EBADA6;color:#EBADA6;">{{item.operation.del}}</span>
                     </td>
                 </tr>

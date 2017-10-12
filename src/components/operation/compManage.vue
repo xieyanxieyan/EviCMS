@@ -12,7 +12,6 @@
                             <el-tab-pane label="未处理" name="third"></el-tab-pane>
                         </el-tabs>
                     </div>
-
                 </div>
                 <div class="clear"></div>
             </div>
@@ -29,9 +28,9 @@
                     </thead>
                     <tbody>
                     <tr v-for="(item,index) in compManage">
-                        <td>{{item.userOrder}}</td>
-                        <td>{{item.userName}}</td>
                         <td>{{item.registrationTime}}</td>
+                        <td>{{item.userName}}</td>
+                        <td class="content">{{item.content}}</td>
                         <td>{{item.status}}</td>
                         <td><router-link to="/complaint" style="border:1px solid #20A0FF;padding:3px 15px;">{{item.operation}}</router-link></td>
                     </tr>
@@ -47,10 +46,10 @@
         data () {
             return {
                 currentTabIndex: 0,
-                activeName: 'second',
+                activeName: 'first',
                 compManage: [
                     {
-                        userOrder: '12345',
+                        content: '投诉建议投诉cdcffvfrddcddddddddddddccdcdc建议投诉建议ahahahhaha',
                         userName: '(+8612312345678)',
                         registrationTime: '2017-4-10 20:01:30',
                         status: '未处理',
@@ -69,14 +68,20 @@
 </script>
 
 <style lang="scss" type="text/scss">
+    @import '../../style/common.scss';
     #compManage{
         padding: 0 15px;
     a{
         color:#333;
     }
-    /*.top{*/
-        /*padding:10px 0;*/
-    /*}*/
+   table{
+       table-layout:fixed;
+       .content{
+           overflow:hidden;
+           text-overflow:ellipsis;
+           white-space:nowrap;
+       }
+   }
 
     .compManage {
         /*float: left;*/
@@ -116,21 +121,21 @@
         width: 100%;
     }
 
-    tr td, tr th {
-        width: 19%;
-        height: 35px;
-        line-height: 35px;
-        font-size: 14px;
-    }
+    /*tr td, tr th {*/
+        /*width: 19%;*/
+        /*height: 35px;*/
+        /*line-height: 35px;*/
+        /*font-size: 14px;*/
+    /*}*/
 
-    tr td {
-        text-align: center;
-    }
+    /*tr td {*/
+        /*text-align: center;*/
+    /*}*/
 
-    th {
-        color: #fff;
-        background: #556386;
-    }
+    /*th {*/
+        /*color: #fff;*/
+        /*background: #556386;*/
+    /*}*/
     .el-button {
         margin: 0;
     }

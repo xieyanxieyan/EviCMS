@@ -1,13 +1,15 @@
-<!--退款处理-->
 <template>
-    <div id="refund">
-        <div class="refundtop"><span>退款处理</span></div>
+    <div id="HisManage">
+        <div class="histop"><span>出证管理</span></div>
         <div><span>快速筛选:</span>
             <div class="tab-wrapper">
                 <el-tabs v-model="activeName" @tab-click="handleClick">
                     <el-tab-pane label="全部" name="first"></el-tab-pane>
-                    <el-tab-pane label="已退款" name="second"></el-tab-pane>
-                    <el-tab-pane label="已拒绝" name="third"></el-tab-pane>
+                    <el-tab-pane label="待处理（99）" name="second"></el-tab-pane>
+                    <el-tab-pane label="待打印" name="third"></el-tab-pane>
+                    <el-tab-pane label="待发件" name="fourth"></el-tab-pane>
+                    <el-tab-pane label="已发件" name="five"></el-tab-pane>
+                    <el-tab-pane label="已完成" name="six"></el-tab-pane>
                 </el-tabs>
             </div>
             <form action="#">
@@ -47,32 +49,25 @@
             <!--</el-form>-->
         </div>
         <div>
-            <table cellspacing="0" cellpadding="0" border="0">
+            <table cellpadding="0" cellspacing="0" border="0">
                 <thead>
                 <tr>
                     <th>时间</th>
-                    <th>用户名称</th>
+                    <th>用户</th>
                     <th>存证号</th>
-                    <th>备注</th>
                     <th>类型</th>
-                    <th>交易额</th>
                     <th>状态</th>
                     <th>操作</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(item,index) in tableItem">
+                <tr v-for="(item,index) in hisData">
                     <td>{{item.time}}</td>
-                    <td>{{item.userName}}</td>
+                    <td>{{item.user}}</td>
                     <td>{{item.MemoryNum}}</td>
-                    <td>{{item.remark}}</td>
                     <td>{{item.type}}</td>
-                    <td>{{item.Turnover}}</td>
                     <td>{{item.status}}</td>
-                    <td>
-                        <span>{{item.operation.interface}}</span>
-                        <span>{{item.operation.handle}}</span>
-                    </td>
+                    <td>{{item.operation}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -85,32 +80,18 @@
             return {
                 currentTabIndex: 0,
                 activeName: 'first',
-                tableItem: [
+//                formInline: {
+//                    userName: '',
+//                    Memory: ''
+//                }
+                hisData: [
                     {
                         time: '2017-07-07 15:00:00',
-                        userName: '(+86)12312345678',
+                        user: '(+86)12312345678',
                         MemoryNum: '2017041020013033',
-                        remark: 'www.baidu.com',
-                        type: '网页打印',
-                        Turnover: '2.00',
-                        status: '已申请',
-                        operation: {
-                            interface: '用户界面',
-                            handle: '处理'
-                        }
-                    },
-                    {
-                        time: '2017-07-07 15:00:00',
-                        userName: '(+86)12312345678',
-                        MemoryNum: '2017041020013033',
-                        remark: 'www.baidu.com',
-                        type: '网页打印',
-                        Turnover: '2.00',
-                        status: '已申请',
-                        operation: {
-                            interface: '用户界面',
-                            handle: '处理'
-                        }
+                        type: '纸质证书',
+                        status: '待处理',
+                        operation: '操作'
                     }
                 ]
             };
@@ -122,11 +103,12 @@
         }
     };
 </script>
-<style lang="scss">
+<style lang="scss" type="text/scss">
     @import '../../style/common.scss';
-    #refund {
+    #HisManage {
         padding: 0 15px;
-      .refundtop {
+        th,td{width:16%;}
+    .histop {
         padding: 5px 0;
 
     span {
@@ -139,8 +121,11 @@
     .tab-wrapper {
         display: inline-block;
         vertical-align: -28px;
-        width: 260px;
+        width: 350px;
         margin-left: 20px;
+        .el-tabs__item{
+            padding:0 5px;
+        }
 
     }
 
@@ -160,7 +145,7 @@
 
     input[type=text] {
         display: inline-block;
-        width: 150px;
+        width: 100px;
     }
     input[type=button]{
         color:#fff;

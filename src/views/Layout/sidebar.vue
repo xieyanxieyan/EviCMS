@@ -24,29 +24,29 @@
                         <router-link to="/compManage">投诉建议管理</router-link>
                     </el-menu-item>
                     <el-menu-item index="2-2">
-                        <router-link to="">退款处理</router-link>
+                        <router-link to="/refund">退款处理</router-link>
                     </el-menu-item>
                     <el-menu-item index="2-3">
-                        <router-link to="">出证管理</router-link>
+                        <router-link to="/HisManage">出证管理</router-link>
                     </el-menu-item>
                     <el-menu-item index="2-4">
-                        <router-link to="">出庭管理</router-link>
+                        <router-link to="/TrialManage">出庭管理</router-link>
                     </el-menu-item>
                 </el-menu-item-group>
             </el-submenu>
             <el-submenu index="3">
                 <template slot="title">
-                   用户管理
+                   数据分析
                 </template>
                 <el-menu-item-group>
                     <el-menu-item index="3-1">
-                        <router-link to="">用户数据</router-link>
+                        <router-link to="/userData">用户数据</router-link>
                     </el-menu-item>
                     <el-menu-item index="3-2">
-                        <router-link to="">行为数据</router-link>
+                        <router-link to="/behaviourData">行为数据</router-link>
                     </el-menu-item>
                     <el-menu-item index="3-3">
-                        <router-link to="">交易统计</router-link>
+                        <router-link to="/tradeData">交易统计</router-link>
                     </el-menu-item>
                 </el-menu-item-group>
             </el-submenu>

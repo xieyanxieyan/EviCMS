@@ -1,9 +1,9 @@
 <template>
 <div id="topbar">
     <div>
-        <span style="margin-right:15px;"@click="logout">退出登录</span>
+        <span style="margin-right:15px;"><router-link to="/login">退出登录</router-link></span>
         <span class="line">|</span>
-        <span><router-link to="">管理员：admin</router-link></span>
+        <span>管理员：admin</span>
     </div>
 </div>
 </template>
@@ -35,13 +35,13 @@
 </style>
 <script>
 export default {
-    methods: {
-        logout() {
-            this.$store.dispatch('LogOut')
-                .then(() => {
-                location.reload();
-            });
-        }
-    }
+//    methods: {
+//        logout() {
+//            this.$store.dispatch('LogOut')
+//                .then(() => {
+//                location.reload();
+//            });
+//        }
+//    }
 };
 </script>

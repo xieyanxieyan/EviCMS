@@ -1,13 +1,19 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Layout from '@/views/Layout/Layout';
+import Login from '@/views/login/Login';
 import Welcome from '@/components/welcome';
 import UserList from '@/components/userList/userList';
-import Login from '@/views/login/Login';
 import AddUser from '@/components/userList/innerPage/add-user';
 import SurveStaff from '@/components/userList/surveStaff';
 import Complaint from '@/components/operation/complaint';
 import compManage from '@/components/operation/compManage';
+import Refund from '@/components/operation/refund';
+import HisManage from '@/components/operation/hisManage';
+import TrialManage from '@/components/operation/trialManage';
+import userData from '@/components/dataAnalysis/userData';
+import behaviourData from '@/components/dataAnalysis/behaviourData';
+import tradeData from '@/components/dataAnalysis/tradeData';
 Vue.use(VueRouter);
 const routes = [
     {
@@ -62,6 +68,48 @@ const routes = [
             {
                 path: '/compManage',
                 component: compManage,
+                meta: {
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/refund',
+                component: Refund,
+                meta: {
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/HisManage',
+                component: HisManage,
+                meta: {
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/TrialManage',
+                component: TrialManage,
+                meta: {
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/userData',
+                component: userData,
+                meta: {
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/behaviourData',
+                component: behaviourData,
+                meta: {
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/tradeData',
+                component: tradeData,
                 meta: {
                     requireAuth: true
                 }
