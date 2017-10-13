@@ -56,13 +56,13 @@
                 </template>
                 <el-menu-item-group>
                     <el-menu-item index="4-1">
-                        <router-link to="">管理员设置</router-link>
+                        <router-link to="/adminManage">管理员设置</router-link>
                     </el-menu-item>
                     <el-menu-item index="4-2">
-                        <router-link to="">操作日志</router-link>
+                        <router-link to="/operationLog">操作日志</router-link>
                     </el-menu-item>
                     <el-menu-item index="4-3">
-                        <router-link to="">密钥管理</router-link>
+                        <router-link to="/keyManage">密钥管理</router-link>
                     </el-menu-item>
                 </el-menu-item-group>
             </el-submenu>

@@ -75,7 +75,7 @@ a{
     color:#333;
 }
 .top{
-    padding:10px 0;
+    padding:15px 0;
 }
 .top-area {
     float: right;

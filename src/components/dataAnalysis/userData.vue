@@ -30,6 +30,8 @@
             <input type="text">
                <select name="" id="">
                    <option value="按日统计">按日统计</option>
+                   <option value="按月统计">按月统计</option>
+                   <option value="按年统计">按年统计</option>
                </select>
             </span>
             <span>
@@ -94,8 +96,7 @@
     #userData {
         padding: 0 15px;
         .userDataTop {
-            padding: 5px 0;
-            margin-bottom:15px;
+            padding: 15px 0;
             span {
                 border-left: 2px solid #324157;
                 padding-left: 5px;

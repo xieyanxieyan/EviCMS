@@ -67,7 +67,7 @@
                     <td>{{item.MemoryNum}}</td>
                     <td>{{item.type}}</td>
                     <td>{{item.status}}</td>
-                    <td>{{item.operation}}</td>
+                    <td><router-link to="/paperDetail" style="color:#20a0ff;padding:0 5px;border:1px solid">{{item.operation}}</router-link></td>
                 </tr>
                 </tbody>
             </table>
@@ -91,7 +91,7 @@
                         MemoryNum: '2017041020013033',
                         type: '纸质证书',
                         status: '待处理',
-                        operation: '操作'
+                        operation: '出证详情'
                     }
                 ]
             };
@@ -109,7 +109,7 @@
         padding: 0 15px;
         th,td{width:16%;}
     .histop {
-        padding: 5px 0;
+        padding: 15px 0;
 
     span {
         border-left: 2px solid #324157;

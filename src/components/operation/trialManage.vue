@@ -103,7 +103,7 @@
     #TrialManage {
         padding: 0 15px;
     .TrialManagetop {
-        padding: 5px 0;
+        padding: 15px 0;
 
     span {
         border-left: 2px solid #324157;
@@ -111,7 +111,6 @@
     }
 
     }
-
     .tab-wrapper {
         display: inline-block;
         vertical-align: -28px;

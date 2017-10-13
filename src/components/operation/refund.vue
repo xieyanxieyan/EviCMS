@@ -127,7 +127,7 @@
     #refund {
         padding: 0 15px;
       .refundtop {
-        padding: 5px 0;
+        padding: 15px 0;
 
     span {
         border-left: 2px solid #324157;

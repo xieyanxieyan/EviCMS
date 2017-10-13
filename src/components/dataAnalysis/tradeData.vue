@@ -1,31 +1,58 @@
 <template>
-    <div id="topMessage">
-        <div><span>{{operationName}}</span></div>
-        <div><span>快速筛选:</span>
-            <div class="tab-wrapper">
-                <el-tabs v-model="activeName" @tab-click="handleClick">
-                    <el-tab-pane label="全部" name="first"></el-tab-pane>
-                    <el-tab-pane label="已退款" name="second"></el-tab-pane>
-                    <el-tab-pane label="已拒绝" name="third"></el-tab-pane>
-                </el-tabs>
-            </div>
-            <el-form :inline="true" :model="fromInline">
-
-            </el-form>
+    <div id="tradeData">
+        <div class="tradeData"><span>交易统计</span></div>
+        <div>
+            <span>统计方式：
+                <select name="" id="">
+                    <option value="">按日统计</option>
+                    <option value="">按月统计</option>
+                    <option value="">按年统计</option>
+                </select>
+            </span>
+            <span>
+                统计时间：
+                <input type="time">至
+                <input type="time">
+            </span>
+        </div>
+        <div>
+            <table cellspacing="0" cellpadding="0" border="0">
+                <thead>
+                <tr>
+                    <th>时间</th>
+                    <th>充值</th>
+                    <th>赠送</th>
+                    <th>用户消费（充值）</th>
+                    <th>用户消费（赠送）</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>2017-07-07</td>
+                    <td>999.00</td>
+                    <td>999.00</td>
+                    <td>999.00</td>
+                    <td>999.00</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </template>
 <script>
     export default{
-        data() {
-            return {
-                currentTabIndex: 0,
-                activeName: 'first',
-                operaionName: ''
-            };
-        }
     };
 </script>
-<style>
-
+<style lang="scss" type="text/scss">
+    @import '../../style/common';
+#tradeData{
+    padding:0 15px;
+  .tradeData{
+      padding:15px 0;
+      span{
+          border-left: 2px solid #324157;
+          padding-left: 5px;
+      }
+  }
+}
 </style>

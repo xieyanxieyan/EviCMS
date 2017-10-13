@@ -11,9 +11,13 @@ import compManage from '@/components/operation/compManage';
 import Refund from '@/components/operation/refund';
 import HisManage from '@/components/operation/hisManage';
 import TrialManage from '@/components/operation/trialManage';
+import paperDetail from '@/components/operation/innerPage/paperDetail';
 import userData from '@/components/dataAnalysis/userData';
 import behaviourData from '@/components/dataAnalysis/behaviourData';
 import tradeData from '@/components/dataAnalysis/tradeData';
+import operationLog from '@/components/systemManage/operationLog';
+import keyManage from '@/components/systemManage/keyManage';
+import adminManage from '@/components/systemManage/adminManage';
 Vue.use(VueRouter);
 const routes = [
     {
@@ -110,6 +114,34 @@ const routes = [
             {
                 path: '/tradeData',
                 component: tradeData,
+                meta: {
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/adminManage',
+                component: adminManage,
+                meta: {
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/keyManage',
+                component: keyManage,
+                meta: {
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/operationLog',
+                component: operationLog,
+                meta: {
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/paperDetail',
+                component: paperDetail,
                 meta: {
                     requireAuth: true
                 }

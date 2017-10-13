@@ -106,7 +106,7 @@
 </script>
 <style lang="scss" type="text/scss" scoped>
     .survestaff {
-        padding: 15px;
+        padding: 0 15px;
         .el-form {
             margin: 0;
             float: right;
@@ -155,6 +155,7 @@
 
         .top {
             margin: 0;
+            padding:15px 0;
         }
     }
 </style>
