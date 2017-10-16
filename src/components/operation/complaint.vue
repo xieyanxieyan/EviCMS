@@ -51,6 +51,7 @@
             padding-bottom: 15px;
         }
         .suggestion {
+           min-height:calc( 100vh - 120px);
             background: #fff;
             padding: 0px 30px;
             .complaintTop {

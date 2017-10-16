@@ -11,6 +11,7 @@
             <div><strong>超级管理员</strong></div>
             <div class="selectItem">
                 <div>
+                    <i></i>
                     <el-checkbox :indeterminate="isIndeterminate1" v-model="checkAlluser" @change="handleCheckAlluserChange">用户管理</el-checkbox>
                     <div style="margin: 15px 0;"></div>
                     <el-checkbox-group v-model="checkUsers" @change="handleCheckedUsersChange">
@@ -18,6 +19,7 @@
                     </el-checkbox-group>
                 </div>
                 <div>
+                    <i></i>
                     <el-checkbox :indeterminate="isIndeterminate2" v-model="checkAllopera" @change="handleCheckAlloperaChange">运营管理</el-checkbox>
                     <div style="margin: 15px 0;"></div>
                     <el-checkbox-group v-model="checkOperas" @change="handleCheckedOperasChange">
@@ -25,6 +27,7 @@
                     </el-checkbox-group>
                 </div>
                 <div>
+                    <i></i>
                     <el-checkbox :indeterminate="isIndeterminate3" v-model="checkAlldataAna" @change="handleCheckAlldataAnaChange">数据分析</el-checkbox>
                     <div style="margin: 15px 0;"></div>
                     <el-checkbox-group v-model="checkdataAnas" @change="handleCheckeddataAnasChange">
@@ -32,6 +35,7 @@
                     </el-checkbox-group>
                 </div>
                 <div>
+                    <i></i>
                     <el-checkbox :indeterminate="isIndeterminate4" v-model="checkAllsystemAdm" @change="handleCheckAllsystemAdmChange">用户管理</el-checkbox>
                     <div style="margin: 15px 0;"></div>
                     <el-checkbox-group v-model="checksystemAdms" @change="handleCheckedsystemAdmsChange">
@@ -140,12 +144,33 @@
     }
     .selectItem{
         padding:50px;
+        & i{
+
+        }
         &>div{
             position:relative;
             margin-bottom:30px;
+            padding-left:30px;
+            &:nth-child(1) i{
+                @include dotted(#437dff);
+                top:8px;
+                left:0px;
+            }
+            &:nth-child(2) i{
+                @include dotted(#4cce6d);
+                top:8px;
+                left:0px;
 
-            .el-checkbox::before{
-                @include dotted(#a00);
+            }
+            &:nth-child(3) i{
+                @include dotted(#f5cf68);
+                top:8px;
+                left:0px;
+            }
+            &:nth-child(4) i{
+                @include dotted(#eb5d41);
+                top:8px;
+                left:0px;
             }
         }
     }
