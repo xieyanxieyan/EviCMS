@@ -18,8 +18,7 @@
     export default{
         data() {
             return {
-                activeName: 'first',
-                labelPosition: 'left'
+                activeName: 'first'
             };
         },
         methods: {

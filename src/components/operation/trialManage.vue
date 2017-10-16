@@ -56,7 +56,7 @@
                     <td>{{item.user}}</td>
                     <td>{{item.MemoryNum}}</td>
                     <td>{{item.status}}</td>
-                    <td>{{item.operation}}</td>
+                    <td><router-link to="/detailCourt" style="border:1px solid;color:#6F98FF">{{item.operation}}</router-link></td>
                 </tr>
                 </tbody>
             </table>

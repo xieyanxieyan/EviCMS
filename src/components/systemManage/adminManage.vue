@@ -4,8 +4,8 @@
             <span>管理员管理</span>
         </div>
         <div>
-            <el-button>添加管理员</el-button>
-            <el-button>角色设置</el-button>
+            <el-button><router-link to="/addManage" style="color:#333">添加管理员</router-link></el-button>
+            <el-button><router-link to="/userSet" style="color:#333;">角色设置</router-link></el-button>
             <el-form :inline="true" :model="formInline" class="demo-form-inline">
                 <el-form-item label="账号或姓名:">
                     <el-input v-model="formInline.user" placeholder="审批人" size="small"></el-input>
@@ -75,7 +75,6 @@
 </script>
 <style lang="scss">
     @import '../../style/common.scss';
-
     #adminManage {
         padding: 0 15px;
 

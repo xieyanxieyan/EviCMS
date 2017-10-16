@@ -18,6 +18,10 @@ import tradeData from '@/components/dataAnalysis/tradeData';
 import operationLog from '@/components/systemManage/operationLog';
 import keyManage from '@/components/systemManage/keyManage';
 import adminManage from '@/components/systemManage/adminManage';
+import addManage from '@/components/systemManage/innerPage/addManage';
+import detailCourt from '@/components/operation/innerPage/detailCourt';
+import userSet from '@/components/systemManage/innerPage/userSet';
+import adminPermission from '@/components/systemManage/innerPage/adminPermission';
 Vue.use(VueRouter);
 const routes = [
     {
@@ -142,6 +146,34 @@ const routes = [
             {
                 path: '/paperDetail',
                 component: paperDetail,
+                meta: {
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/addManage',
+                component: addManage,
+                meta: {
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/detailCourt',
+                component: detailCourt,
+                meta: {
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/userSet',
+                component: userSet,
+                meta: {
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/adminPermission',
+                component: adminPermission,
                 meta: {
                     requireAuth: true
                 }
