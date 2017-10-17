@@ -32,9 +32,9 @@
                         <td>{{item.registrationTime}}</td>
                         <td>{{item.status}}</td>
                         <td>
-                            <span>{{item.operaion.detail}}</span>
-                            <span class="inter">{{item.operaion.Interface}}</span>
-                            <span>{{item.operaion.status}}</span>
+                            <span><router-link to="/officalEdit" style="border:1px solid;color: #20a0ff;">{{item.operaion.detail}}</router-link></span>
+                            <span class="inter"><router-link to="" style="border:1px solid;margin:0 10px;color: #20a0ff;">{{item.operaion.Interface}}</router-link></span>
+                            <span><router-link to="" style="border:1px solid;color:#e00">{{item.operaion.status}}</router-link></span>
                         </td>
                     </tr>
                     </tbody>
@@ -68,11 +68,14 @@
 
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 #userList{
     padding: 0 15px;
+
 a{
     color:#333;
+    /*display:inline-block;*/
+    padding:2px;
 }
 .top{
     padding:15px 0;

@@ -4,6 +4,7 @@ import Layout from '@/views/Layout/Layout';
 import Login from '@/views/login/Login';
 import Welcome from '@/components/welcome';
 import UserList from '@/components/userList/userList';
+import officalEdit from '@/components/userList/innerPage/userDetail';
 import AddUser from '@/components/userList/innerPage/add-user';
 import SurveStaff from '@/components/userList/surveStaff';
 import Complaint from '@/components/operation/complaint';
@@ -48,6 +49,13 @@ const routes = [
             {
                 path: '/userlist',
                 component: UserList,
+                meta: {
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/userDetail',
+                component: officalEdit,
                 meta: {
                     requireAuth: true
                 }

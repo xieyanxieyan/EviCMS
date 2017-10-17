@@ -2,7 +2,7 @@
 <template>
     <div id="refund">
         <div class="refundtop"><span>退款处理</span></div>
-        <div><span>快速筛选:</span>
+        <div class=""><span>快速筛选:</span>
             <div class="tab-wrapper">
                 <el-tabs v-model="activeName" @tab-click="handleClick">
                     <el-tab-pane label="全部" name="first"></el-tab-pane>
@@ -25,26 +25,6 @@
                     <input type="button" value="搜索">
                 </div>
             </form>
-            <!--<el-form :inline="true" :model="formInline" >-->
-            <!--<el-form-item label="用户名称:">-->
-            <!--<el-input v-model="formInline.userName"></el-input>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item label="存证号：">-->
-            <!--<el-input v-model="formInline.Memory"></el-input>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item label="申请时间：">-->
-            <!--<el-col :span="8">-->
-            <!--<el-time-picker type="fixed-time" v-model="formInline.data1" style="width:100%"></el-time-picker>-->
-            <!--</el-col>-->
-            <!--<el-col :span="1">至</el-col>-->
-            <!--<el-col :span="8">-->
-            <!--<el-time-picker type="fixed-time" v-model="formInline.data2" style="width:100%"></el-time-picker>-->
-            <!--</el-col>-->
-            <!--<el-col :span="6">-->
-            <!--<el-button>搜索</el-button>-->
-            <!--</el-col>-->
-            <!--</el-form-item>-->
-            <!--</el-form>-->
         </div>
         <div>
             <table cellspacing="0" cellpadding="0" border="0">
@@ -71,11 +51,29 @@
                     <td>{{item.status}}</td>
                     <td>
                         <span>{{item.operation.interface}}</span>
-                        <span>{{item.operation.handle}}</span>
+                        <span @click="refunddialog=true">{{item.operation.handle}}</span>
                     </td>
                 </tr>
                 </tbody>
             </table>
+        </div>
+        <div>
+            <el-dialog :visible.sync="refunddialog">
+                <el-form>
+                <el-form-item>
+                    <strong>退款理由：</strong>
+                    <span style="color:red">打印失败</span>
+                </el-form-item>
+                <el-form-item label="拒绝理由：">
+                    <el-input></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="info" @click="close">确认退款</el-button>
+                    <el-button type="danger" @click="close">拒绝退款</el-button>
+                    <el-button type="primary" @click="close">取消</el-button>
+                </el-form-item>
+                </el-form>
+            </el-dialog>
         </div>
     </div>
 </template>
@@ -83,6 +81,7 @@
     export default {
         data () {
             return {
+                refunddialog: false, //  拒绝退款弹窗
                 currentTabIndex: 0,
                 activeName: 'first',
                 tableItem: [
@@ -118,6 +117,9 @@
         methods: {
             handleClick: function () {
                 console.log('click');
+            },
+            close() {
+                this.$emit('update:refunddialog', false);
             }
         }
     };
@@ -135,7 +137,12 @@
     }
 
     }
-
+td span {
+    cursor: pointer;
+    border: 1px solid;
+    padding: 3px;
+    color: #2D4D9F
+}
     .tab-wrapper {
         display: inline-block;
         vertical-align: -28px;
