@@ -32,7 +32,7 @@
                         <td>{{item.registrationTime}}</td>
                         <td>{{item.status}}</td>
                         <td>
-                            <span><router-link to="/officalEdit" style="border:1px solid;color: #20a0ff;">{{item.operaion.detail}}</router-link></span>
+                            <span><router-link to="/userDetail" style="border:1px solid;color: #20a0ff;">{{item.operaion.detail}}</router-link></span>
                             <span class="inter"><router-link to="" style="border:1px solid;margin:0 10px;color: #20a0ff;">{{item.operaion.Interface}}</router-link></span>
                             <span><router-link to="" style="border:1px solid;color:#e00">{{item.operaion.status}}</router-link></span>
                         </td>

@@ -60,6 +60,10 @@
                 </tbody>
             </table>
         </div>
+        <div class="chart">
+            <ve-line :data="chartData" :setting="chartSettings"></ve-line>
+        </div>
+
     </div>
 </template>
 <script>
@@ -85,7 +89,19 @@
                         newpayUser: '30',
                         loginUser: '20'
                     }
-                    ]
+                ]
+            };
+        },
+        created: function () {
+            this.chartData = {
+                columns: ['日期', '新增注册用户数', '新增充值用户数', '登录用户数'],
+                rows: [
+                    {'新增注册用户数': 1523, '日期': '1月1日', '新增充值用户数': 1523, '登录用户数': 0.12}
+                ]
+            };
+            this.chartSettings = {
+                metrics: ['成本', '利润'],
+                dimension: ['日期']
             };
         }
     };
@@ -93,6 +109,7 @@
 <style lang="scss" type="text/scss">
     @import '../../scss/mixin';
     @import '../../style/common.scss';
+
     #userData {
         padding: 0 15px;
         .userDataTop {
@@ -102,49 +119,55 @@
                 padding-left: 5px;
             }
         }
-
+        .paginnation{
+            text-align:center;
+        }
         .DataCount {
-            padding:20px 0;
+            padding: 20px 0;
             background: #fff;
-            margin-bottom:20px;
-            span{
-                position:relative;
-                display:inline-block;
-                width:23%;
+            margin-bottom: 20px;
+            span {
+                position: relative;
+                display: inline-block;
+                width: 23%;
                 text-align: center;
-                border-right:1px solid #eee;
-                small{
-                    font-size:16px;
-                    margin-left:20px;
+                border-right: 1px solid #eee;
+                small {
+                    font-size: 16px;
+                    margin-left: 20px;
                 }
-                &:nth-child(1) i{
+                &:nth-child(1) i {
                     @include dotted(#2CBE6C);
-                    left:25px;
-                    top:5px;
+                    left: 25px;
+                    top: 5px;
                 }
-                &:nth-child(2) i{
+                &:nth-child(2) i {
                     @include dotted(#f38942);
-                    left:25px;
-                    top:5px;
+                    left: 25px;
+                    top: 5px;
                 }
-                &:nth-child(3) i{
+                &:nth-child(3) i {
                     @include dotted(#5184f8);
-                    left:25px;
-                    top:5px;
+                    left: 25px;
+                    top: 5px;
                 }
-                &:nth-child(4) i{
+                &:nth-child(4) i {
                     @include dotted(#6a57ff);
-                    left:25px;
-                    top:5px;
+                    left: 25px;
+                    top: 5px;
                 }
-                &:last-child{
-                    border:0;
+                &:last-child {
+                    border: 0;
                 }
             }
         }
-        .statistical{
-            padding:20px 0;
-            border-top:1px solid #ddd
+        .statistical {
+            padding: 20px 0;
+            border-top: 1px solid #ddd
+        }
+        .chart{
+            background:#fff;
+            margin-top:10px;
         }
     }
 </style>

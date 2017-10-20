@@ -10,7 +10,7 @@
                     <el-tab-pane label="已拒绝" name="third"></el-tab-pane>
                 </el-tabs>
             </div>
-            <form action="#">
+            <el-form class="refundform" action="#">
                 <div>用户名称：</span>
                     <input type="text">
                 </div>
@@ -24,7 +24,7 @@
                     <input type="time">
                     <input type="button" value="搜索">
                 </div>
-            </form>
+            </el-form>
         </div>
         <div>
             <table cellspacing="0" cellpadding="0" border="0">
@@ -58,14 +58,14 @@
             </table>
         </div>
         <div>
-            <el-dialog :visible.sync="refunddialog">
-                <el-form>
+            <el-dialog :visible.sync="refunddialog" >
+                <el-form :label-position="labelPosition" label-width="100px;">
                 <el-form-item>
                     <strong>退款理由：</strong>
                     <span style="color:red">打印失败</span>
                 </el-form-item>
-                <el-form-item label="拒绝理由：">
-                    <el-input></el-input>
+                <el-form-item label="拒绝理由：" >
+                    <el-input v-model="repectReason"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="info" @click="close">确认退款</el-button>
@@ -81,9 +81,11 @@
     export default {
         data () {
             return {
+                labelPosition: 'left',
                 refunddialog: false, //  拒绝退款弹窗
                 currentTabIndex: 0,
                 activeName: 'first',
+                repectReason: '',
                 tableItem: [
                     {
                         time: '2017-07-07 15:00:00',
@@ -119,7 +121,7 @@
                 console.log('click');
             },
             close() {
-                this.$emit('update:refunddialog', false);
+                this.refunddialog = false;
             }
         }
     };
@@ -155,7 +157,7 @@ td span {
         border-bottom: 0;
     }
 
-    form {
+    .refundform {
         float:right;
         height:40px;
         line-height:40px;

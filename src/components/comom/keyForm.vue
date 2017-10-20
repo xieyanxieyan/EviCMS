@@ -19,6 +19,7 @@
     export default {
         data () {
             return {
+                labelPosition: 'left',
                 formLabelAlign: {
                     name: '',
                     region: '',

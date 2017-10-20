@@ -3,13 +3,13 @@
         <div class="operationLogTop">
             <span>操作日志</span>
         </div>
-        <div>
+        <div class="filter">
             <span>管理员：<input type="text"></span>
             <span>统计时间：<input type="text">至 <input type="text">
             <input type="button" value="搜索">
             </span>
         </div>
-        <div>
+        <div class="">
             <table cellspacing="0" cellpadding="0" border="0">
                 <thead>
                 <tr>
@@ -30,6 +30,12 @@
                 </tr>
                 </tbody>
             </table>
+        </div>
+        <div class="pagination">
+            <el-pagination
+                layout="prev, pager, next"
+                :total="1000">
+            </el-pagination>
         </div>
     </div>
 </template>
@@ -60,6 +66,12 @@
                 border-left: 2px solid #324157;
                 padding-left: 5px;
             }
+        }
+        .filter{
+            margin-bottom:10px;
+        }
+        .pagination{
+            text-align: center;
         }
     }
 </style>
