@@ -1,7 +1,7 @@
 import axios from 'axios';
 // 创建axios实例
 const service = axios.create({
-    baseURL: 'http://118.190.143.6/admin/', // admin的base_url
+    baseURL: 'http://118.190.143.6/', // admin的base_url
     timeout: 5000                  // 请求超时
 }
 );

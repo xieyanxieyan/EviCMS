@@ -3,9 +3,13 @@
         <div class="adminManageTop">
             <span>管理员管理</span>
         </div>
-        <div>
-            <el-button><router-link to="/addManage" style="color:#333">添加管理员</router-link></el-button>
-            <el-button><router-link to="/userSet" style="color:#333;">角色设置</router-link></el-button>
+        <div class="adminSelect">
+            <el-button>
+                <router-link to="/addManage" style="color:#333">添加管理员</router-link>
+            </el-button>
+            <el-button>
+                <router-link to="/userSet" style="color:#333;">角色设置</router-link>
+            </el-button>
             <el-form :inline="true" :model="formInline" class="demo-form-inline">
                 <el-form-item label="账号或姓名:">
                     <el-input v-model="formInline.user" placeholder="审批人" size="small"></el-input>
@@ -33,13 +37,13 @@
                 </thead>
                 <tbody>
                 <tr v-for="(item,index) in adminMessage">
-                    <td>{{item.ID}}</td>
-                    <td>{{item.adminstrator}}</td>
-                    <td>{{item.adminName}}</td>
-                    <td>{{item.addTime}}</td>
-                    <td>{{item.status}}</td>
-                    <td>{{item.role}}</td>
-                    <td><span>{{item.operation.edit}}</span><span>{{item.operation.freeze}}</span></td>
+                    <td>{{item.admin_id}}</td>
+                    <td>{{item.username}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.created_at}}</td>
+                    <td>正常</td>
+                    <td>客服</td>
+                    <td><span>编辑</span><span>冻结</span></td>
                 </tr>
                 </tbody>
             </table>
@@ -48,35 +52,40 @@
 
 </template>
 <script>
+    import {getAdminList} from '../../api/setuser';
+
     export default {
-        data () {
+        created() {
+            this._userList();
+        },
+        data() {
             return {
                 formInline: {
                     user: '',
                     region: ''
                 },
-                adminMessage: [
-                    {
-                        ID: '12345',
-                        adminstrator: 'admin',
-                        adminName: '张三',
-                        addTime: '2017-4-10 20:01:30',
-                        status: '正常',
-                        role: '客服',
-                        operation: {
-                            edit: '操作',
-                            freeze: '冻结'
-                        }
-                    }
-                ]
+                adminMessage: []
             };
+        },
+        methods: {
+//            获取管理员列表
+            _userList() {
+                getAdminList('admin', '2017-10-20 08:00:00', '2017-10-20 18:00:00').then(res => {
+                   this.adminMessage = res.data.data.data;cd
+                });
+            }
         }
     };
 </script>
 <style lang="scss">
     @import '../../style/common.scss';
+
     #adminManage {
         padding: 0 15px;
+
+    .adminSelect {
+        margin-bottom: 10px;
+    }
 
     .adminManageTop {
         padding: 15px 0;
@@ -102,6 +111,7 @@
     input {
         outline: none;
     }
+
     .el-button {
         border-radius: 0;
         padding: 5px 15px;
@@ -109,7 +119,7 @@
 
     input {
         border-radius: 0;
-        width:150px;
+        width: 150px;
     }
 
     }
