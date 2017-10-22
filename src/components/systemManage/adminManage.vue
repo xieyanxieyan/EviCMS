@@ -71,7 +71,7 @@
 //            获取管理员列表
             _userList() {
                 getAdminList('admin', '2017-10-20 08:00:00', '2017-10-20 18:00:00').then(res => {
-                   this.adminMessage = res.data.data.data;cd
+                   this.adminMessage = res.data.data.data;
                 });
             }
         }
