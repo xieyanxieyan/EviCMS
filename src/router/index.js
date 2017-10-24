@@ -54,8 +54,9 @@ const routes = [
                 }
             },
             {
-                path: '/userDetail',
+                path: '/userList/:detailId',
                 component: officalEdit,
+                name: 'userDetail',
                 meta: {
                     requireAuth: true
                 }
@@ -159,7 +160,8 @@ const routes = [
                 }
             },
             {
-                path: '/addManage',
+                path: '/adminManage/:userId',
+                name: 'addManage',
                 component: addManage,
                 meta: {
                     requireAuth: true

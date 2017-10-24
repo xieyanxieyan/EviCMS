@@ -36,7 +36,7 @@
                     </el-col>
                     <el-col :span="6">&nbsp;</el-col>
                     <el-col :span="4">
-                        <el-button type="warning" style="margin-left:-20px;" @click="addAdminSubmit">提交</el-button>
+                        <el-button type="warning" style="margin-left:-20px;" @click="AdminSubmit">提交</el-button>
                     </el-col>
                 </el-form-item>
             </el-form>
@@ -44,8 +44,7 @@
     </div>
 </template>
 <script>
-    import {addAdmin, getRole} from '../../../api/setuser';
-
+    import {addAdmin, getRole, editAdmin} from '../../../api/setuser';
     export default {
         created() {
             this._getOptions();
@@ -63,6 +62,11 @@
                 }
             };
         },
+        computed: {
+           cert_id() {
+               return this.$route.params.userId;
+           }
+        },
         methods: {
 //            添加管理员
             addAdminSubmit() {
@@ -75,10 +79,7 @@
                             showClose: true,
                             duration: 2000
                         });
-                        this.form.account = '';
-                        this.form.name = '';
-                        this.form.password = '';
-                        this.form.phone = '';
+                   this.clear();
                     } else {
                         this.$message({
                             type: 'warning',
@@ -89,12 +90,48 @@
                     }
                 });
             },
-//            获取角色信息
+//            成功提示
+            clear() {
+                this.form.account = '';
+                this.form.name = '';
+                this.form.password = '';
+                this.form.phone = '';
+            },
+//            获取角色信息*
             _getOptions() {
                 getRole().then(res => {
                     res = res.data;
                     this.form.options = res.data;
                 });
+            },
+//            编辑管理员
+            editAdminSubmit() {
+                console.log(this.cert_id);
+                editAdmin(this.cert_id, this.form.account, this.form.name, this.form.password, this.form.phone, this.id).then(res => {
+                    if (res.data.error === 0) {
+                        this.$message({
+                            type: 'warning',
+                            message: '编辑管理员成功',
+                            showClose: true,
+                            duration: 2000
+                        });
+                        this.clear();
+                    } else {
+                        this.$message({
+                            type: 'warning',
+                            message: '编辑管理员失败了',
+                            showClose: true,
+                            duration: 2000
+                        });
+                    }
+                });
+            },
+            AdminSubmit() {
+                if (this.cert_id === 0) {
+                    this.addAdminSubmit();
+                } else {
+                    this.editAdminSubmit();
+                }
             }
         }
     };

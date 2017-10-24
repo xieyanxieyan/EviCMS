@@ -27,28 +27,28 @@
                     </span>
             </div>
             <el-form ref="form" :model="form" label-width="120px">
-                <el-form-item label="手机号：">
+                <el-form-item label="手机号：" @keyup.enter.native="handleLogin" :maxlength="11">
                     <el-col :span="8">
-                        <el-select v-model="form.phone" placeholder="(+86)">
+                        <el-select v-model="form.phone" placeholder="(+86)" :disabled="isUsed">
                     <el-option label="(+86)" value="(+86)" selected style="width:100%">(+86)</el-option>
                     <el-option label="(+85)" value="(+85)" style="width:100%">(+85)</el-option>
                 </el-select>
                     </el-col>
                     <el-col :span="16">
-                        <el-input v-model="form.name"></el-input>
+                        <el-input v-model="form.name" :disabled="isUsed"></el-input>
                     </el-col>
                 </el-form-item>
                 <el-form-item label="密码:">
-                    <el-input v-model="form.region"></el-input>
+                    <el-input v-model="form.region" type="password" :disabled="isUsed"></el-input>
                 </el-form-item>
                 <el-form-item label="赠送余额（元）:">
-                    <el-input v-model="form.type"></el-input>
+                    <el-input v-model="form.type" :disabled="isUsed"></el-input>
                 </el-form-item>
                 <el-form-item label="修改原因：">
-                    <el-input v-model="form.reason"></el-input>
+                    <el-input v-model="form.reason" :disabled="isUsed"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary">修改</el-button>
+                    <el-button type="primary" @click="handleLogin" >{{operate}}</el-button>
                     <el-button>取消</el-button>
                 </el-form-item>
             </el-form>
@@ -56,10 +56,16 @@
     </div>
 </template>
 <script>
+    import {editUser, userDetail} from '../../../api/User';
     export default {
+        created() {
+            this._userMessage();
+        },
         data () {
             return {
+                operate: '修改',
                 labelPosition: 'right',
+                isUsed: true,
                 form: {
                     name: '',
                     region: '',
@@ -75,6 +81,35 @@
                     remainspace: '50.00'
                 }
             };
+        },
+        methods: {
+            editSubmit() {
+                if (this.isUsed) {
+                    this.isUsed = false;
+                    this.operate = '保存';
+                } else {
+                    this.save();
+                }
+            },
+            save() {
+                editUser(this.$route.params.detailId, this.form.name, this.form.region, this.form.type, this.form.reason).then(res => {
+                    console.log(res);
+                });
+            },
+            _userMessage() {
+                userDetail(120).then(res => {
+                   console.log(res);
+                });
+            },
+            handleLogin() {
+               if (this.operate === '修改') {
+                   this.editSubmit();
+               } else {
+                   console.log(this.form.name);
+                    this.save();
+               }
+            }
+
         }
     };
 </script>
@@ -82,7 +117,7 @@
     @import '../../../scss/mixin.scss';
 #userDetail{
     padding:0 15px;
-    .userDetaiTop{
+    .userDetailTop{
     padding:15px 0;
        span {
            border-left: 2px solid #324157;
@@ -141,8 +176,6 @@
         bottom: 0;
         background: #fff;
     }
-
-
 
     .container {
         background: #fff;

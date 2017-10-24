@@ -47,11 +47,17 @@
     </div>
 </template>
 <script>
+    import {getPrivilegeList} from '../../../api/setuser';
     const userOptions = ['查看用户信息', '编辑用户资料', '冻结用户账号', '添加新用户', '管理用户界面'];
     const operaOptions = ['投诉建议管理', '退款管理', '纸质出证管理', '出庭管理'];
     const dataAnaOptions = ['查看用户统计', '查看行为统计', '查看财务统计'];
     const systemAdmOptions = ['添加/编辑管理员', '设置管理员权限', '冻结管理员', '查看管理日志', '管理密匙'];
     export default {
+        created() {
+            getPrivilegeList().then(res => {
+                console.log(res);
+            });
+        },
         data() {
             return {
                 checkAlluser: true,

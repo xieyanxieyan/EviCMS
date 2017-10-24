@@ -27,10 +27,21 @@
 <script>
     import depositNum from './depositNum.vue';
     import logisticsInfo from './logisticsInfo.vue';
+    import {getCertifyDetail} from '../../../api/operation';
 
     export default {
-        data () {
+        created() {
+            this.getDetail();
+        },
+        data() {
             return {};
+        },
+        methods: {
+            getDetail() {
+                getCertifyDetail(1).then(res => {
+                    console.log('paperdetail', res);
+                });
+            }
         },
         components: {
             depositNum,
@@ -40,6 +51,9 @@
 </script>
 <style lang="scss" type="text/scss">
     @import '../../../scss/mixin';
+
+    import {
+    }
 
     #paperDetail {
         padding: 0 15px;
@@ -58,8 +72,8 @@
 
             }
         }
-        .detailContent{
-            margin-top:15px;
+        .detailContent {
+            margin-top: 15px;
         }
     }
 </style>

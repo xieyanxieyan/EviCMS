@@ -12,18 +12,18 @@
                     <el-tab-pane label="已完成" name="six"></el-tab-pane>
                 </el-tabs>
             </div>
-            <form action="#">
+            <form action="#" :model="formIn">
                 <div>用户名称：</span>
-                    <input type="text">
+                    <input type="text" v-model="formIn.username">
                 </div>
                 <div>
                     <span>存证号：</span>
-                    <input type="text">
+                    <input type="text" :model="formIn.cert_num">
                 </div>
                 <div>
                     <span>申请时间：</span>
-                    <input type="time">至
-                    <input type="time">
+                    <input type="time" :model="formIn.time_begin">至
+                    <input type="time" :model="formIn.time_end">
                     <input type="button" value="搜索">
                 </div>
             </form>
@@ -75,15 +75,21 @@
     </div>
 </template>
 <script>
+    import {certifyList} from '../../api/operation';
     export default {
+        created() {
+            this.certList();
+        },
         data () {
             return {
                 currentTabIndex: 0,
                 activeName: 'first',
-//                formInline: {
-//                    userName: '',
-//                    Memory: ''
-//                }
+                formIn: {
+                    username: '',
+                    cert_num: '',
+                    time_begin: '',
+                    time_end: ''
+                },
                 hisData: [
                     {
                         time: '2017-07-07 15:00:00',
@@ -99,6 +105,11 @@
         methods: {
             handleClick: function () {
                 console.log('click');
+            },
+            certList() {
+                certifyList(this.formIn.username, this.formIn.cert_num, this.formIn.time_begin, this.formIn.time_end).then(res => {
+                    console.log('hisManage', res);
+                });
             }
         }
     };
@@ -110,6 +121,7 @@
         th,td{width:16%;}
     .histop {
         padding: 15px 0;
+        padding-bottom:0;
 
     span {
         border-left: 2px solid #324157;

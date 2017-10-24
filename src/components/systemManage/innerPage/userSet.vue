@@ -85,7 +85,6 @@
             //     更新列表
             updateList() {
                 getUserList().then((res) => {
-                    console.log(res);
                     res = res.data;
                     if (res.error === 0) {
                         this.userMessage = res.data || [];

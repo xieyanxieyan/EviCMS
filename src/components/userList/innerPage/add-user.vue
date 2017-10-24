@@ -27,7 +27,7 @@
                     <el-input v-model="form.type"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary">提交</el-button>
+                    <el-button type="primary" @click="addUser">提交</el-button>
                     <el-button>取消</el-button>
                 </el-form-item>
             </el-form>
@@ -35,6 +35,7 @@
     </div>
 </template>
 <script>
+    import {addUser} from '../../../api/User';
     export default {
         data () {
             return {
@@ -46,6 +47,13 @@
                     phone: ''
                 }
             };
+        },
+        methods: {
+            addUser() {
+                addUser(this.form.name, this.form.region, this.form.type).then(res => {
+                   console.log(res);
+                });
+            }
         }
     };
 </script>

@@ -8,7 +8,6 @@
 export default {
 };
 </script>
-
 <style>
 body {
     min-width: 1160px;

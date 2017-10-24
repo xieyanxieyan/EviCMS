@@ -4,12 +4,14 @@
             <div class="top">
                 <span class="userList"><span>用户列表</span></span>
                 <div class="top-area">
-                    <form>
-                        用户名称: <input type="text">
-                        注册时间： <input type="text">至 <input type="text">
-                        <el-button type="primary">搜索</el-button>
+                    <form v-model="form">
+                        用户名称: <input type="text" v-model="form.phone">
+                        注册时间： <input type="text" v_model="form.begin_time">至 <input type="text" v-model="form.end_time">
+                        <el-button type="primary" @click="serachList">搜索</el-button>
                         <span class="grayline">|</span>
-                        <el-button><router-link to="/adduser">添加用户</router-link></el-button>
+                        <el-button>
+                            <router-link to="/adduser">添加用户</router-link>
+                        </el-button>
                     </form>
                 </div>
                 <div class="clear"></div>
@@ -26,15 +28,24 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="(item,index) in userList">
-                        <td>{{item.userOrder}}</td>
-                        <td>{{item.userName}}</td>
-                        <td>{{item.registrationTime}}</td>
+                    <tr v-for="(item,index) in userList.data">
+                        <td>{{item.user_id}}</td>
+                        <td>{{item.cell_phone}}</td>
+                        <td>{{item.reg_time}}</td>
                         <td>{{item.status}}</td>
                         <td>
-                            <span><router-link to="/userDetail" style="border:1px solid;color: #20a0ff;">{{item.operaion.detail}}</router-link></span>
-                            <span class="inter"><router-link to="" style="border:1px solid;margin:0 10px;color: #20a0ff;">{{item.operaion.Interface}}</router-link></span>
-                            <span><router-link to="" style="border:1px solid;color:#e00">{{item.operaion.status}}</router-link></span>
+                            <span @click="touserDetail(index)"><a href="javascript:void(0);">详情/编辑</a></span>
+                            <span class="inter"><router-link to=""
+                                                             style="border:1px solid;margin:0 10px;color: #20a0ff;">用户界面</router-link></span>
+                            <template v-if="item.status === 1">
+                                <span @click="frozen(index)" class="redbutton">
+                                      冻结
+                                </span>
+                            </template>
+                            <template v-else="item.status === 2">
+                                <span>解冻</span>
+                            </template>
+
                         </td>
                     </tr>
                     </tbody>
@@ -45,105 +56,125 @@
 </template>
 
 <script>
+    import {getUserList} from '../../api/User';
+
     export default {
-        data () {
+        created() {
+            this.getList();
+        },
+        data() {
             return {
                 currentTabIndex: 0,
-                userList: [
-                    {
-                        userOrder: '12345',
-                        userName: '(+8612312345678)',
-                        registrationTime: '2017-4-10 20:01:30',
-                        status: '正常',
-                        operaion: {
-                            detail: '详情/编辑',
-                            Interface: '用户界面',
-                            status: '冻结'
-                        }
-                    }
-                ]
+                userList: [],
+                form: {
+                    phone: '',
+                    begin_time: '',
+                    end_time: ''
+                }
             };
+        },
+        methods: {
+            getList() {
+                getUserList(this.form.phone, this.form.begin_time, this.form.end_time).then(res => {
+                    this.userList = res.data.data;
+                    console.log(this.userList);
+                });
+            },
+            serachList() {
+                this.getList();
+            },
+            touserDetail(index) {
+                this.$router.push({name: 'userDetail', params: {detailId: this.userList.data[index].user_id}});
+            }
         }
     };
 
 </script>
 
 <style lang="scss">
-#userList{
-    padding: 0 15px;
+    #userList {
+        padding: 0 15px;
 
-a{
-    color:#333;
-    /*display:inline-block;*/
-    padding:2px;
-}
-.top{
-    padding:15px 0;
-}
-.top-area {
-    float: right;
-}
+    a {
+        color: #333;
+        /*display:inline-block;*/
+        padding: 2px;
+    }
 
-.userList {
-    float: left;
-    border-left: 2px solid #2D4D9F;
-    padding-left: 15px;
-}
+    .top {
+        padding: 15px 0;
+    }
 
-#userList {
-    background: #eee;
-    height: 100%;
-    padding: 15px 25px;
-}
+    .top-area {
+        float: right;
+    }
 
-#userList input {
-    padding: 2px;
-    /*display:inline-block;*/
-}
+    .userList {
+        float: left;
+        border-left: 2px solid #2D4D9F;
+        padding-left: 15px;
+    }
 
-.el-button {
-    padding: 5px 10px;
-}
+    #userList {
+        background: #eee;
+        height: 100%;
+        padding: 15px 25px;
+    }
 
-table, thead, tbody {
-    width: 100%;
-}
+    #userList input {
+        padding: 2px;
+        /*display:inline-block;*/
+    }
 
-tr td, tr th {
-    width: 19%;
-    height: 35px;
-    line-height: 35px;
-    font-size: 14px;
-}
+    .el-button {
+        padding: 5px 10px;
+    }
 
-tr td {
-    text-align: center;
-}
+    table, thead, tbody {
+        width: 100%;
+    }
 
-th {
-    color: #fff;
-    background: #556386;
-}
+    tr td, tr th {
+        width: 19%;
+        height: 35px;
+        line-height: 35px;
+        font-size: 14px;
+    }
 
-.top-area button {
-    border-radius: 0;
-}
+    tr td {
+        text-align: center;
+        border-bottom:1px solid #eee;
+        a{
+            color:#00a2ae;
+            border:1px solid;
+        }
+    }
 
-.top-area .el-button--default {
-    color: #20a0ff;
-    border: 1px solid #20a0ff;
-    padding: 5px;
-}
+    th {
+        color: #fff;
+        background: #556386;
+    }
 
-.el-button {
-    margin: 0;
-}
+    .top-area button {
+        border-radius: 0;
+    }
 
-#userList .grayline {
-    border: 1px solid #ccc;
-    height: 30px;
-    margin: 0 20px;
-    display:block;
-}
-}
+    .top-area .el-button--default {
+        color: #20a0ff;
+        border: 1px solid #20a0ff;
+        padding: 5px;
+    }
+
+    .el-button {
+        margin: 0;
+    }
+
+    #userList .grayline {
+        border: 1px solid #ccc;
+        height: 30px;
+        margin: 0 20px;
+        display: block;
+    }
+
+    }
 </style>

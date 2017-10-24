@@ -64,7 +64,11 @@
     </div>
 </template>
 <script>
+    import {trailManage} from '../../api/operation';
     export default {
+        created() {
+            this.showtrailList();
+        },
         data () {
             return {
                 currentTabIndex: 0,
@@ -94,6 +98,11 @@
         methods: {
             handleClick: function () {
                 console.log('click');
+            },
+            showtrailList() {
+                trailManage().then(res => {
+                    console.log('出庭管理', res);
+                });
             }
         }
     };
