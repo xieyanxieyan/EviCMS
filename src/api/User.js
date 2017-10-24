@@ -89,6 +89,22 @@ export function addetaUser(phone, password, amount, expire_time, recommend_user)
       params
   });
 }
+// 公测用户编辑
+export function betaUpdate(phone, password, amount, expire_time, recommend_user, user_id) {
+const params = {
+    phone,
+    password: CryptoJS.MD5(password),
+    amount,
+    expire_time,
+    recommend_user,
+    user_id
+};
+return fetch({
+    method: 'post',
+    url: 'user/beta/update',
+    params
+})
+}
 // 查看公测用户详情
 export function betaUserDetail(user_id) {
     return fetch({

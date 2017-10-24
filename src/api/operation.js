@@ -1,4 +1,12 @@
 import fetch from '@/common/js/fetch';
+// 投诉建议列表
+export function feedbackList(status) {
+    return fetch({
+        method: 'get',
+        url: 'operation/feedback/list',
+        status,
+    })
+}
 // 获取出证详情
 export function getCertifyDetail(cert_id) {
     return fetch({
