@@ -4,15 +4,18 @@ export function feedbackList(status) {
     return fetch({
         method: 'get',
         url: 'operation/feedback/list',
-        status,
-    })
+        status
+    });
 }
 // 获取出证详情
 export function getCertifyDetail(cert_id) {
+    const params = {
+        cert_id
+    };
     return fetch({
        method: 'get',
        url: 'operation/certify/detail',
-        cert_id
+        params
     });
 }
 // 出证列表

@@ -103,7 +103,7 @@ return fetch({
     method: 'post',
     url: 'user/beta/update',
     params
-})
+});
 }
 // 查看公测用户详情
 export function betaUserDetail(user_id) {
