@@ -10,11 +10,11 @@
             <div class="userMessage">
                 <span>
                     <strong>用户序号：</strong>
-                    <small>{{userdetails.userNum}}</small>
+                    <small>{{userdetails.user_id}}</small>
                 </span>
                 <span>
                     <strong>注册时间：</strong>
-                    <small>{{userdetails.time}}</small>
+                    <small>{{userdetails.reg_time}}</small>
                 </span>
                 <span>
                     <strong>充值余额（元）：</strong>
@@ -48,7 +48,7 @@
                     <el-input v-model="form.reason" :disabled="isUsed"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="handleLogin" >{{operate}}</el-button>
+                    <el-button type="primary" @click="handle" >{{operate}}</el-button>
                     <el-button>取消</el-button>
                 </el-form-item>
             </el-form>
@@ -74,11 +74,6 @@
                     reason: ''
                 },
                 userdetails: {
-                    userNum: '20',
-                    time: '2017-02-03',
-                    due: '23',
-                    space: '20',
-                    remainspace: '50.00'
                 }
             };
         },
@@ -93,15 +88,23 @@
             },
             save() {
                 editUser(this.$route.params.detailId, this.form.name, this.form.region, this.form.type, this.form.reason).then(res => {
-                    console.log(res);
+//                    console.log(res);
+                    if (res.data.error === 0) {
+                        alert('成功');
+                        this.form.name = '';
+                        this.form.region = '';
+                        this.form.type = '';
+                        this.form.phone = '';
+                        this.form.reason = '';
+                    }
                 });
             },
             _userMessage() {
-                userDetail(120).then(res => {
-                   console.log(res);
+                userDetail(this.$route.params.detailId).then(res => {
+                  this.userdetails = res.data.data;
                 });
             },
-            handleLogin() {
+            handle() {
                if (this.operate === '修改') {
                    this.editSubmit();
                } else {

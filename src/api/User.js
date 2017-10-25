@@ -43,10 +43,13 @@ export function editUser(user_id, phone, password, amount, reason) {
 }
 // 用户详情
 export function userDetail(user_id) {
+    const params = {
+        user_id
+    };
     return fetch({
         method: 'get',
         url: 'user/detail',
-        user_id
+        params
     });
 }
 // 冻结用户

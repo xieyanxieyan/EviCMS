@@ -34,15 +34,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="item in manageDate">
-                    <td>{{item.phoneNo}}</td>
-                    <td>{{item.surveName}}</td>
-                    <td>{{item.supportName}}</td>
-                    <td>{{item.expirationDate}}</td>
+                <tr v-for="(item, index) in manageDate">
+                    <td>{{item.user.cell_phone}}</td>
+                    <td>{{item.id}}</td>
+                    <td>{{item.recommend_user}}</td>
+                    <td>{{item.expire_time}}</td>
                     <td>{{item.complimentary}}</td>
-                    <td>{{item.status}}</td>
-                    <td><span style="margin-right:20px;border:1px solid #437DFF;color:#437DFF;" @click="isVisible=true">{{item.operation.edit}}</span>
-                        <span style="border:1px solid #EBADA6;color:#EBADA6;" @click="deletestaff">{{item.operation.del}}</span>
+                    <td>{{item.user.status}}</td>
+                    <td><span style="margin-right:20px;border:1px solid #437DFF;color:#437DFF;" @click="edit(index)">编辑</span>
+                        <span style="border:1px solid #EBADA6;color:#EBADA6;" @click="deletestaff">删除</span>
                     </td>
                 </tr>
                 </tbody>
@@ -57,15 +57,18 @@
                 <el-form-item label="推荐人名称：">
                     <el-input v-model="form.surveerReferral"></el-input>
                 </el-form-item>
+                <el-form-item label="密码：">
+                    <el-input v-model="form.password"></el-input>
+                </el-form-item>
                 <el-form-item label="手机号：">
-                    <el-col :span="4">
+                    <el-col :span="6">
                         <el-select v-model="form.region">
                             <el-option label="(+86)" value="(+86)"></el-option>
                             <el-option label="(+85)" value="(+85)"></el-option>
                         </el-select>
                     </el-col>
-                    <el-col :span="2"> </el-col>
-                    <el-col :span="20">
+                    <!--<el-col :span="2"> </el-col>-->
+                    <el-col :span="18">
                         <el-input v-model="form.phoneNum"></el-input>
                     </el-col>
                 </el-form-item>
@@ -73,11 +76,47 @@
                     <el-input v-model="form.vacancies"></el-input>
                 </el-form-item>
                 <el-form-item label="到期时间：">
-                    <el-input v-model="form.dueTime"></el-input>
+                    <el-input v-model="form.duetime"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary">提交</el-button>
+                    <el-button type="primary" @click="addSubmit">提交</el-button>
                     <el-button @click="isVisible = false">取消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+        <!--编辑公测员弹窗-->
+        <el-dialog title="编辑公测员" :visible.sync = 'iseditVisible'>
+            <el-form :label-position="labelPosition" label-width="100px" :model="form">
+                <el-form-item label="公测员名称：">
+                    <el-input v-model="formEdit.surveerName"></el-input>
+                </el-form-item>
+                <el-form-item label="推荐人名称：">
+                    <el-input v-model="formEdit.surveerReferral"></el-input>
+                </el-form-item>
+                <el-form-item label="密码：">
+                    <el-input v-model="formEdit.password"></el-input>
+                </el-form-item>
+                <el-form-item label="手机号：">
+                    <el-col :span="6">
+                        <el-select v-model="formEdit.region">
+                            <el-option label="(+86)" value="(+86)"></el-option>
+                            <el-option label="(+85)" value="(+85)"></el-option>
+                        </el-select>
+                    </el-col>
+                    <!--<el-col :span="2"> </el-col>-->
+                    <el-col :span="18">
+                        <el-input v-model="formEdit.phoneNum"></el-input>
+                    </el-col>
+                </el-form-item>
+                <el-form-item label="赠送余额：">
+                    <el-input v-model="formEdit.vacancies"></el-input>
+                </el-form-item>
+                <el-form-item label="到期时间：">
+                    <el-input v-model="formEdit.expireTime"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="  updateSubmit()">提交</el-button>
+                    <el-button @click="iseditVisible = false">取消</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -85,9 +124,15 @@
     </div>
 </template>
 <script>
+//    import {addetaUser} from '../../api/User';
+    import {addetaUser, getBetaList, betaUpdate} from '../../api/User';
     export default {
+        created() {
+            this._surveStaffList();
+        },
         data () {
             return {
+                iseditVisible: false,
                 labelPosition: 'left',
                 isVisible: false,
                 formInline: {
@@ -99,34 +144,19 @@
                     surveerReferral: '',
                     phoneNum: '',
                     vacancies: '',
-                    dueTime: ''
+                    duetime: '',
+                    password: ''
+                },
+                formEdit: {
+                    surveerName: '',
+                    surveerReferral: '',
+                    phoneNum: '',
+                    vacancies: '',
+                    expireTime: '',
+                    password: ''
                 },
                 currentIndex: 0,
                 manageDate: [
-                    {
-                        phoneNo: '(+86)2312345678',
-                        surveName: '张三',
-                        supportName: '李四',
-                        expirationDate: '2017-4-10 10:01:30',
-                        complimentary: '999.00',
-                        status: '未注册',
-                        operation: {
-                            edit: '编辑',
-                            del: '删除'
-                        }
-                    },
-                    {
-                        phoneNo: '(+86)2312345678',
-                        surveName: '张三',
-                        supportName: '李四',
-                        expirationDate: '2017-4-10 10:01:30',
-                        complimentary: '999.00',
-                        status: '未注册',
-                        operation: {
-                            edit: '编辑',
-                            del: '删除'
-                        }
-                    }
                 ]
             };
         },
@@ -146,6 +176,52 @@
                        type: 'info',
                        message: '已取消删除'
                    });
+                });
+            },
+//            公测用户列表
+            _surveStaffList() {
+                getBetaList(this.formInline.user).then(res => {
+                    this.manageDate = res.data.data.data || [];
+                    console.log(this.manageDate);
+                });
+            },
+//            公测用户添加
+            addSubmit() {
+                addetaUser(this.form.phoneNum, this.form.password, this.form.vacancies, this.form.duetime, this.form.surveerReferral).then(res => {
+                    console.log(res);
+                    if (res.data.error === 0) {
+                        this.isVisible = false;
+                        alert('成功');
+                        this.form.surveerName = '';
+                        this.form.surveerReferral = '';
+                        this.form.phoneNum = '';
+                        this.form.vacancies = '';
+                        this.form.duetime = '';
+                        this.form.password = '';
+                    }
+                });
+            },
+            edit(index) {
+                this.iseditVisible = true;
+                this.formEdit.phoneNum = this.manageDate[index].user.cell_phone;
+                this.formEdit.password = this.manageDate[index].id;
+                this.formEdit.expireTime = this.manageDate[index].expire_time;
+                this.formEdit.surveerReferral = this.manageDate[index].recommend_user;
+            },
+//            公测员编辑
+
+            updateSubmit() {
+                betaUpdate(this.formEdit.phoneNum, this.formEdit.password, this.formEdit.vacancies, this.formEdit.duetime, this.formEdit.surveerReferral).then(res => {
+                   console.log(res);
+                    if (res.data.error === 0) {
+                        this.$message({
+                           type: 'warning',
+                           message: '成功啦',
+                           showClose: true,
+                           duration: 3000
+                        });
+                        this.iseditVisible = false;
+                    }
                 });
             }
         }
@@ -196,6 +272,7 @@
                 height: 40px;
                 line-height: 40px;
                 font-size: 14px;
+                border-bottom:1px solid #eee;
                 span {
                     cursor: pointer;
                     padding: 3px 6px;

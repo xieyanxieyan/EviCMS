@@ -51,7 +51,25 @@
         methods: {
             addUser() {
                 addUser(this.form.name, this.form.region, this.form.type).then(res => {
-                   console.log(res);
+                   if (res.data.error === 0) {
+                       this.$message({
+                           type: 'warning',
+                           message: '添加成功',
+                           showClose: true,
+                           duration: 2000
+                       });
+                       this.form.name = '';
+                           this.form.region = '';
+                           this.form.type = '';
+                           this.from.phone = '';
+                   } else {
+                       this.$message({
+                           type: 'warning',
+                           message: '添加失败',
+                           showClose: true,
+                           duration: 2000
+                       });
+                   }
                 });
             }
         }

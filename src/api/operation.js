@@ -1,10 +1,13 @@
 import fetch from '@/common/js/fetch';
 // 投诉建议列表
 export function feedbackList(status) {
+    const params = {
+        status
+    };
     return fetch({
         method: 'get',
         url: 'operation/feedback/list',
-        status
+        params
     });
 }
 // 获取出证详情

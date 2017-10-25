@@ -6,11 +6,11 @@
                 <div class="top-area">
                     <form v-model="form">
                         用户名称: <input type="text" v-model="form.phone">
-                        注册时间： <input type="text" v_model="form.begin_time">至 <input type="text" v-model="form.end_time">
+                        注册时间： <input type="text" v-model="form.begin_time">至 <input type="text" v-model="form.end_time">
                         <el-button type="primary" @click="serachList">搜索</el-button>
                         <span class="grayline">|</span>
                         <el-button>
-                            <router-link to="/adduser">添加用户</router-link>
+                           <router-link to="/addUser"> 添加用户</router-link>
                         </el-button>
                     </form>
                 </div>
@@ -32,18 +32,26 @@
                         <td>{{item.user_id}}</td>
                         <td>{{item.cell_phone}}</td>
                         <td>{{item.reg_time}}</td>
-                        <td>{{item.status}}</td>
+                        <td>
+                            <template v-if="item.status === 0">
+                                <span>正常</span>
+                            </template>
+                            <template v-else="item.status === 1">
+                                <span style="color:#ff4949">冻结</span>
+                            </template>
+                        </td>
                         <td>
                             <span @click="touserDetail(index)"><a href="javascript:void(0);">详情/编辑</a></span>
-                            <span class="inter"><router-link to=""
-                                                             style="border:1px solid;margin:0 10px;color: #20a0ff;">用户界面</router-link></span>
-                            <template v-if="item.status === 1">
+                            <span class="inter"><a href="javascript:void(0);">用户界面</a></span>
+                            <template v-if="item.status === 0">
                                 <span @click="frozen(index)" class="redbutton">
-                                      冻结
+                                    <a href="javascript:void(0);">冻结</a>
                                 </span>
                             </template>
-                            <template v-else="item.status === 2">
-                                <span>解冻</span>
+                            <template v-else="item.status === 1">
+                                <span @click="frozen(index)">
+                                    <a href="javascript:void(0);">解冻</a>
+                                </span>
                             </template>
 
                         </td>
@@ -56,7 +64,7 @@
 </template>
 
 <script>
-    import {getUserList} from '../../api/User';
+    import {getUserList, userFreeze} from '../../api/User';
 
     export default {
         created() {
@@ -77,14 +85,24 @@
             getList() {
                 getUserList(this.form.phone, this.form.begin_time, this.form.end_time).then(res => {
                     this.userList = res.data.data;
-                    console.log(this.userList);
+//                    console.log(this.userList);
                 });
             },
             serachList() {
                 this.getList();
             },
+//            到用户详情
             touserDetail(index) {
                 this.$router.push({name: 'userDetail', params: {detailId: this.userList.data[index].user_id}});
+            },
+//            冻结用户
+            frozen(index) {
+                userFreeze(this.userList.data[index].user_id, this.userList.data[index].status).then(res => {
+                   if (res.error === 0) {
+                       alert('操作成功');
+                   }
+                });
+                this.getList();
             }
         }
     };
@@ -143,11 +161,17 @@
 
     tr td {
         text-align: center;
-        border-bottom:1px solid #eee;
-        a{
-            color:#00a2ae;
-            border:1px solid;
-        }
+        border-bottom: 1px solid #eee;
+
+    a {
+        color: #00a2ae;
+        border: 1px solid;
+    }
+
+    .inter {
+        margin: 0 15px;
+    }
+
     }
 
     th {

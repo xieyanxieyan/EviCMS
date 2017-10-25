@@ -6,10 +6,10 @@
                 <div class="top-area">
                   <span>快速筛选：</span>
                     <div class="tab-wrapper">
-                        <el-tabs v-model="activeName" @tab-click="handleClick">
-                            <el-tab-pane label="全部" name="first"></el-tab-pane>
-                            <el-tab-pane label="已处理" name="second"></el-tab-pane>
-                            <el-tab-pane label="未处理" name="third"></el-tab-pane>
+                        <el-tabs v-model="activeName" @tab-click="handleClick()">
+                            <el-tab-pane label="全部" name=0 ></el-tab-pane>
+                            <el-tab-pane label="已处理" name=1></el-tab-pane>
+                            <el-tab-pane label="未处理" name=2></el-tab-pane>
                         </el-tabs>
                     </div>
                 </div>
@@ -28,11 +28,21 @@
                     </thead>
                     <tbody>
                     <tr v-for="(item,index) in compManage">
-                        <td>{{item.registrationTime}}</td>
-                        <td>{{item.userName}}</td>
+                        <td>{{item.request_time}}</td>
+                        <td>{{item.report_id}}</td>
                         <td class="content">{{item.content}}</td>
-                        <td>{{item.status}}</td>
-                        <td><router-link to="/complaint" style="border:1px solid #20A0FF;padding:3px 15px;">{{item.operation}}</router-link></td>
+                        <td>
+                            <template v-if="item.status === 0">
+                                <span>未处理</span>
+                            </template>
+                            <template v-else-if="item.status === 1">
+                                <span>处理中</span>
+                            </template>
+                            <template v-else="item.status === 2">
+                                <span>已处理</span>
+                            </template>
+                        </td>
+                        <td><router-link to="/complaint" style="border:1px solid #20A0FF;padding:3px 15px;">处理</router-link></td>
                     </tr>
                     </tbody>
                 </table>
@@ -42,25 +52,33 @@
 </template>
 
 <script>
+    import {feedbackList} from '../../api/operation';
     export default {
+        created() {
+            this._getCompManage();
+        },
         data () {
             return {
                 currentTabIndex: 0,
-                activeName: 'first',
+                activeName: 0,
+                count: '',    //  总条数
                 compManage: [
-                    {
-                        content: '投诉建议投诉cdcffvfrddcddddddddddddccdcdc建议投诉建议ahahahhaha',
-                        userName: '(+8612312345678)',
-                        registrationTime: '2017-4-10 20:01:30',
-                        status: '未处理',
-                        operation: '处理'
-                    }
                 ]
             };
         },
         methods: {
-            handleClick: function () {
-                console.log('click');
+            handleClick() {
+                this._getCompManage();
+            },
+//            获取公测员列表
+            _getCompManage() {
+                feedbackList(this.activeName).then(res => {
+                   if (res.data.error === 0) {
+                       this.compManage = res.data.data.data;
+                     this.count = res.data.data.total;
+                     console.log(this.activeName);
+                   }
+                });
             }
         }
     };
@@ -80,6 +98,9 @@
            overflow:hidden;
            text-overflow:ellipsis;
            white-space:nowrap;
+       }
+       td{
+           border-bottom:1px solid #eee;
        }
    }
 
