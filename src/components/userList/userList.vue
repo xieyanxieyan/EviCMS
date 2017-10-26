@@ -49,7 +49,7 @@
                                 </span>
                             </template>
                             <template v-else="item.status === 1">
-                                <span @click="frozen(index)">
+                                <span @click="frozen(index)" class="greenbutton">
                                     <a href="javascript:void(0);">解冻</a>
                                 </span>
                             </template>
@@ -173,9 +173,17 @@ input {
     tr td {
         text-align: center;
         border-bottom: 1px solid #eee;
+    .redbutton a{
+        color:#ff4949;
+        border:1px solid;
+    }
+    .greenbutton a{
+        color:#4cce6d;
+        border:1px solid;
+    }
 
     a {
-        color: #00a2ae;
+        color: #20a0ff;
         border: 1px solid;
     }
 

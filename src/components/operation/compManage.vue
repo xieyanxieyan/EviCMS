@@ -8,8 +8,8 @@
                     <div class="tab-wrapper">
                         <el-tabs v-model="activeName" @tab-click="handleClick()">
                             <el-tab-pane label="全部" name=0 ></el-tab-pane>
-                            <el-tab-pane label="已处理" name=1></el-tab-pane>
-                            <el-tab-pane label="未处理" name=2></el-tab-pane>
+                            <el-tab-pane label="已处理" name=2></el-tab-pane>
+                            <el-tab-pane label="未处理" name=1></el-tab-pane>
                         </el-tabs>
                     </div>
                 </div>
@@ -29,20 +29,21 @@
                     <tbody>
                     <tr v-for="(item,index) in compManage">
                         <td>{{item.request_time}}</td>
-                        <td>{{item.report_id}}</td>
+                        <td>{{item.username}}</td>
                         <td class="content">{{item.content}}</td>
                         <td>
-                            <template v-if="item.status === 0">
-                                <span>未处理</span>
+
+                            <template v-if="item.status === 1">
+                                <span class="bluetext">处理中</span>
                             </template>
-                            <template v-else-if="item.status === 1">
-                                <span>处理中</span>
+                            <template v-else-if="item.status === 2">
+                                <span class="greentext">已处理</span>
                             </template>
-                            <template v-else="item.status === 2">
-                                <span>已处理</span>
+                            <template v-else>
+                                <span class="redtext">未处理</span>
                             </template>
                         </td>
-                        <td><router-link to="/complaint" style="border:1px solid #20A0FF;padding:3px 15px;">处理</router-link></td>
+                        <td><a href="javascript:void(0);" style="border:1px solid #20A0FF;padding:3px 15px;" @click="tofeedbackDetail(index)">处理</a></td>
                     </tr>
                     </tbody>
                 </table>
@@ -80,16 +81,24 @@
         },
         methods: {
             handleClick() {
-                this._getCompManage();
+                if (this.activeName === 0) {
+                    this._getCompManage();
+                } else {
+                    this._getCompManage(this.activeName);
+                }
             },
 //            获取公测员列表
-            _getCompManage() {
-                feedbackList(this.activeName).then(res => {
+            _getCompManage(num) {
+                feedbackList(num).then(res => {
                    if (res.data.error === 0) {
                        this.compManage = res.data.data.data;
                      this.total = res.data.data.total;
+                     console.log(res.data.data.data);
                    }
                 });
+            },
+            tofeedbackDetail(index) {
+                this.$router.push({name: 'complaint', params: {report_id: this.compManage[index].report_id}});
             },
             handleCurrentChange() {
                 console.log('分页');
@@ -115,6 +124,15 @@
        }
        td{
            border-bottom:1px solid #eee;
+           .redtext{
+               color:#ff4949;
+           }
+           .bluetext{
+               color:#20a0ff;
+           }
+           .greentext{
+               color:#4cce6d;
+           }
        }
    }
 .pagination{

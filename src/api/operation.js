@@ -10,6 +10,29 @@ export function feedbackList(status) {
         params
     });
 }
+// 投诉建议详情
+export function feedbackdetail(report_id) {
+    const params = {
+        report_id
+    };
+    return fetch({
+        method: 'get',
+        url: 'operation/feedback/detail',
+        params
+    });
+}
+// 投诉建议回复
+export function feedbackreplay(report_id, content) {
+    const params = {
+        report_id,
+        content
+    };
+    return fetch({
+        method: 'post',
+        url: 'operation/feedback/reply',
+        params
+    });
+}
 // 获取出证详情
 export function getCertifyDetail(cert_id) {
     const params = {

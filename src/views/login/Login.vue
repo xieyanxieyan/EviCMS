@@ -1,5 +1,6 @@
 <template>
-    <div class="login-content">
+    <div class="login-wrapper">
+        <div class="login-content">
         <el-form ref="form">
             <el-form-item>
                 <div class="CMStitle">证宝宝管理系统</div>
@@ -45,13 +46,16 @@
                 </el-col>
             </el-form-item>
         </el-form>
+        </div>
     </div>
 </template>
 <script>
 export default{
 };
 </script>
-<style>
+<style lang="scss">
+    .login-wrapper{
+    background:#fff;
     .login-content {
         width: 300px;
         padding: 20px;
@@ -64,7 +68,6 @@ export default{
         background:#fff;
         margin:auto;
         box-shadow: 0 0 8px -2px rgba(0,0,0,.2);
-        background: #fff;
     }
 
     .CMStitle {
@@ -83,4 +86,6 @@ export default{
     .bg-purple .el-input__inner {
         border-radius: 4px 0 0 4px;
     }
+    }
+
 </style>

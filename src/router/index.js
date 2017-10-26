@@ -76,7 +76,8 @@ const routes = [
                 }
             },
             {
-                path: '/complaint',
+                path: '/complaint/:report_id',
+                name: 'complaint',
                 component: Complaint,
                 meta: {
                     requireAuth: true

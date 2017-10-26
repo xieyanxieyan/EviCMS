@@ -5,9 +5,9 @@
         </div>
         <div class="suggestion">
             <div class="complaintTop">
-                <span><strong>用户</strong>：（+86）13412345678</span>
+                <span><strong>用户</strong>：{{detail.username}}</span>
                 <span style="margin:0 20px;color:#eee">|</span>
-                <span><strong>时间</strong>：<b>2017-4-21</b>&nbsp;<b>17:31:12</b></span>
+                <span><strong>时间：</strong>&nbsp;{{detail.request_time}}</span>
                 <el-button>进入用户界面</el-button>
             </div>
             <div>
@@ -16,17 +16,21 @@
                         <b>内容:</b>
                     </el-form-item>
                     <el-form-item>
-                            <textarea name="" id="" cols="70" rows="8" style="resize:none">
-                            </textarea>
+                        <el-col :span="12">
+                        <el-input type="textarea" size="small"  resize="none" :readonly = "isread" :value="content">
+
+                            </el-input>
+                        </el-col>
                     </el-form-item>
                     <el-form-item>
                         <b>回复:</b>
                     </el-form-item>
                     <el-form-item>
-                        <textarea name="" style="width:100%;height:80px;resize:none;" ></textarea>
+                        <el-input type="textarea" size="small" v-model="replay">
+                        </el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="onSubmit" style="margin-right:80px;">提交回复</el-button>
+                        <el-button type="primary" @click="replaySubmit()" style="margin-right:80px;">提交回复</el-button>
                         <el-button>返回</el-button>
                     </el-form-item>
                 </el-form>
@@ -35,10 +39,33 @@
     </div>
 </template>
 <script>
+    import {feedbackdetail, feedbackreplay} from '../../api/operation';
     export default {
+        created() {
+            this.feedbackDetail();
+        },
+        data() {
+            return {
+                isread: true,
+                detail: [],
+                content: '',
+                replay: ''
+            };
+        },
         methods: {
-            onSubmit() {
-                console.log('submit!');
+            feedbackDetail() {
+//                console.log(this.$route.params.report_id);
+                feedbackdetail(this.$route.params.report_id).then(res => {
+                        if (res.data.error === 0) {
+                            this.detail = res.data.data || [];
+                          this.content = res.data.data.content;
+                        }
+                });
+            },
+            replaySubmit() {
+                feedbackreplay(this.$route.params.report_id, this.replay).then(res => {
+                    console.log(res);
+                });
             }
         }
     };
@@ -74,7 +101,7 @@
                 resize: none
             }
             .el-form-item{
-                margin-bottom:0;
+                /*margin-bottom:0;*/
             .el-button{
                 border-radius:0;
                 text-align:center;
