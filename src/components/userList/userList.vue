@@ -58,7 +58,19 @@
                     </tr>
                     </tbody>
                 </table>
+                <!--分页-->
+                <div class="pagination">
+                    <el-pagination
+                        layout="prev, pager, next,total"
+                        :total= "total"
+                        :page-size="13"
+                        :current-page.sync="currentPage"
+                        @current-change="handleCurrentChange()"
+                    >
+                    </el-pagination>
+                </div>
             </div>
+
         </div>
     </div>
 </template>
@@ -72,8 +84,10 @@
         },
         data() {
             return {
+                total: 0,
                 currentTabIndex: 0,
                 userList: [],
+                currentPage: 1,
                 form: {
                     phone: '',
                     begin_time: '',
@@ -85,7 +99,7 @@
             getList() {
                 getUserList(this.form.phone, this.form.begin_time, this.form.end_time).then(res => {
                     this.userList = res.data.data;
-//                    console.log(this.userList);
+                    this.total = this.userList.total;
                 });
             },
             serachList() {
@@ -103,6 +117,9 @@
                    }
                 });
                 this.getList();
+            },
+            handleCurrentChange() {
+               console.log('分页');
             }
         }
     };
@@ -133,13 +150,7 @@
         padding-left: 15px;
     }
 
-    #userList {
-        background: #eee;
-        height: 100%;
-        padding: 15px 25px;
-    }
-
-    #userList input {
+input {
         padding: 2px;
         /*display:inline-block;*/
     }
@@ -193,12 +204,12 @@
         margin: 0;
     }
 
-    #userList .grayline {
-        border: 1px solid #ccc;
-        height: 30px;
-        margin: 0 20px;
-        display: block;
+    .pagination{
+        margin:15px 0;
+       text-align:center;
+        .el-pagination{
+        display:inline-block;
     }
-
+    }
     }
 </style>

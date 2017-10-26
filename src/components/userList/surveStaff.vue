@@ -47,6 +47,17 @@
                 </tr>
                 </tbody>
             </table>
+            <!--分页-->
+            <div class="pagination">
+            <el-pagination
+                layout="prev, pager, next,total"
+                :total= "total"
+                :page-size="13"
+                :current-page.sync="currentPage"
+                @current-change="handleCurrentChange()"
+            >
+            </el-pagination>
+            </div>
         </div>
         <!--添加公测员弹窗-->
         <el-dialog title="添加公测员" :visible.sync = 'isVisible'>
@@ -115,7 +126,7 @@
                     <el-input v-model="formEdit.expireTime"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="  updateSubmit()">提交</el-button>
+                    <el-button type="primary" @click="updateSubmit()">提交</el-button>
                     <el-button @click="iseditVisible = false">取消</el-button>
                 </el-form-item>
             </el-form>
@@ -132,6 +143,8 @@
         },
         data () {
             return {
+                total: 0,
+                currentPage: 1,
                 iseditVisible: false,
                 labelPosition: 'left',
                 isVisible: false,
@@ -182,7 +195,7 @@
             _surveStaffList() {
                 getBetaList(this.formInline.user).then(res => {
                     this.manageDate = res.data.data.data || [];
-                    console.log(this.manageDate);
+                    this.total = res.data.data.total;
                 });
             },
 //            公测用户添加
@@ -223,6 +236,10 @@
                         this.iseditVisible = false;
                     }
                 });
+            },
+//            分页功能
+            handleCurrentChange() {
+                console.log('分页');
             }
         }
     };
@@ -279,7 +296,13 @@
                 }
             }
         }
-
+.pagination{
+    text-align: center;
+    margin:15px 0;
+    .el-pagination{
+        display: inline-block;
+    }
+}
         .top {
             margin: 0;
             padding: 15px 0;

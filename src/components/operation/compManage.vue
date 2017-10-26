@@ -46,6 +46,17 @@
                     </tr>
                     </tbody>
                 </table>
+                <!--分页-->
+                <div class="pagination">
+                    <el-pagination
+                        layout="prev, pager, next,total"
+                        :total= "total"
+                        :page-size="13"
+                        :current-page.sync="currentPage"
+                        @current-change="handleCurrentChange()"
+                    >
+                    </el-pagination>
+                </div>
             </div>
         </div>
     </div>
@@ -59,9 +70,10 @@
         },
         data () {
             return {
+                total: 0,
+                currentPage: 1,
                 currentTabIndex: 0,
                 activeName: 0,
-                count: '',    //  总条数
                 compManage: [
                 ]
             };
@@ -75,10 +87,12 @@
                 feedbackList(this.activeName).then(res => {
                    if (res.data.error === 0) {
                        this.compManage = res.data.data.data;
-                     this.count = res.data.data.total;
-                     console.log(this.activeName);
+                     this.total = res.data.data.total;
                    }
                 });
+            },
+            handleCurrentChange() {
+                console.log('分页');
             }
         }
     };
@@ -103,7 +117,13 @@
            border-bottom:1px solid #eee;
        }
    }
-
+.pagination{
+    margin:15px 0;
+    text-align: center;
+    .el-pagination{
+        display:inline-block;
+    }
+}
     .compManage {
         /*float: left;*/
         border-left: 2px solid #2D4D9F;

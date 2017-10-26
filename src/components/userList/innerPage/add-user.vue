@@ -86,17 +86,6 @@
         text-align: left
     }
 
-    .top {
-        height:30px;
-        background: #eeeeee;
-
-    }
-    .top::before{
-        content:'';
-        display: inline-block;
-        height:25px;
-        border-left: 3px solid #437dff;
-    }
     .el-form-item:nth-child(1)::before {
     @include dotted(#437DFF);
     }
@@ -119,26 +108,29 @@
     }
 
     .addUser-wrapper {
-        position: fixed;
-        top: 40px;
-        left: 230px;
-        right: 25px;
-        bottom: 0;
+        padding:0 15px;
+        .top{
+            padding:15px 0;
+            span{
+                border-left: 2px solid #324157;
+                padding-left: 5px;
+            }
+        }
+
+    .container {
+        min-height: calc(100vh - 100px);
         background: #fff;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-align-items: center;
+        align-items: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+    }
     }
 
     .el-form {
         width: 400px;
     }
 
-    .container {
-        position: absolute;
-        width: 500px;
-        height: 260px;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin: auto;
-    }
 </style>
