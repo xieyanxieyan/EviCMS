@@ -1,4 +1,5 @@
 import fetch from '@/common/js/fetch';
+
 // 投诉建议列表
 export function feedbackList(status) {
     const params = {
@@ -10,6 +11,7 @@ export function feedbackList(status) {
         params
     });
 }
+
 // 投诉建议详情
 export function feedbackdetail(report_id) {
     const params = {
@@ -21,6 +23,7 @@ export function feedbackdetail(report_id) {
         params
     });
 }
+
 // 投诉建议回复
 export function feedbackreplay(report_id, content) {
     const params = {
@@ -33,30 +36,62 @@ export function feedbackreplay(report_id, content) {
         params
     });
 }
-// 获取出证详情
-export function getCertifyDetail(cert_id) {
+
+// 退款列表
+export function getRefundList(username, cert_no, time_begin, time_end, status) {
     const params = {
-        cert_id
+        username,
+        cert_no,
+        time_begin,
+        time_end,
+        status
     };
     return fetch({
-       method: 'get',
-       url: 'operation/certify/detail',
+        method: 'get',
+        url: 'operation/refund/list',
         params
     });
 }
+
+// 退款处理
+export function refundHandle(request_id, reason, is_agree) {
+    const params = {
+        request_id,
+        reason,
+        is_agree
+    };
+    return fetch({
+        method: 'post',
+        url: 'operation/refund/handle',
+        params
+    });
+}
+
+// 获取出证详情
+export function getCertifyDetail(apply_id) {
+    const params = {
+        apply_id
+    };
+    return fetch({
+        method: 'get',
+        url: 'operation/certify/detail',
+        params
+    });
+}
+
 // 出证列表
 export function certifyList(phone, cert_num, time_begin, time_end) {
-const params = {
-    phone,
-    cert_num,
-    time_begin,
-    time_end
-};
-return fetch({
-    method: 'get',
-    url: 'operation/certify/list',
-    params
-});
+    const params = {
+        phone,
+        cert_num,
+        time_begin,
+        time_end
+    };
+    return fetch({
+        method: 'get',
+        url: 'operation/certify/list',
+        params
+    });
 }
 
 // 出庭列表

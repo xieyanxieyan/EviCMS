@@ -62,15 +62,34 @@
                 </thead>
                 <tbody>
                 <tr v-for="(item,index) in hisData">
-                    <td>{{item.time}}</td>
-                    <td>{{item.user}}</td>
-                    <td>{{item.MemoryNum}}</td>
+                    <td>{{item.req_time}}</td>
+                    <td>{{item.phone}}</td>
+                    <td>{{item.cert_no}}</td>
                     <td>{{item.type}}</td>
-                    <td>{{item.status}}</td>
-                    <td><router-link to="/paperDetail" style="color:#20a0ff;padding:0 5px;border:1px solid">{{item.operation}}</router-link></td>
+                    <td>
+                        <template v-if="item.status === 1">
+                            处理中
+                        </template>
+                        <template v-else-if="item.status === 2">
+                            已处理
+                        </template>
+                        <template v-else-if="item.status === 0">
+                            出证失败
+                        </template>
+                    </td>
+                    <td><router-link to="/paperDetail" style="color:#20a0ff;padding:0 5px;border:1px solid">出证详情</router-link></td>
                 </tr>
                 </tbody>
             </table>
+        </div>
+        <div class="pagination">
+            <el-pagination
+                layout="prev, pager, next,total"
+                :total= "total"
+                :page-size="13"
+                :current-page.sync="currentPage"
+                @current-change="handleCurrentChange()"
+            ></el-pagination>
         </div>
     </div>
 </template>
@@ -84,6 +103,8 @@
             return {
                 currentTabIndex: 0,
                 activeName: 'first',
+                currentPage: 0,
+                total: 0,
                 formIn: {
                     username: '',
                     cert_num: '',
@@ -108,8 +129,12 @@
             },
             certList() {
                 certifyList(this.formIn.username, this.formIn.cert_num, this.formIn.time_begin, this.formIn.time_end).then(res => {
-                    console.log('hisManage', res);
+                   this.hisData = res.data.data.data;
+                   this.total = res.data.data.total;
                 });
+            },
+            handleCurrentChange() {
+                console.log('处理分页');
             }
         }
     };
@@ -172,5 +197,12 @@
     }
 
     }
+        .pagination{
+            margin:15px 0;
+            text-align: center;
+            .el-pagination{
+                display:inline-block;
+            }
+        }
     }
 </style>

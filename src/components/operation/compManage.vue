@@ -50,6 +50,8 @@
                 <!--分页-->
                 <div class="pagination">
                     <el-pagination
+
+
                         layout="prev, pager, next,total"
                         :total= "total"
                         :page-size="13"
