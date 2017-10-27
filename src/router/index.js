@@ -154,7 +154,8 @@ const routes = [
                 }
             },
             {
-                path: '/paperDetail',
+                path: '/paperDetail/:detailId',
+                name: 'paperDetail',
                 component: paperDetail,
                 meta: {
                     requireAuth: true

@@ -184,7 +184,7 @@
         cursor: pointer;
         border: 1px solid;
         padding: 3px;
-        color: #2D4D9F
+        color:#20a0ff;
     }
 
     .tab-wrapper {

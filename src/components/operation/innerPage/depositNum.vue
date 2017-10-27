@@ -2,7 +2,7 @@
     <div id="depositNum">
         <div class="depositeTop">
             <strong>存证编号：</strong>
-            <small>20170605-122030-123456</small>
+            <small>{{cert_no}}</small>
             <strong style="float:right">
                 出证次数：k次
             </strong>
@@ -38,6 +38,7 @@
 </template>
 <script>
     export default {
+        props: ['cert_no'],
         data () {
             return {
                 labelPosition: 'left',

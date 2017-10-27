@@ -77,7 +77,7 @@
                             出证失败
                         </template>
                     </td>
-                    <td><router-link to="/paperDetail" style="color:#20a0ff;padding:0 5px;border:1px solid">出证详情</router-link></td>
+                    <td><a href="javascript:void(0);" @click="toHisDetail(index)" style="color:#20a0ff;padding:0 5px;border:1px solid">出证详情</a></td>
                 </tr>
                 </tbody>
             </table>
@@ -112,14 +112,6 @@
                     time_end: ''
                 },
                 hisData: [
-                    {
-                        time: '2017-07-07 15:00:00',
-                        user: '(+86)12312345678',
-                        MemoryNum: '2017041020013033',
-                        type: '纸质证书',
-                        status: '待处理',
-                        operation: '出证详情'
-                    }
                 ]
             };
         },
@@ -135,6 +127,14 @@
             },
             handleCurrentChange() {
                 console.log('处理分页');
+            },
+            toHisDetail(index) {
+                this.$router.push({
+                    name: 'paperDetail',
+                    params: {
+                        detailId: this.hisData[index].apply_id
+                    }
+            });
             }
         }
     };

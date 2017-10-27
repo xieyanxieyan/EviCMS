@@ -8,9 +8,9 @@
                 </el-form-item>
                 <el-form-item label="状态" label-width="100">
                     <el-select v-model="formInline.region" size="small" style="width:100px;">
-                        <el-option label="已过期" value="shanghai"></el-option>
-                        <el-option label="未注册" value="beijing"></el-option>
-                        <el-option label="已注册" value="beijing"></el-option>
+                        <el-option label="已过期" value="1"></el-option>
+                        <el-option label="未注册" value="2"></el-option>
+                        <el-option label="已注册" value="3"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>

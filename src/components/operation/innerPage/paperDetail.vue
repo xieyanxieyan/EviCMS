@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="detailContent">
-            <depositNum></depositNum>
+            <depositNum :cert_no="detail.cert_no"></depositNum>
             <logisticsInfo></logisticsInfo>
         </div>
     </div>
@@ -34,12 +34,17 @@
             this.getDetail();
         },
         data() {
-            return {};
+            return {
+                detail: {}
+            };
         },
         methods: {
             getDetail() {
-                getCertifyDetail(1).then(res => {
+                getCertifyDetail(this.$route.params.detailId).then(res => {
                     console.log('paperdetail', res);
+                    if (res.data.error === 0) {
+                        this.detail = res.data.data;
+                    }
                 });
             }
         },
