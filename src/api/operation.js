@@ -93,12 +93,29 @@ export function certifyList(phone, cert_num, time_begin, time_end) {
         params
     });
 }
-
+// 出证编辑
+export function certifyUpdate(apply_id, username, phone, address, exp_num, exp_company, form_sign) {
+    const params = {
+        apply_id,
+        username,
+        phone,
+        address,
+        exp_num,
+        exp_company,
+        form_sign
+    };
+    return fetch({
+        method: 'post',
+        url: 'operation/certify/update',
+        params
+    });
+}
 // 出庭列表
-export function trailManage(time_begin, time_end) {
+export function trailManage(time_begin, time_end, status) {
     const params = {
         time_begin,
-        time_end
+        time_end,
+        status
     };
     return fetch({
         method: 'get',
@@ -106,3 +123,15 @@ export function trailManage(time_begin, time_end) {
         params
     });
 }
+// 出庭详情
+export function courtDetail(apply_id) {
+    const params = {
+        apply_id
+    };
+    return fetch({
+        method: 'get',
+        url: 'operation/court/detail',
+        params
+    });
+}
+

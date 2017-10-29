@@ -13,7 +13,7 @@
                 <span>
                      <i></i>
                 <strong>用户序号：</strong>
-                <small>12345</small>
+                <small>{{userId}}</small>
             </span>
                 <span>
                      <i></i>
@@ -101,10 +101,15 @@
     </div>
 </template>
 <script>
+    import {courtDetail} from '../../../api/operation';
     export default {
+        created() {
+            this._detailMessage();
+        },
         data () {
             return {
                 labelPosition: 'left',
+                userId: '',
                 formInline: {
                     username: '',
                     datatime: '',
@@ -139,6 +144,13 @@
         methods: {
             onSubmit () {
                 console.log('submit!');
+            },
+            _detailMessage() {
+                courtDetail(this.$route.params.courtId).then(res => {
+                  if (res.data.error === 0) {
+                      this.userId = res.data.data.user_id;
+                  }
+                });
             }
         }
     };

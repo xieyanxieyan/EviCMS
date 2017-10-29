@@ -30,7 +30,7 @@
         margin:0;
         padding:0;
         background: #eeeeee;
-        font-size:15px;
+        font-size:13px;
     }
     .clear:after{
         content:'';

@@ -7,38 +7,72 @@
             <span>
                 <i></i>
                 <strong>总注册用户：</strong>
-                <small>{{userData.totalUser}}人</small>
+                <small>{{userData.allUserCount}}人</small>
             </span>
             <span>
                 <i></i>
                 <strong>充值用户数：</strong>
-                <small>{{userData.rechargeUser}}人</small>
+                <small>{{userData.userTopUpCount}}人</small>
             </span>
             <span>
                 <i></i>
                 <strong>上月新增：</strong>
-                <small>{{userData.pastnewData}}人</small>
+                <small>{{userData.lastMonthCount}}人</small>
             </span>
             <span>
                 <i></i>
                 <strong>当月新增：</strong>
-                <small>{{userData.nownewData}}人</small>
+                <small>{{userData.currentMonthCount}}人</small>
             </span>
         </div>
         <div class="statistical">
-            <span>统计方式：
-            <input type="text">
-               <select name="" id="">
-                   <option value="按日统计">按日统计</option>
-                   <option value="按月统计">按月统计</option>
-                   <option value="按年统计">按年统计</option>
-               </select>
-            </span>
-            <span>
-                统计时间：
-                <input type="time">至
-                <input type="time">
-            </span>
+            <!--<span>统计方式：-->
+            <!--<input type="text">-->
+               <!--<select name="" id="">-->
+                   <!--<option value="按日统计">按日统计</option>-->
+                   <!--<option value="按月统计">按月统计</option>-->
+                   <!--<option value="按年统计">按年统计</option>-->
+               <!--</select>-->
+            <!--</span>-->
+            <!--<span>-->
+                <!--统计时间：-->
+                <!--<input type="time">至-->
+                <!--<input type="time">-->
+            <!--</span>-->
+            <el-form :inline="true" :model="searchForm" ref="searchForm">
+                <el-form-item label="统计方式：">
+                    <el-select v-model="searchForm.value" placeholder="请选择">
+                        <el-option
+                            v-for="item in searchForm.options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="统计时间:">
+                    <el-col :span=10>
+                        <el-date-picker
+                            v-model="searchForm.value1"
+                            type="date"
+                            placeholder="选择开始时间"
+                            :picker-options="searchForm.pickerOptions0">
+                        </el-date-picker>
+                    </el-col>
+                    <el-col :span=3>至</el-col>
+                    <el-col :span=10>
+                        <el-date-picker
+                            v-model="searchForm.value2"
+                            type="date"
+                            placeholder="选择结束时间"
+                            :picker-options="searchForm.pickerOptions0">
+                        </el-date-picker>
+                    </el-col>
+                </el-form-item>
+                <el-form-item>
+                    <el-button @click="searchList">搜索</el-button>
+                </el-form-item>
+            </el-form>
         </div>
         <div>
             <table cellpadding="0" cellspacing="0" border="0">
@@ -52,10 +86,10 @@
                 </thead>
                 <tbody>
                 <tr v-for="(item,indx) in statisticalData">
-                    <td>{{item.time}}</td>
-                    <td>{{item.newregistorUser}}</td>
-                    <td>{{item.newpayUser}}</td>
-                    <td>{{item.loginUser}}</td>
+                    <td>{{item}}</td>
+                    <td>{{item.userCount}}</td>
+                    <td>{{item.userLoginCount}}</td>
+                    <td>{{item.userTopUpCount}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -67,32 +101,11 @@
     </div>
 </template>
 <script>
+    import {userTotal, userTime} from '../../api/statistic';
+    import {translateTime} from '../../assets/public';
     export default {
-        data () {
-            return {
-                userData: {
-                    totalUser: 9999,
-                    rechargeUser: 9998,
-                    pastnewData: 9999,
-                    nownewData: 9999
-                },
-                statisticalData: [
-                    {
-                        time: '2017-07-07',
-                        newregistorUser: '30',
-                        newpayUser: '30',
-                        loginUser: '20'
-                    },
-                    {
-                        time: '2017-07-07',
-                        newregistorUser: '30',
-                        newpayUser: '30',
-                        loginUser: '20'
-                    }
-                ]
-            };
-        },
-        created: function () {
+        created() {
+            this._userTotalDate();
             this.chartData = {
                 columns: ['日期', '新增注册用户数', '新增充值用户数', '登录用户数'],
                 rows: [
@@ -103,6 +116,56 @@
                 metrics: ['成本', '利润'],
                 dimension: ['日期']
             };
+        },
+        data () {
+            return {
+                searchForm: {
+                    value: '1',
+                    value1: '',
+                    value2: '',
+                    options: [{
+                        value: '1',
+                        label: '按日统计'
+                    }, {
+                        value: '2',
+                        label: '按月统计'
+                    }, {
+                        value: '3',
+                        label: '按年统计'
+                    }],
+                    pickerOptions0: {
+                        disabledDate(time) {
+                            return time.getTime() > Date.now();
+                        }
+                    }
+                },
+                userData: {
+                    totalUser: 9999,
+                    rechargeUser: 9998,
+                    pastnewData: 9999,
+                    nownewData: 9999
+                },
+                statisticalData: [
+                ]
+            };
+        },
+        methods: {
+            _userTotalDate() {
+                userTotal().then(res => {
+                    if (res.data.error === 0) {
+                        this.userData = res.data.data;
+                    }
+                });
+            },
+            searchList() {
+                console.log(this.searchForm.value1, this.searchForm.value2);
+                userTime(translateTime(this.searchForm.value1), translateTime(this.searchForm.value2), parseInt(this.searchForm.value)).then(res => {
+                   if (res.data.error === 0) {
+                   this.statisticalData = res.data.data;
+                   console.log(this.statisticalData);
+                   }
+                });
+            }
         }
     };
 </script>
@@ -159,6 +222,12 @@
                 &:last-child {
                     border: 0;
                 }
+            }
+        }
+        .el-form-item{
+            margin-bottom:0;
+            .el-col-3{
+                text-align:right;
             }
         }
         .statistical {

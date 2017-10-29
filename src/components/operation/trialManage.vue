@@ -4,20 +4,39 @@
         <div><span>快速筛选:</span>
             <div class="tab-wrapper">
                 <el-tabs v-model="activeName" @tab-click="handleClick">
-                    <el-tab-pane label="全部" name="first"></el-tab-pane>
-                    <el-tab-pane label="待处理（99）" name="second"></el-tab-pane>
-                    <el-tab-pane label="已确认" name="third"></el-tab-pane>
-                    <el-tab-pane label="已出庭" name="fourth"></el-tab-pane>
+                    <el-tab-pane label="全部" name='4'></el-tab-pane>
+                    <el-tab-pane label="待处理（99）" name='0'></el-tab-pane>
+                    <el-tab-pane label="已确认" name='1'></el-tab-pane>
+                    <el-tab-pane label="已出庭" name='2'></el-tab-pane>
                 </el-tabs>
             </div>
-            <form action="#">
-                <div>
-                    <span>时间：</span>
-                    <input type="time">至
-                    <input type="time">
-                    <input type="button" value="搜索">
-                </div>
-            </form>
+            <el-form :inline="true" :model="timeFrom">
+                <el-form-item>
+                    <el-col :span=8>
+                        <el-date-picker
+                            v-model="timeFrom.value1"
+                            type="date"
+                            placeholder="选择开始时间"
+                            :picker-options="pickerOptions0">
+                        </el-date-picker>
+                    </el-col>
+                    <el-col :span=3>
+                  <el-button> 至</el-button>
+                    </el-col>
+                    <el-col :span=8>
+                        <el-date-picker
+                            v-model="timeFrom.value2"
+                            type="date"
+                            placeholder="选择结束时间"
+                            :picker-options="pickerOptions0">
+                        </el-date-picker>
+                    </el-col>
+                    <el-col :span=2>&nbsp;</el-col>
+                    <el-col :span=2>
+                        <el-button type="primary" @click="searchList">搜索</el-button>
+                    </el-col>
+                </el-form-item>
+            </el-form>
             <!--<el-form :inline="true" :model="formInline" >-->
             <!--<el-form-item label="用户名称:">-->
             <!--<el-input v-model="formInline.userName"></el-input>-->
@@ -52,11 +71,11 @@
                 </thead>
                 <tbody>
                 <tr v-for="(item,index) in TrialData">
-                    <td>{{item.time}}</td>
-                    <td>{{item.user}}</td>
-                    <td>{{item.MemoryNum}}</td>
+                    <td>{{item.request_time}}</td>
+                    <td>{{item.username}}</td>
+                    <td>{{item.cert_id}}</td>
                     <td>{{item.status}}</td>
-                    <td><router-link to="/detailCourt" style="border:1px solid;color:#6F98FF">{{item.operation}}</router-link></td>
+                    <td><a href="javascript:void(0);" @click="todetailCourt(index)" style="border:1px solid;color:#6F98FF">查看审核</a></td>
                 </tr>
                 </tbody>
             </table>
@@ -65,6 +84,7 @@
 </template>
 <script>
     import {trailManage} from '../../api/operation';
+    import {translateTime} from '../../assets/public';
     export default {
         created() {
             this.showtrailList();
@@ -72,23 +92,17 @@
         data () {
             return {
                 currentTabIndex: 0,
-                activeName: 'first',
-                TrialData: [
-                    {
-                        time: '2017-07-07  15:00:00',
-                        user: '(+86)12312345678',
-                        MemoryNum: '2017041020013033',
-                        status: '待审核',
-                        operation: '查看审核'
-                    },
-                    {
-                        time: '2017-07-07  15:00:00',
-                        user: '(+86)12312345678',
-                        MemoryNum: '2017041020013033',
-                        status: '待审核',
-                        operation: '查看审核'
+                activeName: '4',
+                timeFrom: {
+                    value1: '',
+                    value2: ''
+                },
+                pickerOptions0: {
+                    disabledDate(time) {
+                        return time.getTime() > Date.now();
                     }
-                    ]
+                },
+                TrialData: []
 //                formInline: {
 //                    userName: '',
 //                    Memory: ''
@@ -97,12 +111,28 @@
         },
         methods: {
             handleClick: function () {
-                console.log('click');
+                this.showtrailList();
             },
             showtrailList() {
-                trailManage().then(res => {
-                    console.log('出庭管理', res);
-                });
+                if (this.activeName === '4') {
+                    trailManage(translateTime(this.timeFrom.value1), translateTime(this.timeFrom.value2)).then(res => {
+                        this.TrialData = res.data.data.data;
+                        console.log(res.data.data.data, this.activeName);
+                    });
+                } else {
+                    trailManage(translateTime(this.timeFrom.value1), translateTime(this.timeFrom.value2), parseInt(this.activeName)).then(res => {
+                       if (res.data.error === 0) {
+                           this.TrialData = res.data.data.data;
+                           console.log(this.TrialData);
+                       }
+                    });
+                }
+            },
+            searchList() {
+                this.showtrailList();
+            },
+            todetailCourt(index) {
+                this.$router.push({name: 'detailCourt', params: {courtId: this.TrialData[index].apply_id}});
             }
         }
     };
@@ -127,6 +157,15 @@
         margin-left: 20px;
 
     }
+    .el-col-3{
+        text-align:right;
+       .el-button{
+           background:#eee;
+           border:0;
+           color:#333;
+           padding-right:10px;
+       }
+    }
 
     .el-tabs__header {
         border-bottom: 0;
@@ -134,28 +173,30 @@
 .el-tabs__item{
     padding:0 10px;
 }
-    form {
-        float:right;
-        height:40px;
-        line-height:40px;
-        display: inline-block;
+.el-form{
+    display:inline-block;
+    float:right;
+    width:500px;
+}
+    /*form {*/
+        /*float:right；*/
 
-    div {
-        display: inline-block;
-    }
+    /*div {*/
+        /*display: inline-block;*/
+    /*}*/
 
-    input[type=button]{
-        color:#fff;
-        padding:4px 7px;
-        display:inline-block;
-        background: #999999;
+    /*input[type=button]{*/
+        /*color:#fff;*/
+        /*padding:4px 7px;*/
+        /*display:inline-block;*/
+        /*background: #999999;*/
 
-    }
-    input {
-        border: 1px solid #eee;
-        padding: 3px;
-    }
+    /*}*/
+    /*input {*/
+        /*border: 1px solid #eee;*/
+        /*padding: 3px;*/
+    /*}*/
 
-    }
+    /*}*/
     }
 </style>

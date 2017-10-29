@@ -41,7 +41,8 @@
                     <td>{{item.expire_time}}</td>
                     <td>{{item.complimentary}}</td>
                     <td>{{item.user.status}}</td>
-                    <td><span style="margin-right:20px;border:1px solid #437DFF;color:#437DFF;" @click="edit(index)">编辑</span>
+                    <td><span style="margin-right:20px;border:1px solid #437DFF;color:#437DFF;"
+                              @click="edit(index)">编辑</span>
                         <span style="border:1px solid #EBADA6;color:#EBADA6;" @click="deletestaff">删除</span>
                     </td>
                 </tr>
@@ -49,18 +50,18 @@
             </table>
             <!--分页-->
             <div class="pagination">
-            <el-pagination
-                layout="prev, pager, next,total"
-                :total= "total"
-                :page-size="13"
-                :current-page.sync="currentPage"
-                @current-change="handleCurrentChange()"
-            >
-            </el-pagination>
+                <el-pagination
+                    layout="prev, pager, next,total"
+                    :total="total"
+                    :page-size="13"
+                    :current-page.sync="currentPage"
+                    @current-change="handleCurrentChange()"
+                >
+                </el-pagination>
             </div>
         </div>
         <!--添加公测员弹窗-->
-        <el-dialog title="添加公测员" :visible.sync = 'isVisible'>
+        <el-dialog title="添加公测员" :visible.sync='isVisible'>
             <el-form :label-position="labelPosition" label-width="100px" :model="form">
                 <el-form-item label="公测员名称：">
                     <el-input v-model="form.surveerName"></el-input>
@@ -90,13 +91,18 @@
                     <el-input v-model="form.duetime"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="addSubmit">提交</el-button>
-                    <el-button @click="isVisible = false">取消</el-button>
+                    <el-button type="primary"
+                               size="small"
+                               @click="addSubmit">提交
+                    </el-button>
+                    <el-button @click="isVisible = false"
+                               size="small">取消
+                    </el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
         <!--编辑公测员弹窗-->
-        <el-dialog title="编辑公测员" :visible.sync = 'iseditVisible'>
+        <el-dialog title="编辑公测员" :visible.sync='iseditVisible'>
             <el-form :label-position="labelPosition" label-width="100px" :model="form">
                 <el-form-item label="公测员名称：">
                     <el-input v-model="formEdit.surveerName"></el-input>
@@ -126,7 +132,7 @@
                     <el-input v-model="formEdit.expireTime"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="updateSubmit()">提交</el-button>
+                    <el-button type="primary" @click="updateSubmit()">提交</el-button>|
                     <el-button @click="iseditVisible = false">取消</el-button>
                 </el-form-item>
             </el-form>
@@ -135,13 +141,14 @@
     </div>
 </template>
 <script>
-//    import {addetaUser} from '../../api/User';
+    //    import {addetaUser} from '../../api/User';
     import {addetaUser, getBetaList, betaUpdate} from '../../api/User';
+
     export default {
         created() {
             this._surveStaffList();
         },
-        data () {
+        data() {
             return {
                 total: 0,
                 currentPage: 1,
@@ -169,13 +176,12 @@
                     password: ''
                 },
                 currentIndex: 0,
-                manageDate: [
-                ]
+                manageDate: []
             };
         },
         methods: {
 //            删除公测员
-            deletestaff () {
+            deletestaff() {
                 this.$confirm('确定删除吗，删除后不可恢复！', '', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消'
@@ -185,10 +191,10 @@
                         message: '删除成功！'
                     });
                 }).catch(() => {
-                   this.$message({
-                       type: 'info',
-                       message: '已取消删除'
-                   });
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
                 });
             },
 //            公测用户列表
@@ -225,13 +231,13 @@
 
             updateSubmit() {
                 betaUpdate(this.formEdit.phoneNum, this.formEdit.password, this.formEdit.vacancies, this.formEdit.duetime, this.formEdit.surveerReferral).then(res => {
-                   console.log(res);
+                    console.log(res);
                     if (res.data.error === 0) {
                         this.$message({
-                           type: 'warning',
-                           message: '成功啦',
-                           showClose: true,
-                           duration: 3000
+                            type: 'warning',
+                            message: '成功啦',
+                            showClose: true,
+                            duration: 3000
                         });
                         this.iseditVisible = false;
                     }
@@ -244,36 +250,29 @@
         }
     };
 </script>
-<style lang="scss" type="text/scss" >
+<style lang="scss" type="text/scss">
     .survestaff {
         padding: 0 15px;
-        .top{
+        .top {
             .el-form {
                 margin: 0;
                 float: right;
                 .el-form-item {
                     margin-bottom: 0px;
-                }
-                .el-input__inner {
-                    border-radius: 0;
+                    .el-button{
+                        padding:6px 15px;
+                    }
                 }
                 input {
                     outline: none;
                 }
-                .line {
-                    width: 0;
-                    height: 20px;
-                    display: inline-block;
-                    border: 1px solid #999;
-                    margin: 0 5px;
-                }
-                .el-button {
-                    border-radius: 0;
-                    padding: 5px 15px;
-                }
-                input {
-                    border-radius: 0;
-                }
+                /*.line {*/
+                    /*width: 0;*/
+                    /*height: 20px;*/
+                    /*display: inline-block;*/
+                    /*border: 1px solid #999;*/
+                    /*margin: 0 5px;*/
+                /*}*/
 
             }
         }
@@ -289,33 +288,33 @@
                 height: 40px;
                 line-height: 40px;
                 font-size: 14px;
-                border-bottom:1px solid #eee;
+                border-bottom: 1px solid #eee;
                 span {
                     cursor: pointer;
                     padding: 3px 6px;
                 }
             }
         }
-.pagination{
-    text-align: center;
-    margin:15px 0;
-    .el-pagination{
-        display: inline-block;
-    }
-}
+        .pagination {
+            text-align: center;
+            margin: 15px 0;
+            .el-pagination {
+                display: inline-block;
+            }
+        }
         .top {
             margin: 0;
             padding: 15px 0;
         }
-        .el-dialog{
-            width:500px;
-            .el-dialog__title{
-                color:#fff;
+        .el-dialog {
+            width: 500px;
+            .el-dialog__title {
+                color: #fff;
             }
-            .el-dialog__header{
-                text-align:center;
+            .el-dialog__header {
+                text-align: center;
                 background: #556386;
-                padding:10px 20px;
+                padding: 10px 20px;
             }
         }
     }

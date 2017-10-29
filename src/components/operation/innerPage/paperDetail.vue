@@ -19,8 +19,8 @@
             </div>
         </div>
         <div class="detailContent">
-            <depositNum :cert_no="detail.cert_no"></depositNum>
-            <logisticsInfo></logisticsInfo>
+            <depositNum :cert="detail"></depositNum>
+            <logisticsInfo :cert="detail"></logisticsInfo>
         </div>
     </div>
 </template>

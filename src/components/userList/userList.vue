@@ -15,11 +15,13 @@
                     <!--</form>-->
                     <el-form :inline="true" :model="form">
                         <el-form-item label="用户名称：">
-                            <el-input v-model="form.phone"></el-input>
+                            <el-input v-model="form.phone"   size="small"></el-input>
                         </el-form-item>
                         <el-form-item label="注册时间:">
+                            <template>
                             <div>
                             <el-date-picker
+                                size="small"
                                 v-model="form.value"
                                 type="daterange"
                                 align="right"
@@ -29,6 +31,7 @@
                                 end-placeholder="结束日期">
                             </el-date-picker>
                             </div>
+                            </template>
                         </el-form-item>
                         <el-form-item>
                             <el-button type="primary" @click="serachList">搜索</el-button>
@@ -191,11 +194,6 @@
         padding-left: 15px;
     }
 
-    input {
-        /*padding: 2px;*/
-        /*display:inline-block;*/
-    }
-
     .el-button {
         padding: 5px 10px;
     }
@@ -239,10 +237,6 @@
     th {
         color: #fff;
         background: #556386;
-    }
-
-    .top-area button {
-        border-radius: 0;
     }
 
     .top-area .el-button--default {

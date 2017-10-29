@@ -5,18 +5,18 @@
         </div>
         <div class="logisticInfoForm">
             <div class="datos">
-                <el-form :label-position="labelPosition" label-width="90px" :model="formLabelAlign">
-                    <el-form-item label="投递时间：">
+                <el-form :label-position="labelPosition" :rules="rules" ref="formLabelAlign" label-width="90px" :model="formLabelAlign">
+                    <el-form-item label="投递时间:" prop="time">
                         <el-input v-model="formLabelAlign.time"></el-input>
                     </el-form-item>
-                    <el-form-item label="快递公司：">
-                        <el-input v-model="formLabelAlign. company"></el-input>
+                    <el-form-item label="快递公司:" prop="company">
+                        <el-input v-model="formLabelAlign.company"></el-input>
                     </el-form-item>
-                    <el-form-item label="快递单号:" style="margin-bottom:58px;">
+                    <el-form-item label="快递单号:" prop="number" style="margin-bottom:58px;">
                         <el-input v-model="formLabelAlign.number"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="info">保存</el-button>
+                        <el-button type="info"  @click="saveSubmit('formLabelAlign')">保存</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -31,7 +31,11 @@
     </div>
 </template>
 <script>
+    import {certifyUpdate} from '../../../api/operation';
 export default{
+    props: {
+        cert: ''
+    },
     data() {
         return {
             labelPosition: 'left',
@@ -39,8 +43,34 @@ export default{
                 time: '',
                 company: '',
                 number: ''
+//                isdisabled: true
+            },
+            rules: {
+                time: [
+                    {required: true, message: '请选择投递时间', trigger: 'change'}
+                ],
+                company: [
+                    {required: true, message: '请选择快递公司', trigger: 'change'}
+                ],
+                number: [
+                    {required: true, message: '请输入快递单号', trigger: 'blur'}
+                ]
             }
         };
+    },
+    methods: {
+        saveSubmit(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    certifyUpdate(this.cert.apply_id, this.formLabelAlign.name, this.formLabelAlign.phone, this.formLabelAlign.address, this.formLabelAlign.number, this.formLabelAlign.company, 2).then(res => {
+                        console.log(res);
+                    });
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        }
     }
 };
 </script>

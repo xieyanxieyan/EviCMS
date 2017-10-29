@@ -24,6 +24,8 @@
                 <tbody>
                 <tr>
                     <td>操作总数</td>
+                    <td>{{AllData.loginCount}}</td>
+                    <td>{{AllData.webPrintCount}}</td>
                     <td>99</td>
                     <td>99</td>
                     <td>99</td>
@@ -32,28 +34,60 @@
                     <td>99</td>
                     <td>99</td>
                     <td>99</td>
+                    <td>{{AllData.certifyCount}}</td>
                     <td>99</td>
-                    <td>99</td>
-                    <td>99</td>
-                    <td>99</td>
-                    <td>99</td>
+                    <td>{{AllData.courtCount}}</td>
                 </tr>
                 </tbody>
             </table>
         </div>
         <div class="statistical">
-            <span>统计方式
-            <select name="" id="">
-                <option value="">按日统计</option>
-                <option value="">按月统计</option>
-                <option value="">按年统计</option>
-            </select>
-            </span>
-            <span>统计时间
-            <input type="time">至
-                <input type="time">
-                <input type="button" value="搜索">
-            </span>
+            <!--<span>统计方式-->
+            <!--<select name="" id="">-->
+                <!--<option value="">按日统计</option>-->
+                <!--<option value="">按月统计</option>-->
+                <!--<option value="">按年统计</option>-->
+            <!--</select>-->
+            <!--</span>-->
+            <!--<span>统计时间-->
+            <!--<input type="time">至-->
+                <!--<input type="time">-->
+                <!--<input type="button" value="搜索">-->
+            <!--</span>-->
+            <el-form :inline="true" :model="searchForm" ref="searchForm">
+                <el-form-item label="统计方式：">
+                    <el-select v-model="searchForm.value" placeholder="请选择">
+                        <el-option
+                            v-for="item in searchForm.options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="统计时间:">
+                    <el-col :span=10>
+                        <el-date-picker
+                            v-model="searchForm.value1"
+                            type="date"
+                            placeholder="选择开始时间"
+                            :picker-options="searchForm.pickerOptions0">
+                        </el-date-picker>
+                    </el-col>
+                    <el-col :span=3>至</el-col>
+                    <el-col :span=10>
+                        <el-date-picker
+                            v-model="searchForm.value2"
+                            type="date"
+                            placeholder="选择结束时间"
+                            :picker-options="searchForm.pickerOptions0">
+                        </el-date-picker>
+                    </el-col>
+                </el-form-item>
+                <el-form-item>
+                    <el-button @click="searchList">搜索</el-button>
+                </el-form-item>
+            </el-form>
         </div>
         <div>
             <table cellpadding="0" cellspacing="0" border="0">
@@ -76,6 +110,8 @@
                 <tbody>
                 <tr>
                     <td>2017-05-14</td>
+                    <td>{{AllData.loginCount}}</td>
+                    <td>{{AllData.webPrintCount}}</td>
                     <td>99</td>
                     <td>99</td>
                     <td>99</td>
@@ -84,11 +120,9 @@
                     <td>99</td>
                     <td>99</td>
                     <td>99</td>
+                    <td>{{AllData.certifyCount}}</td>
                     <td>99</td>
-                    <td>99</td>
-                    <td>99</td>
-                    <td>99</td>
-                    <td>99</td>
+                    <td>{{AllData.courtCount}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -99,20 +133,10 @@
     </div>
 </template>
 <script>
+    import {actionsTotal, actionTime} from '../../api/statistic';
+    import {translateTime} from '../../assets/public';
     export default {
-        data () {
-            return {
-                currentTabIndex: 0,
-                activeName: 'first',
-                operaionName: ''
-            };
-        },
-        methods: {
-            handleClick: function () {
-                console.log('click');
-            }
-        },
-        created: function () {
+        created() {
             this.chartData = {
                 columns: ['日期', '成本', '利润', '占比', '其他'],
                 rows: [
@@ -128,6 +152,52 @@
                 metrics: ['成本', '利润'],
                 dimension: ['日期']
             };
+            this._getTotalData();
+        },
+        data () {
+            return {
+                currentTabIndex: 0,
+                activeName: 'first',
+                operaionName: '',
+                AllData: [],
+                searchForm: {
+                    value: '1',
+                    value1: '',
+                    value2: '',
+                    options: [{
+                        value: '1',
+                        label: '按日统计'
+                    }, {
+                        value: '2',
+                        label: '按月统计'
+                    }, {
+                        value: '3',
+                        label: '按年统计'
+                    }],
+                    pickerOptions0: {
+                        disabledDate(time) {
+                            return time.getTime() > Date.now();
+                        }
+                    }
+                }
+            };
+        },
+        methods: {
+            handleClick: function () {
+                console.log('click');
+            },
+            _getTotalData() {
+                actionsTotal().then(res => {
+                    if (res.data.error === 0) {
+                        this.AllData = res.data.data || [];
+                    }
+                });
+            },
+            searchList() {
+                actionTime(translateTime(this.searchForm.value1), translateTime(this.searchForm.value2), parseInt(this.searchForm.value)).then(res => {
+                    console.log(res);
+                });
+            }
         }
     };
 </script>
@@ -145,6 +215,14 @@
     }
 
     }
+        .el-form{
+            .el-form-item{
+                margin-bottom: 0;
+                .el-col-3{
+                    text-align: right;
+                }
+            }
+        }
         .statistical{
             margin:10px 0;
         }
