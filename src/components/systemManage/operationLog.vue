@@ -10,15 +10,27 @@
                 </el-form-item>
                 <el-form-item label="统计时间">
                     <el-col :span="10">
-                        <el-input type="text" placeholder="2017-09-04 01:43:13" v-model="formInline.time_begin"></el-input>
+                        <el-date-picker
+                            v-model="formInline.time_begin"
+                            type="date"
+                            placeholder="选择日期"
+                            :picker-options="pickerOptions0">
+                        </el-date-picker>
+                        <!--<el-input type="text" placeholder="2017-09-04 01:43:13" v-model="formInline.time_begin"></el-input>-->
                     </el-col >
                     <el-col :span="4">至</el-col>
                     <el-col :span="10">
-                        <el-input type="text" placeholder="2017-09-04 01:43:13" v-model="formInline.time_end"></el-input>
+                        <el-date-picker
+                            v-model="formInline.time_end"
+                            type="date"
+                            placeholder="选择日期"
+                            :picker-options="pickerOptions0">
+                        </el-date-picker>
+                        <!--<el-input type="text" placeholder="2017-09-04 01:43:13" v-model="formInline.time_end"></el-input>-->
                     </el-col>
                 </el-form-item>
                 <el-form-item>
-                    <el-button style="background:#999999;color:#fff" @click="_adminList">搜索</el-button>
+                    <el-button style="background:#999999;color:#fff" @click="_adminList" size="small">搜索</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -35,11 +47,11 @@
                 </thead>
                 <tbody>
                 <tr v-for="(item,index) in operationData">
-                    <td>{{item.ID}}</td>
-                    <td>{{item.admin}}</td>
-                    <td>{{item.time}}</td>
-                    <td>{{item.operation}}</td>
-                    <td>{{item.reason}}</td>
+                    <td>{{item.admin_id}}</td>
+                    <td>{{item.username}}</td>
+                    <td>{{item.created_at}}</td>
+                    <td>{{item.status}}</td>
+                    <td>用户错误操作需退款</td>
                 </tr>
                 </tbody>
             </table>
@@ -55,34 +67,35 @@
 </template>
 <script>
     import {getAdminList} from '../../api/setuser';
+    import {translateTime} from '../../assets/public';
     export default {
         created() {
             this._adminList();
         },
         data () {
             return {
-                formInline: {
+                pickerOptions0: {
+                    disabledDate(time) {
+                        return time.getTime() > Date.now();
+                    }
+                },
+                    formInline: {
                     user: '',
                     region: '',
                     time_begin: '',
                     time_end: ''
                 },
                 admin: '',
-                operationData: [
-                    {
-                        ID: '12345',
-                        admin: 'admin8',
-                        time: '2017-4-10 20:01:30',
-                        operation: '执行撤销用户(+86)134255858552',
-                        reason: '用户错误操作需退款'
-                    }
-                ]
+                operationData: []
             };
         },
         methods: {
             _adminList() {
-                getAdminList('admin', '2017-01-01 20:00:00', '2017-11-01 20:00:00').then(res => {
-                    console.log(res);
+                getAdminList(this.formInline.user, translateTime(this.formInline.time_begin), translateTime(this.formInline.time_end)).then(res => {
+                   if (res.data.error === 0) {
+                      this.operationData = res.data.data.data;
+                      console.log(this.operationData);
+                   }
                 });
             }
         }
@@ -105,7 +118,6 @@
     }
 
     .el-input__inner {
-        border-radius: 0;
         display:inline-block;
         width:inherit;
         height:30px;

@@ -50,7 +50,14 @@
                     <td>{{item.username}}</td>
                     <td>{{item.name}}</td>
                     <td>{{item.created_at}}</td>
-                    <td>正常</td>
+                    <td>
+                        <template v-if="item.status === 1">
+                          正常
+                        </template>
+                        <template v-else-if="item.status === 2">
+                            <b  class="isred">已冻结</b>
+                        </template>
+                    </td>
                     <td>客服</td>
                     <td><span @click="editMessage(index)" class="bluebutton">编辑</span>
                             <template v-if="item.status === 1">
@@ -59,7 +66,7 @@
                                 </span>
                             </template>
                             <template v-else="item.status === 2">
-                               <span>解冻</span>
+                               <span class="greenbutton">解冻</span>
                             </template>
                     </td>
                 </tr>
@@ -109,6 +116,7 @@
                             type: 'warning',
                             message: '冻结成功'
                         });
+                        this._userList();
                     }
                 });
             }
@@ -138,7 +146,6 @@
         table-layout: fixed;
         td{
             border-bottom:1px solid #eee;
-
         }
     }
     table tr td span{
@@ -156,6 +163,12 @@
     }
     table .redbutton{
         color:#ff4949;
+    }
+    table .greenbutton{
+        color:#4cce6d;
+    }
+    table .isred{
+        color:#ff4d51;
     }
 
     .el-form {
@@ -185,9 +198,6 @@
         padding: 5px 15px;
     }
 
-    .isred {
-        color: #4cce6d;
-    }
 
     input {
         width: 150px;

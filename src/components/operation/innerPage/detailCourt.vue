@@ -184,6 +184,9 @@
             th {
                 background: #6392ff;
             }
+            .el-steps{
+                text-align: center;
+            }
 
         }
         .order-number > span {
