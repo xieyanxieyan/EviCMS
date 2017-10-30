@@ -10,20 +10,36 @@
                     <el-tab-pane label="已拒绝" name="3"></el-tab-pane>
                 </el-tabs>
             </div>
-            <el-form class="refundform" action="#" v-model="topForm">
-                <div>用户名称：</span>
-                    <input type="text" v-model="topForm.username">
-                </div>
-                <div>
-                    <span>存证号：</span>
-                    <input type="text" v-model="topForm.cert_no">
-                </div>
-                <div>
-                    <span>申请时间：</span>
-                    <input type="time" v-model="topForm.begin_time">至
-                    <input type="time" v-model="topForm.end_time">
-                    <input type="button" value="搜索">
-                </div>
+            <el-form class="refundform" :inline="true" v-model="topForm" ref="topForm">
+                <el-form-item label="用户名称：">
+                    <el-input v-model="topForm.username" size="small"></el-input>
+                </el-form-item>
+                <el-form-item label="存证号：">
+                    <el-input v-model="topForm.cert_no" size="small"></el-input>
+                </el-form-item>
+                <el-form-item label="统计时间:">
+                        <el-date-picker
+                            size="small"
+                            v-model="topForm.value1"
+                            type="date"
+                            placeholder="选择开始时间"
+                            :picker-options="topForm.pickerOptions0">
+                        </el-date-picker>
+                </el-form-item>
+                <el-form-item label="至">
+                        <el-date-picker
+                            size="small"
+                            v-model="topForm.value2"
+                            type="date"
+                            placeholder="选择结束时间"
+                            :picker-options="topForm.pickerOptions0">
+                        </el-date-picker>
+                    </el-col>
+                </el-form-item>
+                <el-form-item>
+                    <el-button
+                        size="small" @click="_showRefundList">搜索</el-button>
+                </el-form-item>
             </el-form>
         </div>
         <div>
@@ -100,7 +116,7 @@
 </template>
 <script>
     import {getRefundList, refundHandle} from '../../api/operation';
-
+    import {translateTime} from '../../assets/public';
     export default {
         created() {
             this._showRefundList();
@@ -117,8 +133,8 @@
                 total: 0,
                 topForm: {
                     username: '',
-                    begin_time: '',
-                    end_time: '',
+                    value1: '',
+                    value2: '',
                     cert_no: ''
                 },
                 tableItem: []
@@ -137,7 +153,7 @@
             },
 //            处理退款
             _showRefundList() {
-                getRefundList(this.topForm.username, this.topForm.cert_no, this.topForm.begin_time, this.topForm.end_time).then(res => {
+                getRefundList(this.topForm.username, this.topForm.cert_no, translateTime(this.topForm.value1), translateTime(this.topForm.value2)).then(res => {
                     if (res.data.error === 0) {
                         this.tableItem = res.data.data.data;
                         this.total = res.data.data.total;
@@ -159,7 +175,7 @@
         }
     };
 </script>
-<style lang="scss">
+<style lang="scss" type="text/scss">
     @import '../../style/common.scss';
 
     #refund {
@@ -173,12 +189,14 @@
     }
     .refundtop {
         padding: 15px 0;
-
     span {
         border-left: 2px solid #324157;
         padding-left: 5px;
     }
 
+    }
+    .el-tabs__header{
+        margin: 0 0 10px;
     }
     td span {
         cursor: pointer;
@@ -201,32 +219,20 @@
 
     .refundform {
         float: right;
-        height: 40px;
-        line-height: 40px;
+        margin-top:-48px;
         display: inline-block;
-
-    div {
-        display: inline-block;
+        .el-form-item__content{
+            width:115px;
+        }
+    .el-date-editor.el-input{
+        width:120px;
     }
-
-    input[type=text] {
-        display: inline-block;
-        width: 150px;
+    .el-form-item{
+        margin-bottom:0;
+        &:last-child{
+            width:45px;
+        }
     }
-
-    input[type=button] {
-        color: #fff;
-        padding: 4px 7px;
-        display: inline-block;
-        background: #999999;
-
-    }
-
-    input {
-        border: 1px solid #eee;
-        padding: 3px;
-    }
-
     }
     }
 </style>

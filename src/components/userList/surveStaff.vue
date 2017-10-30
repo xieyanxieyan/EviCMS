@@ -15,7 +15,7 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button style="background:#999999;color:#fff">搜索</el-button>
-                    <div class="line"></div>
+                   <span>|</span>
                     <el-button type="primary" @click="isVisible=true">添加</el-button>
                 </el-form-item>
             </el-form>
@@ -43,7 +43,7 @@
                     <td>{{item.user.status}}</td>
                     <td><span style="margin-right:20px;border:1px solid #437DFF;color:#437DFF;"
                               @click="edit(index)">编辑</span>
-                        <span style="border:1px solid #EBADA6;color:#EBADA6;" @click="deletestaff">删除</span>
+                        <span style="border:1px solid;color: #ff4949;" @click="deletestaff">删除</span>
                     </td>
                 </tr>
                 </tbody>
@@ -132,7 +132,7 @@
                     <el-input v-model="formEdit.expireTime"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="updateSubmit()">提交</el-button>|
+                    <el-button type="primary" @click="updateSubmit()">提交</el-button>
                     <el-button @click="iseditVisible = false">取消</el-button>
                 </el-form-item>
             </el-form>

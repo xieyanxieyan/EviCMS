@@ -42,21 +42,10 @@
             </table>
         </div>
         <div class="statistical">
-            <!--<span>统计方式-->
-            <!--<select name="" id="">-->
-                <!--<option value="">按日统计</option>-->
-                <!--<option value="">按月统计</option>-->
-                <!--<option value="">按年统计</option>-->
-            <!--</select>-->
-            <!--</span>-->
-            <!--<span>统计时间-->
-            <!--<input type="time">至-->
-                <!--<input type="time">-->
-                <!--<input type="button" value="搜索">-->
-            <!--</span>-->
+            <template>
             <el-form :inline="true" :model="searchForm" ref="searchForm">
                 <el-form-item label="统计方式：">
-                    <el-select v-model="searchForm.value" placeholder="请选择">
+                    <el-select v-model="searchForm.value" size="small" placeholder="请选择">
                         <el-option
                             v-for="item in searchForm.options"
                             :key="item.value"
@@ -68,6 +57,7 @@
                 <el-form-item label="统计时间:">
                     <el-col :span=10>
                         <el-date-picker
+                            size="small"
                             v-model="searchForm.value1"
                             type="date"
                             placeholder="选择开始时间"
@@ -79,15 +69,17 @@
                         <el-date-picker
                             v-model="searchForm.value2"
                             type="date"
+                            size="small"
                             placeholder="选择结束时间"
                             :picker-options="searchForm.pickerOptions0">
                         </el-date-picker>
                     </el-col>
                 </el-form-item>
                 <el-form-item>
-                    <el-button @click="searchList">搜索</el-button>
+                    <el-button @click="searchList" size="small">搜索</el-button>
                 </el-form-item>
             </el-form>
+            </template>
         </div>
         <div>
             <table cellpadding="0" cellspacing="0" border="0">
@@ -108,10 +100,10 @@
                 <th>出庭</th>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>2017-05-14</td>
-                    <td>{{AllData.loginCount}}</td>
-                    <td>{{AllData.webPrintCount}}</td>
+                <tr v-for="(item, index) in searchData">
+                    <td>{{item.date}}</td>
+                    <td>{{item.loginCount}}</td>
+                    <td>{{item.webPrintCount}}</td>
                     <td>99</td>
                     <td>99</td>
                     <td>99</td>
@@ -120,9 +112,9 @@
                     <td>99</td>
                     <td>99</td>
                     <td>99</td>
-                    <td>{{AllData.certifyCount}}</td>
+                    <td>{{item.certifyCount}}</td>
                     <td>99</td>
-                    <td>{{AllData.courtCount}}</td>
+                    <td>{{item.courtCount}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -153,6 +145,7 @@
                 dimension: ['日期']
             };
             this._getTotalData();
+            this.searchList();
         },
         data () {
             return {
@@ -160,6 +153,7 @@
                 activeName: 'first',
                 operaionName: '',
                 AllData: [],
+                searchData: [],
                 searchForm: {
                     value: '1',
                     value1: '',
@@ -195,7 +189,10 @@
             },
             searchList() {
                 actionTime(translateTime(this.searchForm.value1), translateTime(this.searchForm.value2), parseInt(this.searchForm.value)).then(res => {
-                    console.log(res);
+                   if (res.data.error === 0) {
+                       this.searchData = res.data.data;
+                       console.log(this.searchData);
+                   }
                 });
             }
         }
@@ -220,6 +217,9 @@
                 margin-bottom: 0;
                 .el-col-3{
                     text-align: right;
+                }
+                .el-select{
+                    width:100px;
                 }
             }
         }

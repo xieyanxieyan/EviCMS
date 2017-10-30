@@ -26,22 +26,9 @@
             </span>
         </div>
         <div class="statistical">
-            <!--<span>统计方式：-->
-            <!--<input type="text">-->
-               <!--<select name="" id="">-->
-                   <!--<option value="按日统计">按日统计</option>-->
-                   <!--<option value="按月统计">按月统计</option>-->
-                   <!--<option value="按年统计">按年统计</option>-->
-               <!--</select>-->
-            <!--</span>-->
-            <!--<span>-->
-                <!--统计时间：-->
-                <!--<input type="time">至-->
-                <!--<input type="time">-->
-            <!--</span>-->
             <el-form :inline="true" :model="searchForm" ref="searchForm">
                 <el-form-item label="统计方式：">
-                    <el-select v-model="searchForm.value" placeholder="请选择">
+                    <el-select v-model="searchForm.value" placeholder="请选择" size="small">
                         <el-option
                             v-for="item in searchForm.options"
                             :key="item.value"
@@ -53,6 +40,7 @@
                 <el-form-item label="统计时间:">
                     <el-col :span=10>
                         <el-date-picker
+                            size="small"
                             v-model="searchForm.value1"
                             type="date"
                             placeholder="选择开始时间"
@@ -62,6 +50,7 @@
                     <el-col :span=3>至</el-col>
                     <el-col :span=10>
                         <el-date-picker
+                            size="small"
                             v-model="searchForm.value2"
                             type="date"
                             placeholder="选择结束时间"
@@ -70,7 +59,7 @@
                     </el-col>
                 </el-form-item>
                 <el-form-item>
-                    <el-button @click="searchList">搜索</el-button>
+                    <el-button @click="searchList" size="small">搜索</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -86,7 +75,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="(item,indx) in statisticalData">
-                    <td>{{item}}</td>
+                    <td>{{item.date}}</td>
                     <td>{{item.userCount}}</td>
                     <td>{{item.userLoginCount}}</td>
                     <td>{{item.userTopUpCount}}</td>
@@ -106,19 +95,24 @@
     export default {
         created() {
             this._userTotalDate();
-            this.chartData = {
-                columns: ['日期', '新增注册用户数', '新增充值用户数', '登录用户数'],
-                rows: [
-                    {'新增注册用户数': 1523, '日期': '1月1日', '新增充值用户数': 1523, '登录用户数': 0.12}
-                ]
-            };
-            this.chartSettings = {
-                metrics: ['成本', '利润'],
-                dimension: ['日期']
-            };
+            this.searchList();
+           this.chartData;
+           this.chartSettings;
         },
         data () {
             return {
+                chartData: {
+                columns: ['时间', '新增注册用户数', '新增充值用户数', '登录用户数'],
+                rows: [
+//                    {'新时间增注册用户数': 1523, '时间': '1月1日', '新增充值用户数': 1523, '登录用户数': 0.12},
+//                    {'新增注册用户数': 1523, '时间': '1月1日', '新增充值用户数': 1523, '登录用户数': 0.12},
+//                    {'新增注册用户数': 1523, '时间': '1月1日', '新增充值用户数': 1523, '登录用户数': 0.12}
+                ]
+            },
+            chartSettings: {
+                metrics: ['新增注册用户数', '新增充值用户数', '登录用户数'],
+                dimension: ['']
+            },
                 searchForm: {
                     value: '1',
                     value1: '',
@@ -150,6 +144,7 @@
             };
         },
         methods: {
+            // 获取用户数据
             _userTotalDate() {
                 userTotal().then(res => {
                     if (res.data.error === 0) {
@@ -157,12 +152,20 @@
                     }
                 });
             },
+            // 转换表格数组
+            ArrayList(list, array) {
+//                array = [];
+                for (let i = 0; i < list.length; i++) {
+                   array.push({'新增注册用户数': list[i].userCount, '时间': list[i].date, '新增充值用户数': list[i].userLoginCount, '登录用户数': list[i].userTopUpCount});
+                }
+            },
+            // 按时间查询数据
             searchList() {
-                console.log(this.searchForm.value1, this.searchForm.value2);
+                this.chartData.rows = [];
                 userTime(translateTime(this.searchForm.value1), translateTime(this.searchForm.value2), parseInt(this.searchForm.value)).then(res => {
                    if (res.data.error === 0) {
                    this.statisticalData = res.data.data;
-                   console.log(this.statisticalData);
+                  this.ArrayList(this.statisticalData, this.chartData.rows);
                    }
                 });
             }
@@ -226,6 +229,9 @@
         }
         .el-form-item{
             margin-bottom:0;
+            .el-select{
+                width:100px;
+            }
             .el-col-3{
                 text-align:right;
             }

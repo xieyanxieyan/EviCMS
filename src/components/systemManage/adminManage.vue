@@ -172,7 +172,6 @@
     }
 
     .el-input__inner {
-        border-radius: 0;
         display: inline-block;
         width: inherit;
         height: 30px;
@@ -183,7 +182,6 @@
     }
 
     .el-button {
-        border-radius: 0;
         padding: 5px 15px;
     }
 
@@ -192,7 +190,6 @@
     }
 
     input {
-        border-radius: 0;
         width: 150px;
     }
 
