@@ -6,15 +6,14 @@
         <div class="filter">
             <el-form :inline="true" :model="formInline">
                 <el-form-item label="管理员">
-                    <el-input v-model="formInline.admin"></el-input>
+                    <el-input v-model="formInline.user"></el-input>
                 </el-form-item>
                 <el-form-item label="统计时间">
                     <el-col :span="10">
                         <el-date-picker
                             v-model="formInline.time_begin"
-                            type="date"
-                            placeholder="选择日期"
-                            :picker-options="pickerOptions0">
+                            type="datetime"
+                            placeholder="选择开始日期时间">
                         </el-date-picker>
                         <!--<el-input type="text" placeholder="2017-09-04 01:43:13" v-model="formInline.time_begin"></el-input>-->
                     </el-col >
@@ -22,9 +21,8 @@
                     <el-col :span="10">
                         <el-date-picker
                             v-model="formInline.time_end"
-                            type="date"
-                            placeholder="选择日期"
-                            :picker-options="pickerOptions0">
+                            type="datetime"
+                            placeholder="选择结束日期时间">
                         </el-date-picker>
                         <!--<el-input type="text" placeholder="2017-09-04 01:43:13" v-model="formInline.time_end"></el-input>-->
                     </el-col>
@@ -66,8 +64,8 @@
     </div>
 </template>
 <script>
-    import {getAdminList} from '../../api/setuser';
-    import {translateTime} from '../../assets/public';
+    import {getAdminLog} from '../../api/setuser';
+    import {formatDate} from '../../assets/public';
     export default {
         created() {
             this._adminList();
@@ -85,15 +83,14 @@
                     time_begin: '',
                     time_end: ''
                 },
-                admin: '',
                 operationData: []
             };
         },
         methods: {
             _adminList() {
-                getAdminList(this.formInline.user, translateTime(this.formInline.time_begin), translateTime(this.formInline.time_end)).then(res => {
+                getAdminLog(this.formInline.user, formatDate(this.formInline.time_begin), formatDate(this.formInline.time_end)).then(res => {
                    if (res.data.error === 0) {
-                      this.operationData = res.data.data.data;
+                      this.operationData = res.data.data;
                       console.log(this.operationData);
                    }
                 });

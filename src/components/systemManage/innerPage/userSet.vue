@@ -16,8 +16,10 @@
                     <tr v-for="(item,index) in userMessage">
                         <td style="border-right:0">{{item.name}}</td>
                         <td style="border-left:0">
-                            <span><router-link to="/adminPermission" style="color:#739dff">权限设置</router-link></span>
-                            <span @click="duerdel">删除</span>
+                            <el-button size="mini">
+                                <router-link to="/adminPermission" style="color:#739dff">权限设置</router-link>
+                            </el-button>
+                            <el-button size="mini" @click="duerdel">删除</el-button>
                         </td>
                     </tr>
                     </tbody>
@@ -173,12 +175,12 @@
         text-align: center;
     }
 
-    td span {
-        border: 1px solid;
-        color: #99B4FF;
-        margin: 0 10px;
-        cursor: pointer;
-    }
+    /*td span {*/
+    /*border: 1px solid;*/
+    /*color: #99B4FF;*/
+    /*margin: 0 10px;*/
+    /*cursor: pointer;*/
+    /*}*/
 
     td {
         border: 1px solid #eee;
