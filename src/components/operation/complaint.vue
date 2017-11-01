@@ -70,8 +70,9 @@
                        imgs = res.data.data.imgs.split('[')[1].split(']')[0].split(',');
                        console.log(imgs);
                         for (let img in imgs) {
-                            console.log(imgs[img].spli);
+                          this.imgs.push(imgs[img].split('\\').join(''));
                         }
+                        console.log(this.imgs);
                     }
                 });
             },
