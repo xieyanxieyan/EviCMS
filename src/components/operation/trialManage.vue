@@ -16,6 +16,7 @@
                         <el-date-picker
                             v-model="timeFrom.value1"
                             type="date"
+                            size="small"
                             placeholder="选择开始时间"
                             :picker-options="pickerOptions0">
                         </el-date-picker>
@@ -27,13 +28,14 @@
                         <el-date-picker
                             v-model="timeFrom.value2"
                             type="date"
+                            size="small"
                             placeholder="选择结束时间"
                             :picker-options="pickerOptions0">
                         </el-date-picker>
                     </el-col>
                     <el-col :span=2>&nbsp;</el-col>
                     <el-col :span=2>
-                        <el-button type="primary" @click="searchList">搜索</el-button>
+                        <el-button type="primary" size="small"@click="searchList">搜索</el-button>
                     </el-col>
                 </el-form-item>
             </el-form>
@@ -139,14 +141,14 @@
 </script>
 <style lang="scss">
     @import '../../style/common.scss';
+    @import '../../scss/mixin.scss';
     #TrialManage {
         padding: 0 15px;
     .TrialManagetop {
         padding: 15px 0;
 
     span {
-        border-left: 2px solid #324157;
-        padding-left: 5px;
+      @include span;
     }
 
     }

@@ -1,7 +1,7 @@
 <template>
     <div class="survestaff">
         <div class="top">
-            <span style="border-left:2px solid #324157;padding-left:10px;">公测员管理</span>
+            <span style="border-left:2px solid #324157;padding-left:15px;">公测员管理</span>
             <el-form :inline="true" :model="formInline" class="demo-form-inline">
                 <el-form-item label="手机号或名称:">
                     <el-input v-model="formInline.user" placeholder="审批人" size="small"></el-input>

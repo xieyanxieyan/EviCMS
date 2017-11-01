@@ -182,21 +182,6 @@
         width: 100%;
     }
 
-    /*tr td, tr th {*/
-        /*width: 19%;*/
-        /*height: 35px;*/
-        /*line-height: 35px;*/
-        /*font-size: 14px;*/
-    /*}*/
-
-    /*tr td {*/
-        /*text-align: center;*/
-    /*}*/
-
-    /*th {*/
-        /*color: #fff;*/
-        /*background: #556386;*/
-    /*}*/
     .el-button {
         margin: 0;
     }

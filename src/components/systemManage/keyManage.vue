@@ -32,13 +32,13 @@
     };
 </script>
 <style lang="scss" type="text/scss">
+    @import '../../scss/mixin.scss';
 #keyManage{
     padding:0 20px;
     .keyManageTop{
       padding:15px 0;
         span{
-            border-left: 2px solid #324157;
-            padding-left: 5px;
+           @include span;
         }
     }
 .tabselect{

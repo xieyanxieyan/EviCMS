@@ -12,41 +12,51 @@
                     <el-tab-pane label="已完成" name="six"></el-tab-pane>
                 </el-tabs>
             </div>
-            <form action="#" :model="formIn">
-                <div>用户名称：</span>
-                    <input type="text" v-model="formIn.username">
-                </div>
-                <div>
-                    <span>存证号：</span>
-                    <input type="text" :model="formIn.cert_num">
-                </div>
-                <div>
-                    <span>申请时间：</span>
-                    <input type="time" :model="formIn.time_begin">至
-                    <input type="time" :model="formIn.time_end">
-                    <input type="button" value="搜索">
-                </div>
-            </form>
-            <!--<el-form :inline="true" :model="formInline" >-->
-            <!--<el-form-item label="用户名称:">-->
-            <!--<el-input v-model="formInline.userName"></el-input>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item label="存证号：">-->
-            <!--<el-input v-model="formInline.Memory"></el-input>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item label="申请时间：">-->
-            <!--<el-col :span="8">-->
-            <!--<el-time-picker type="fixed-time" v-model="formInline.data1" style="width:100%"></el-time-picker>-->
-            <!--</el-col>-->
-            <!--<el-col :span="1">至</el-col>-->
-            <!--<el-col :span="8">-->
-            <!--<el-time-picker type="fixed-time" v-model="formInline.data2" style="width:100%"></el-time-picker>-->
-            <!--</el-col>-->
-            <!--<el-col :span="6">-->
-            <!--<el-button>搜索</el-button>-->
-            <!--</el-col>-->
-            <!--</el-form-item>-->
-            <!--</el-form>-->
+            <!--<form action="#" :model="formIn">-->
+            <!--<div>用户名称：</span>-->
+            <!--<input type="text" v-model="formIn.username">-->
+            <!--</div>-->
+            <!--<div>-->
+            <!--<span>存证号：</span>-->
+            <!--<input type="text" :model="formIn.cert_num">-->
+            <!--</div>-->
+            <!--<div>-->
+            <!--<span>申请时间：</span>-->
+            <!--<input type="time" :model="formIn.time_begin">至-->
+            <!--<input type="time" :model="formIn.time_end">-->
+            <!--<input type="button" value="搜索">-->
+            <!--</div>-->
+            <!--</form>-->
+            <el-form :inline="true" :model="formIn">
+                <el-form-item label="用户名称:">
+                    <el-input v-model="formIn.userName" size="small"></el-input>
+                </el-form-item>
+                <el-form-item label="存证号：">
+                    <el-input v-model="formIn.Memory" size="small"></el-input>
+                </el-form-item>
+                <el-form-item label="时间：">
+                    <el-col :span="10">
+                        <el-date-picker
+                            v-model="formIn.data1"
+                            type="datetime"
+                            size="small"
+                            placeholder="选择开始日期时间">
+                        </el-date-picker>
+                    </el-col>
+                    <el-col :span="3">至</el-col>
+                    <el-col :span="10">
+                        <el-date-picker
+                            v-model="formIn.data2"
+                            type="datetime"
+                            size="small"
+                            placeholder="选择结束日期时间">
+                        </el-date-picker>
+                    </el-col>
+                </el-form-item>
+                <el-form-item>
+                    <el-button size="small">搜索</el-button>
+                </el-form-item>
+            </el-form>
         </div>
         <div>
             <table cellpadding="0" cellspacing="0" border="0">
@@ -77,7 +87,8 @@
                             出证失败
                         </template>
                     </td>
-                    <td><a href="javascript:void(0);" @click="toHisDetail(index)" style="color:#20a0ff;padding:0 5px;border:1px solid">出证详情</a></td>
+                    <td><a href="javascript:void(0);" @click="toHisDetail(index)"
+                           style="color:#20a0ff;padding:0 5px;border:1px solid">出证详情</a></td>
                 </tr>
                 </tbody>
             </table>
@@ -85,7 +96,7 @@
         <div class="pagination">
             <el-pagination
                 layout="prev, pager, next,total"
-                :total= "total"
+                :total="total"
                 :page-size="13"
                 :current-page.sync="currentPage"
                 @current-change="handleCurrentChange()"
@@ -95,11 +106,12 @@
 </template>
 <script>
     import {certifyList} from '../../api/operation';
+
     export default {
         created() {
             this.certList();
         },
-        data () {
+        data() {
             return {
                 currentTabIndex: 0,
                 activeName: 'first',
@@ -111,8 +123,7 @@
                     time_begin: '',
                     time_end: ''
                 },
-                hisData: [
-                ]
+                hisData: []
             };
         },
         methods: {
@@ -121,8 +132,8 @@
             },
             certList() {
                 certifyList(this.formIn.username, this.formIn.cert_num, this.formIn.time_begin, this.formIn.time_end).then(res => {
-                   this.hisData = res.data.data.data;
-                   this.total = res.data.data.total;
+                    this.hisData = res.data.data.data;
+                    this.total = res.data.data.total;
                 });
             },
             handleCurrentChange() {
@@ -134,74 +145,70 @@
                     params: {
                         detailId: this.hisData[index].apply_id
                     }
-            });
+                });
             }
         }
     };
 </script>
 <style lang="scss" type="text/scss">
     @import '../../style/common.scss';
+    @import '../../scss/mixin.scss';
     #HisManage {
         padding: 0 15px;
-        th,td{width:16%;}
-    .histop {
-        padding: 15px 0;
-        padding-bottom:0;
-
-    span {
-        border-left: 2px solid #324157;
-        padding-left: 5px;
-    }
-
-    }
-
-    .tab-wrapper {
-        display: inline-block;
-        vertical-align: -28px;
-        width: 350px;
-        margin-left: 20px;
-        .el-tabs__item{
-            padding:0 5px;
+        th, td {
+            width: 16%;
+        }
+        .histop {
+            padding: 15px 0;
+            padding-bottom: 0;
+            span{
+                @include span;
+            }
         }
 
-    }
+        .tab-wrapper {
+            display: inline-block;
+            vertical-align: -28px;
+            width: 350px;
+            /*margin-left: 20px;*/
+            .el-tabs__item {
+                padding: 0 5px;
+                font-size:13px;
+            }
 
-    .el-tabs__header {
-        border-bottom: 0;
-    }
+        }
 
-    form {
-        float:right;
-        height:40px;
-        line-height:40px;
-        display: inline-block;
+        .el-tabs__header {
+            border-bottom: 0;
+        }
 
-    div {
-        display: inline-block;
-    }
-
-    input[type=text] {
-        display: inline-block;
-        width: 100px;
-    }
-    input[type=button]{
-        color:#fff;
-        padding:4px 7px;
-        display:inline-block;
-        background: #999999;
-
-    }
-    input {
-        border: 1px solid #eee;
-        padding: 3px;
-    }
-
-    }
-        .pagination{
-            margin:15px 0;
+       .el-form {
+            float: right;
+            display: inline-block;
+           .el-input__inner{
+               width:120px;
+           }
+           .el-date-editor--datetime{
+               width:120px;
+           }
+           .el-form-item__label{
+               padding-right:5px;
+               font-size:13px;
+           }
+            .el-col-3{
+                text-align:right;
+                padding-right:3px;
+            }
+           .el-form-item{
+               margin:0;
+           }
+           margin-top:-52px;
+        }
+        .pagination {
+            margin: 15px 0;
             text-align: center;
-            .el-pagination{
-                display:inline-block;
+            .el-pagination {
+                display: inline-block;
             }
         }
     }

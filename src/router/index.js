@@ -23,6 +23,7 @@ import addManage from '@/components/systemManage/innerPage/addManage';
 import detailCourt from '@/components/operation/innerPage/detailCourt';
 import userSet from '@/components/systemManage/innerPage/userSet';
 import adminPermission from '@/components/systemManage/innerPage/adminPermission';
+import rightAllotment from '@/components/otherManage/rightsAllotment';
 import test from '@/components/test';
 Vue.use(VueRouter);
 const routes = [
@@ -195,6 +196,13 @@ const routes = [
             {
                 path: '/test',
                 component: test,
+                meta: {
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/rightAllotment',
+                component: rightAllotment,
                 meta: {
                     requireAuth: true
                 }

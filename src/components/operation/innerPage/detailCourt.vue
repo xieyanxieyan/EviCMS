@@ -30,12 +30,12 @@
                 </el-steps>
             </div>
         </div>
-        <div  class="communication">
+        <div class="communication">
             <div class="communicationTitle">
                 <i></i>
                 <span>沟通记录</span>
                 <span style="float:right">
-                    <button>+</button>
+                    <button @click="addVisible=true">+</button>
                 </span>
             </div>
             <div style="padding:20px 0;">
@@ -49,7 +49,7 @@
                     <tbody>
                     <tr v-for="(item,index) in communicationRecord">
                         <td>{{item.communicationTime}}</td>
-                        <td>{{item.content}}</td>
+                        <td @click="opendetailLog"><a href="javascript:void(0);">{{item.content}}</a></td>
                     </tr>
                     </tbody>
                 </table>
@@ -98,18 +98,53 @@
                 </div>
             </div>
         </div>
+        <!--沟通内容弹窗-->
+        <el-dialog
+            title="沟通内容"
+            :visible.sync="addVisible"
+            width="30%"
+        >
+            <el-input
+                type="textarea"
+                v-model="addcontent"
+                auto-complete="off"
+            ></el-input>
+            <el-button type="primary" @click="addVisible = false">确 定</el-button>
+            <el-button @click="addVisible = false">取 消</el-button>
+            </span>
+        </el-dialog>
+        <!--沟通详情弹窗-->
+        <el-dialog
+            title="沟通详情"
+            :visible.sync="detailVisible"
+            width="30%"
+        >
+            <el-input
+                type="textarea"
+                v-model="detailcontent"
+                auto-complete="off"
+                :rows= 6
+                resize="none"
+            ></el-input>
+            <el-button type="primary" @click="detailVisible = false">关闭</el-button>
+        </el-dialog>
     </div>
 </template>
 <script>
     import {courtDetail} from '../../../api/operation';
+
     export default {
         created() {
             this._detailMessage();
         },
-        data () {
+        data() {
             return {
                 labelPosition: 'left',
                 userId: '',
+                addVisible: false,
+                detailVisible: false,
+                addcontent: '',
+                detailcontent: '',
                 formInline: {
                     username: '',
                     datatime: '',
@@ -142,15 +177,18 @@
             };
         },
         methods: {
-            onSubmit () {
+            onSubmit() {
                 console.log('submit!');
             },
             _detailMessage() {
                 courtDetail(this.$route.params.courtId).then(res => {
-                  if (res.data.error === 0) {
-                      this.userId = res.data.data.user_id;
-                  }
+                    if (res.data.error === 0) {
+                        this.userId = res.data.data.user_id;
+                    }
                 });
+            },
+            opendetailLog() {
+                this.detailVisible = true;
             }
         }
     };
@@ -166,8 +204,7 @@
             padding: 15px 0;
 
             span {
-                border-left: 2px solid #324157;
-                padding-left: 5px;
+                @include span;
             }
         }
         .message {
@@ -184,7 +221,7 @@
             th {
                 background: #6392ff;
             }
-            .el-steps{
+            .el-steps {
                 text-align: center;
             }
 
@@ -220,6 +257,15 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
+                &:last-child{
+                  a{
+                      color:#333;
+                      padding:2px 0;
+                      &:hover{
+                          text-decoration: underline;
+                      }
+                  }
+                }
             }
 
             .el-input {
@@ -236,26 +282,26 @@
                 border-bottom: 1px solid #eee;
             }
         }
-        .communication{
+        .communication {
             background: #fff;
-            margin-top:15px;
-            position:relative;
-            padding:0 15px;
-            & i{
+            margin-top: 15px;
+            position: relative;
+            padding: 0 15px;
+            & i {
                 @include dotted(#4780FF);
                 top: 15px;
                 left: 15px;
             }
-            span{
-                margin-left:20px;
+            span {
+                margin-left: 20px;
             }
-            .communicationTitle{
-                border-bottom:1px solid #eee;
-                padding:15px 0;
-                button{
+            .communicationTitle {
+                border-bottom: 1px solid #eee;
+                padding: 15px 0;
+                button {
                     background: #4780FF;
-                    color:#fff;
-                    border:0;
+                    color: #fff;
+                    border: 0;
                 }
             }
         }
@@ -267,6 +313,9 @@
             width: 700px;
             margin: 0 auto;
             justify-content: space-between;
+        }
+        .el-dialog .el-textarea{
+            margin-bottom:15px;
         }
     }
 </style>

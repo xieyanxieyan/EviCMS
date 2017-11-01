@@ -16,11 +16,15 @@
                         <b>内容:</b>
                     </el-form-item>
                     <el-form-item>
+                        <el-row>
                         <el-col :span="12">
-                        <el-input type="textarea" size="small"  resize="none" :readonly = "isread" :value="content">
-
+                            <el-input type="textarea" size="small" resize="none" :readonly="isread" :value="content">
                             </el-input>
                         </el-col>
+                            <el-col :span="12" v-for="(item,index) in imgs">
+                                <img :src="item"  alt="">
+                            </el-col>
+                        </el-row>
                     </el-form-item>
                     <el-form-item>
                         <b>回复:</b>
@@ -40,6 +44,7 @@
 </template>
 <script>
     import {feedbackdetail, feedbackreplay} from '../../api/operation';
+
     export default {
         created() {
             this.feedbackDetail();
@@ -49,17 +54,25 @@
                 isread: true,
                 detail: [],
                 content: '',
-                replay: ''
+                replay: '',
+                imgs: []
             };
         },
         methods: {
+//            投诉详情内容
             feedbackDetail() {
 //                console.log(this.$route.params.report_id);
                 feedbackdetail(this.$route.params.report_id).then(res => {
-                        if (res.data.error === 0) {
-                            this.detail = res.data.data || [];
-                          this.content = res.data.data.content;
+                    if (res.data.error === 0) {
+                        let imgs;
+                        this.detail = res.data.data || [];
+                        this.content = res.data.data.content;
+                       imgs = res.data.data.imgs.split('[')[1].split(']')[0].split(',');
+                       console.log(imgs);
+                        for (let img in imgs) {
+                            console.log(imgs[img].spli);
                         }
+                    }
                 });
             },
             replaySubmit() {
@@ -70,7 +83,7 @@
         }
     };
 </script>
-<style lang="scss" type="text/scss" scoped>
+<style lang="scss" type="text/scss">
     #complaint {
         padding: 15px 20px;
         position: relative;
@@ -78,7 +91,7 @@
             padding-bottom: 15px;
         }
         .suggestion {
-           min-height:calc( 100vh - 120px);
+            min-height: calc(100vh - 120px);
             background: #fff;
             padding: 0px 30px;
             .complaintTop {
@@ -86,7 +99,7 @@
                 font-size: 16px;
                 border-bottom: 1px solid #eee;
             }
-            .complaintTop{
+            .complaintTop {
                 .el-button {
                     position: absolute;
                     right: 50px;
@@ -100,21 +113,21 @@
             .el-textarea__inner {
                 resize: none
             }
-            .el-form-item{
+            .el-form-item {
                 /*margin-bottom:0;*/
-            .el-button{
-                border-radius:0;
-                text-align:center;
-                width:100px;
-                padding:10px 0;
+                .el-button {
+                    border-radius: 0;
+                    text-align: center;
+                    width: 100px;
+                    padding: 10px 0;
+                }
             }
+            textarea {
+                outline: none;
+                border: 1px solid #bbb;
             }
-            textarea{
-                outline:none;
-                border:1px solid #bbb;
-            }
-            .el-form{
-                padding-bottom:50px;
+            .el-form {
+                padding-bottom: 50px;
             }
         }
     }

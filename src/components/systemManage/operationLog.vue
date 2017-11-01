@@ -100,6 +100,7 @@
 </script>
 <style lang="scss" type="text/scss">
 @import '../../style/common.scss';
+@import '../../scss/mixin.scss';
     #operationLog{
         padding:0 15px;
 
@@ -125,8 +126,7 @@
     display: inline-block;
             padding:15px 0;
             span {
-                border-left: 2px solid #324157;
-                padding-left: 5px;
+               @include span;
             }
         }
         .filter{

@@ -181,8 +181,7 @@
         .userDataTop {
             padding: 15px 0;
             span {
-                border-left: 2px solid #324157;
-                padding-left: 5px;
+               @include span;
             }
         }
         .paginnation{
