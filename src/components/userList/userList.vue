@@ -4,15 +4,6 @@
             <div class="top">
                 <span class="userList"><span>用户列表</span></span>
                 <div class="top-area">
-                    <!--<form v-model="form">-->
-                    <!--用户名称: <el-col :span="6"><el-input type="text" v-model="form.phone"></el-input></el-col>-->
-                    <!--注册时间： <input type="text" v-model="form.begin_time">至 <input type="text" v-model="form.end_time">-->
-                    <!--<el-button type="primary" @click="serachList">搜索</el-button>-->
-                    <!--<span class="grayline">|</span>-->
-                    <!--<el-button>-->
-                    <!--<router-link to="/addUser"> 添加用户</router-link>-->
-                    <!--</el-button>-->
-                    <!--</form>-->
                     <el-form :inline="true" :model="form">
                         <el-form-item label="用户名称：">
                             <el-input v-model="form.phone"   size="small"></el-input>

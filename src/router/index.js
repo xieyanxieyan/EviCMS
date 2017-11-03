@@ -25,6 +25,7 @@ import userSet from '@/components/systemManage/innerPage/userSet';
 import adminPermission from '@/components/systemManage/innerPage/adminPermission';
 import rightAllotment from '@/components/otherManage/rightsAllotment';
 import test from '@/components/test';
+import menulist from '@/components/otherManage/menulist';
 Vue.use(VueRouter);
 const routes = [
     {
@@ -206,6 +207,13 @@ const routes = [
                 meta: {
                     requireAuth: true
                 }
+            },
+            {
+              path: '/menulist',
+              component: menulist,
+              meta: {
+                  requireAuth: true
+              }
             }
         ]
     },

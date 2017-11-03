@@ -73,6 +73,9 @@
                 <el-menu-item index="5-1">
                     <router-link to="/rightAllotment">权限分配</router-link>
                 </el-menu-item>
+                <el-menu-item index="5-2">
+                    <router-link to="/menulist">菜单管理</router-link>
+                </el-menu-item>
             </el-submenu>
         </el-menu>
 
