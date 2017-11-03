@@ -17,12 +17,19 @@
                     </el-form-item>
                     <el-form-item>
                         <el-row>
-                        <el-col :span="12">
-                            <el-input type="textarea" size="small" resize="none" :readonly="isread" :value="content">
-                            </el-input>
-                        </el-col>
-                            <el-col :span="12" v-for="(item,index) in imgs">
-                                <img :src="item"  alt="">
+                            <el-col :span="12">
+                                <el-input type="textarea" size="small" resize="none" :readonly="isread"
+                                          :value="content">
+                                </el-input>
+                            </el-col>
+                            <!--<img src=""http://user-imgs.oss-cn-beijing.aliyuncs.com/1506758070722.png" alt="">-->
+                            <el-col :span="12">
+                                <el-row>
+                                    <el-col :span="6" v-for="(item,index) in imgs">
+                                        <img :src="item" alt=""
+                                             @click="showpicture(index)">
+                                    </el-col>
+                                </el-row>
                             </el-col>
                         </el-row>
                     </el-form-item>
@@ -40,6 +47,14 @@
                 </el-form>
             </div>
         </div>
+        <!--显示大图弹窗-->
+        <el-dialog
+            :visible.sync="picVisible"
+            width="100%">
+            <div>
+                <img :src="imgs[poc]" alt="">
+            </div>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -55,7 +70,9 @@
                 detail: [],
                 content: '',
                 replay: '',
-                imgs: []
+                imgs: [],
+                poc: 0,
+                picVisible: false
             };
         },
         methods: {
@@ -67,10 +84,10 @@
                         let imgs;
                         this.detail = res.data.data || [];
                         this.content = res.data.data.content;
-                       imgs = res.data.data.imgs.split('[')[1].split(']')[0].split(',');
-                       console.log(imgs);
+                        imgs = res.data.data.imgs.split('[')[1].split(']')[0].split(',');
+//                       console.log(imgs);
                         for (let img in imgs) {
-                          this.imgs.push(imgs[img].split('\\').join(''));
+                            this.imgs.push(imgs[img].split('\\').join('').split('"').join(''));
                         }
                         console.log(this.imgs);
                     }
@@ -80,6 +97,10 @@
                 feedbackreplay(this.$route.params.report_id, this.replay).then(res => {
                     console.log(res);
                 });
+            },
+            showpicture(index) {
+                this.picVisible = true;
+                this.poc = index;
             }
         }
     };
@@ -105,7 +126,6 @@
                     position: absolute;
                     right: 50px;
                     top: 58px;
-                    border-radius: 0;
                     font-size: 12px;
 
                 }
@@ -117,18 +137,37 @@
             .el-form-item {
                 /*margin-bottom:0;*/
                 .el-button {
-                    border-radius: 0;
                     text-align: center;
                     width: 100px;
                     padding: 10px 0;
                 }
             }
+
             textarea {
                 outline: none;
                 border: 1px solid #bbb;
             }
             .el-form {
                 padding-bottom: 50px;
+                .el-row {
+                    margin-left: 10px;
+                    .el-col-6 {
+                        margin: 0 10px;
+                        img {
+                            display: inline-block;
+                            width: 100%;
+                        }
+                    }
+                }
+            }
+        }
+        .el-dialog__wrapper {
+            .el-dialog--small {
+                width: 100%;
+                img {
+                    display: inline-block;
+                    width: 100%;
+                }
             }
         }
     }

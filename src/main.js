@@ -6,16 +6,19 @@ import App from './App.vue';
 import router from './router';
 import VCharts from 'v-charts';
 import ElementUI from 'element-ui';
+import store from './store';
 // import 'normalize.css';
 import 'element-ui/lib/theme-default/index.css';
+
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 Vue.use(VCharts);
 Vue.use(Vuex);
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  template: '<App/>',
-  components: { App }
+    el: '#app',
+    router,
+    store,
+    template: '<App/>',
+    components: {App}
 });
