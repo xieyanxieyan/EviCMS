@@ -39,31 +39,42 @@
             :visible.sync="centerDialogVisible"
             width="30%"
             center>
-            <el-form v-model="addForm" label-width="100px">
-                <el-form-item label="权限名称">
+            <el-form :model="addForm"  ref="addForm" label-width="100px">
+                <el-form-item label="权限名称:"
+                              prop="username"
+                :rules="[{required:true,message: '权限不能为空', trigger: 'blur'}]">
                     <el-input v-model="addForm.username"></el-input>
                 </el-form-item>
-                <el-form-item label="权限值">
+                <el-form-item label="权限值:"
+                              :rules="[{required:true,message: '权限值不能为空', trigger: 'blur'}]"
+                              prop="value">
                     <el-input v-model="addForm.value"></el-input>
+                </el-form-item>
+                <el-form-item label="权限描述:"
+                              :rules="[{required:true,message: '权限不能为空', trigger: 'blur'}]"
+                              prop="description">
+                    <el-input v-model="addForm.description"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button @click="centerDialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>
+                    <el-button @click="submitAdd()" type="primary" >确 定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
     </div>
 </template>
 <script>
+    import {addpermission} from '../../api/other';
     export default {
         data() {
             return {
                 operation: '',
+                centerDialogVisible: false,
                 addForm: {
                     username: '',
-                    value: ''
-                },
-                centerDialogVisible: false
+                    value: '',
+                    description: ''
+                }
             };
         },
         methods: {
@@ -74,6 +85,27 @@
             editAdmin() {
                 this.centerDialogVisible = true;
                 this.operation = '编辑权限';
+            },
+//            提交添加权限
+            submitAdd() {
+                this.$refs['addForm'].validate((valid) => {
+                    console.log(valid);
+                    if (valid) {
+                        this.centerDialogVisible = false;
+                        addpermission(this.addForm.username, this.addForm.value, this.addForm.description).then(res => {
+                          if (res.data.error === 0) {
+                              this.$message({
+                                  message: '提交成功',
+                                  type: 'success',
+                                  showClose: true
+                              });
+                          }
+                        });
+                    } else {
+                       console.log('error submit!!');
+                        return false;
+                    }
+                });
             }
         }
     };

@@ -10,7 +10,6 @@
            <el-tab-pane label="支付宝密钥" name="third"><keyForm></keyForm></el-tab-pane>
        </el-tabs>
    </div>
-
 </div>
 </template>
 <script>
