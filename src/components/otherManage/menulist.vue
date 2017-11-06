@@ -56,10 +56,12 @@
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="父级链接" prop="fatherMenu">
-                    <el-select v-model="addMenu.fatherMenu">
-                        <el-option value="1">diyige</el-option>
-                        <el-option value="2">dddd</el-option>
-                    </el-select>
+                    <el-cascader
+                        expand-trigger="hover"
+                        :options="options"
+                        v-model="addMenu.fatherMenu"
+                        @change="handleChange">
+                    </el-cascader>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="editsubmit">确 定</el-button>
@@ -75,9 +77,11 @@
     export default {
         created() {
             this.showlist();
+            this.droplist();
         },
         data() {
             return {
+                options: [],
                 currentIndex: '',
                 operation: '',
                 total: '',
@@ -113,7 +117,6 @@
                 this.centerDialogVisible = true;
                 this.currentIndex = index;
                 detailmenu(this.list[this.currentIndex].menu_id).then(res => {
-                    console.log(res);
                  if (res.data.error === 0) {
                      this.addMenu.username = res.data.data.name;
                      this.addMenu.link = res.data.data.link;
@@ -128,6 +131,19 @@
                     if (res.data.error === 0) {
                         this.list = res.data.data.data;
                         this.total = res.data.data.total;
+                    }
+                });
+            },
+//            显示下拉列表
+            droplist() {
+                menulist(2).then(res => {
+                    console.log(res);
+                    if (res.data.error === 0) {
+                      for (let key of res.data.data) {
+                          if (key.children !== []) {
+                              console.log({label: key.name, value: val++, children: key.children});
+                          }
+                      }
                     }
                 });
             },
@@ -178,6 +194,9 @@
                     }
                 });
                 this.centerDialogVisible = false;
+            },
+            handleChange(value) {
+                console.log(value);
             }
         }
     };
