@@ -1,11 +1,12 @@
 import fetch from '@/common/js/fetch';
 
 // 添加权限
-export function addpermission(name, permission_key, description) {
+export function addPermission(name, permission_key, description, column) {
     const params = {
         name,
         permission_key,
-        description
+        description,
+        column
     };
     return fetch({
         method: 'post',
@@ -13,17 +14,52 @@ export function addpermission(name, permission_key, description) {
         params
     });
 }
-
+// 权限详情
+export function detailPermission(id) {
+    return fetch({
+        method: 'get',
+        url: 'admin/permission/detail',
+        params: id
+    });
+}
 // 编辑权限
-export function updatepermission() {
-    const params = {};
+export function updatePermission(id, name, permission_key, description, column) {
+    const params = {
+        id,
+        name,
+        permission_key,
+        description,
+        column
+    };
     return fetch({
         method: 'post',
         url: 'admin/permission/update',
         params
     });
 }
-
+// 权限列表
+export function permissionList(type, pid) {
+    const params = {
+        type,
+        pid
+    };
+    return fetch({
+        method: 'get',
+        url: 'admin/permission/list',
+        params
+    });
+}
+// 删除权限
+export function deletePermission(id) {
+    const params = {
+        id
+    };
+    return fetch({
+        method: 'get',
+        url: 'admin/permission/delete',
+        params
+    });
+}
 // 添加菜单
 export function addMenu(name, link, status, pid) {
     const params = {
