@@ -30,7 +30,7 @@
                     </td>
                     <td>
                         <el-button size="small" @click="editList(index)">编辑</el-button>
-                        <el-button size="small">删除</el-button>
+                        <el-button size="small" @click="deleteList(index)">删除</el-button>
                     </td>
                 </tr>
                 </tbody>
@@ -56,15 +56,17 @@
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="父级链接" prop="fatherMenu">
+                    <!--<el-tree :data="options" :props="defaultProps" @node-click="handleChange" v-model="addMenu.fatherMenu"></el-tree>-->
                     <el-cascader
-                        expand-trigger="hover"
-                        :options="options"
                         v-model="addMenu.fatherMenu"
+                        :options="options"
+                        :show-all-levels="false"
+                        :change-on-select="true"
                         @change="handleChange">
                     </el-cascader>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="editsubmit">确 定</el-button>
+                    <el-button type="primary" @click="submit">确 定</el-button>
                     <el-button @click="centerDialogVisible = false">取 消</el-button>
                 </el-form-item>
             </el-form>
@@ -72,7 +74,7 @@
     </div>
 </template>
 <script>
-    import {addMenu, menulist, detailmenu, updatemenu} from '../../api/other';
+    import {addMenu, menulist, detailmenu, updatemenu, deleteMenus} from '../../api/other';
 
     export default {
         created() {
@@ -82,6 +84,12 @@
         data() {
             return {
                 options: [],
+                defaultProps: {
+                    children: 'children',
+                    label: 'label',
+                    value: 'value',
+                    menu_id: 'menu_id'
+                },
                 currentIndex: '',
                 operation: '',
                 total: '',
@@ -91,7 +99,7 @@
                     username: '',
                     status: '显示',
                     link: '',
-                    fatherMenu: 1
+                    fatherMenu: []
                 },
                 rules: {
                     username: [
@@ -99,9 +107,6 @@
                     ],
                     link: [
                         {required: true, message: '请输入菜单链接', trigger: 'blur'}
-                    ],
-                    fatherMenu: [
-                        {type: 'number', required: true, message: '请输入父级链接', trigger: 'blur'}
                     ]
                 }
             };
@@ -111,24 +116,31 @@
                 this.operation = '添加菜单';
                 this.centerDialogVisible = true;
             },
+            // 删除菜单
+            deleteList(index) {
+                deleteMenus(this.list[index].menu_id).then(res => {
+                   console.log(res);
+                });
+            },
 //            显示菜单详情
             editList(index) {
                 this.operation = '编辑菜单';
                 this.centerDialogVisible = true;
                 this.currentIndex = index;
                 detailmenu(this.list[this.currentIndex].menu_id).then(res => {
-                 if (res.data.error === 0) {
-                     this.addMenu.username = res.data.data.name;
-                     this.addMenu.link = res.data.data.link;
-                     this.addMenu.status = res.data.data.status === 1 ? '显示' : '隐藏';
-                     this.addMenu.fatherMenu = res.data.data.type;
-                 }
+                    if (res.data.error === 0) {
+                        this.addMenu.username = res.data.data.name;
+                        this.addMenu.link = res.data.data.link;
+                        this.addMenu.status = res.data.data.status === 1 ? '显示' : '隐藏';
+                        this.addMenu.fatherMenu = res.data.data.type;
+                    }
                 });
             },
 //            显示菜单列表
             showlist() {
                 menulist(1).then(res => {
                     if (res.data.error === 0) {
+                        console.log(res);
                         this.list = res.data.data.data;
                         this.total = res.data.data.total;
                     }
@@ -137,13 +149,11 @@
 //            显示下拉列表
             droplist() {
                 menulist(2).then(res => {
-                    console.log(res);
                     if (res.data.error === 0) {
-                      for (let key of res.data.data) {
-                          if (key.children !== []) {
-                              console.log({label: key.name, value: val++, children: key.children});
-                          }
-                      }
+                        console.log(res.data.data);
+                        let array = res.data.data;
+                        this.options = this.parseTreeJson(array);
+                        this.options = array;
                     }
                 });
             },
@@ -151,15 +161,37 @@
             submit() {
                 if (this.operation === '添加菜单') {
                     this.addsubmit();
+                    this.droplist();
                 } else {
                     this.editSubmit();
+                    this.droplist();
+                }
+            },
+//            不定菜单生成
+            parseTreeJson(treeNodes) {
+                if (!treeNodes || !treeNodes.length) return;
+                for (let i = 0, len = treeNodes.length; i < len; i++) {
+//                    list.push({label: treeNodes[i].name, value: treeNodes[i].type, children: []});
+                    let childs = treeNodes[i].children;
+                    treeNodes[i].label = treeNodes[i].name;
+                    treeNodes[i].value = treeNodes[i].name;
+                    delete treeNodes[i].name;
+//                    delete treeNodes[i].pid;
+                    delete treeNodes[i].type;
+                    delete treeNodes[i].link;
+                    delete treeNodes[i].status;
+                    if (childs && childs.length > 0) {
+                        this.parseTreeJson(childs);
+                    } else {
+                        delete treeNodes[i].children;
+                    }
                 }
             },
 //            编辑菜单
             editsubmit() {
                 this.$refs['addMenu'].validate((valid) => {
                     if (valid) {
-                        updatemenu(this.list[this.currentIndex].menu_id, this.addMenu.username, this.addMenu.link, this.addMenu.status === '显示' ? 1 : 2, this.addMenu.fatherMenu).then(res => {
+                        updatemenu(this.list[this.currentIndex].menu_id, this.addMenu.username, this.addMenu.link, this.addMenu.status === '显示' ? 1 : 2, this.addMenu.fatherMenu.length || 0).then(res => {
                             if (res.data.error === 0) {
                                 this.$message({
                                     message: '编辑成功',
@@ -179,7 +211,7 @@
             addsubmit() {
                 this.$refs['addMenu'].validate((valid) => {
                     if (valid) {
-                        addMenu(this.addMenu.username, this.addMenu.link, this.addMenu.status === '显示' ? 1 : 2, this.addMenu.fatherMenu).then(res => {
+                        addMenu(this.addMenu.username, this.addMenu.link, this.addMenu.status === '显示' ? 1 : 2, this.addMenu.fatherMenu.length || 0).then(res => {
                             if (res.data.error === 0) {
                                 this.$message({
                                     message: '添加成功',
@@ -197,6 +229,7 @@
             },
             handleChange(value) {
                 console.log(value);
+                this.addMenu.fatherMenu = value;
             }
         }
     };
@@ -207,11 +240,14 @@
 
     #menulist {
         padding: 0 15px;
-    .addlist{
-        margin-bottom:15px;
+
+    .addlist {
+        margin-bottom: 15px;
     }
+
     .menulist {
         padding: 15px 0;
+
     span {
     @include span;
     }

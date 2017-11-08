@@ -78,3 +78,14 @@ export function menulist(type) {
         params
     });
 }
+// 删除菜单
+export function deleteMenus (menu_id) {
+    const params = {
+        menu_id
+    };
+    return fetch({
+        method: 'get',
+        url: 'admin/menus/delete',
+        params
+    });
+}
