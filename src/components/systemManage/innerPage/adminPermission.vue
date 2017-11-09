@@ -10,36 +10,12 @@
         <div class="adminpermissioncontent">
             <div><strong>超级管理员</strong></div>
             <div class="selectItem">
-                <div>
+                <div v-for="(item, key, index) in permissionList">
                     <i></i>
-                    <el-checkbox :indeterminate="isIndeterminate1" v-model="checkAlluser" @change="handleCheckAlluserChange">用户管理</el-checkbox>
+                    <el-checkbox :indeterminate="'isIndeterminate'+index+1" v-model="checkAlluser" @change="handleCheckAlluserChange">{{key}}</el-checkbox>
                     <div style="margin: 15px 0;"></div>
                     <el-checkbox-group v-model="checkUsers" @change="handleCheckedUsersChange">
-                        <el-checkbox v-for="user in users" :label="user" :key="user">{{user}}</el-checkbox>
-                    </el-checkbox-group>
-                </div>
-                <div>
-                    <i></i>
-                    <el-checkbox :indeterminate="isIndeterminate2" v-model="checkAllopera" @change="handleCheckAlloperaChange">运营管理</el-checkbox>
-                    <div style="margin: 15px 0;"></div>
-                    <el-checkbox-group v-model="checkOperas" @change="handleCheckedOperasChange">
-                        <el-checkbox v-for="opera in operas" :label="opera" :key="opera">{{opera}}</el-checkbox>
-                    </el-checkbox-group>
-                </div>
-                <div>
-                    <i></i>
-                    <el-checkbox :indeterminate="isIndeterminate3" v-model="checkAlldataAna" @change="handleCheckAlldataAnaChange">数据分析</el-checkbox>
-                    <div style="margin: 15px 0;"></div>
-                    <el-checkbox-group v-model="checkdataAnas" @change="handleCheckeddataAnasChange">
-                        <el-checkbox v-for="dataAna in dataAnas" :label="dataAna" :key="dataAna">{{dataAna}}</el-checkbox>
-                    </el-checkbox-group>
-                </div>
-                <div>
-                    <i></i>
-                    <el-checkbox :indeterminate="isIndeterminate4" v-model="checkAllsystemAdm" @change="handleCheckAllsystemAdmChange">用户管理</el-checkbox>
-                    <div style="margin: 15px 0;"></div>
-                    <el-checkbox-group v-model="checksystemAdms" @change="handleCheckedsystemAdmsChange">
-                        <el-checkbox v-for="systemAdm in systemAdms" :label="systemAdm" :key="systemAdm">{{systemAdm}}</el-checkbox>
+                        <el-checkbox v-for="(user, index) in item" :label="user" :key="user">{{user.name}}</el-checkbox>
                     </el-checkbox-group>
                 </div>
             </div>
@@ -47,21 +23,20 @@
     </div>
 </template>
 <script>
-    import {getPrivilegeList} from '../../../api/setuser';
+    import {permissionList} from '../../../api/setuser';
     const userOptions = ['查看用户信息', '编辑用户资料', '冻结用户账号', '添加新用户', '管理用户界面'];
     const operaOptions = ['投诉建议管理', '退款管理', '纸质出证管理', '出庭管理'];
     const dataAnaOptions = ['查看用户统计', '查看行为统计', '查看财务统计'];
     const systemAdmOptions = ['添加/编辑管理员', '设置管理员权限', '冻结管理员', '查看管理日志', '管理密匙'];
     export default {
         created() {
-            getPrivilegeList().then(res => {
-                console.log(res);
-            });
+            this.getPermissionList();
         },
         data() {
             return {
-                checkAlluser: true,
+                checkAlluser: true, // 选中所有项
                 checkUsers: [],
+                permissionList: [],
                 users: userOptions,
                 isIndeterminate1: true,
                 checkAllopera: true,
@@ -114,6 +89,14 @@
                 let checkedCount = value.length;
                 this.checkAllsystemAdm = checkedCount === this.systemAdms.length;
                 this.isIndeterminate4 = checkedCount > 0 && checkedCount < this.systemAdms.length;
+            },
+            getPermissionList() {
+                permissionList(1).then(res => {
+                   if (res.data.error === 0) {
+                       this.permissionList = res.data.data;
+                       console.log(res.data.data);
+                   }
+                });
             }
         }
     };

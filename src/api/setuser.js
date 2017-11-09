@@ -119,12 +119,12 @@ export function getAdminLog(username, time_begin, time_end) {
 }
 
 // 获取所有的权限列表
-export function getPrivilegeList() {
-    return fetch({
-        method: 'get',
-        url: 'admin/all_permissions'
-    });
-}
+// export function getPrivilegeList() {
+//     return fetch({
+//         method: 'get',
+//         url: 'admin/all_permissions'
+//     });
+// }
 
 // 发送短信 验证码
 export function getCode(username) {
@@ -165,6 +165,17 @@ export function frezeAdmin(admin_id, status) {
     return fetch({
         method: 'post',
         url: 'admin/freeze',
+        params
+    });
+}
+// 权限列表
+export function permissionList(type) {
+    const params = {
+        type
+    };
+    return fetch({
+        method: 'get',
+        url: 'admin/permission/list',
         params
     });
 }

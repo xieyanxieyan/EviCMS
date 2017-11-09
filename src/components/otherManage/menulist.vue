@@ -84,7 +84,7 @@
         },
         data() {
             return {
-                options: [],
+                options: [{label: '顶级菜单', value: 0, children: []}],
                 value: [],
                 defaultProps: {
                     children: 'children',
@@ -170,8 +170,8 @@
                 menulist(2).then(res => {
                     if (res.data.error === 0) {
                         let array = res.data.data;
-                        this.options = this.parseTreeJson(array);
-                        this.options = array;
+                        this.parseTreeJson(array);
+                        this.options[0].children = array;
                         console.log(this.options);
                     }
                 });
