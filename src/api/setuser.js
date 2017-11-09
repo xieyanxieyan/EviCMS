@@ -4,12 +4,12 @@ import fetch from '@/common/js/fetch';
 export function getUserList() {
     return fetch({
         method: 'get',
-        url: 'admin/roles'
+        url: 'admin/roles/list'
     });
 }
 
 // 角色添加
-export function addUser(name, description) {
+export function addRole(name, description) {
     const params = {
         name,
         description
@@ -21,11 +21,46 @@ export function addUser(name, description) {
     });
 }
 
+// 角色详情
+export function detailRoles(id) {
+    const params = {
+        id
+    };
+    return fetch({
+        method: 'get',
+        url: 'admin/roles/detail',
+        params
+    });
+}
+
+// 角色编辑
+export function updateRoles(id, name, description) {
+    const params = {
+        id,
+        name,
+        description
+    };
+    return fetch({
+        method: 'post',
+        url: 'admin/roles/update',
+        params
+    });
+}
+
 // 获取角色列表
 export function getRole() {
     return fetch({
         method: 'get',
-        url: 'admin/roles'
+        url: 'admin/roles/list'
+    });
+}
+
+// 删除角色
+export function deleteRole(id) {
+    return fetch({
+        method: 'get',
+        url: 'admin/roles/delete',
+        params: {id}
     });
 }
 
@@ -90,6 +125,7 @@ export function getPrivilegeList() {
         url: 'admin/all_permissions'
     });
 }
+
 // 发送短信 验证码
 export function getCode(username) {
     const params = {
@@ -118,6 +154,7 @@ export function editAdmin(admin_id, username, name, password, phone, role_id) {
         params
     });
 }
+
 // 冻结管理员
 
 export function frezeAdmin(admin_id, status) {

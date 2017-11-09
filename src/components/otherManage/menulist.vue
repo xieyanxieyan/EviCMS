@@ -60,6 +60,7 @@
                     <el-cascader
                         v-model="addMenu.fatherMenu"
                         :options="options"
+                        :value = "value"
                         :show-all-levels="false"
                         :change-on-select="true"
                         @change="handleChange">
@@ -84,6 +85,7 @@
         data() {
             return {
                 options: [],
+                value: [],
                 defaultProps: {
                     children: 'children',
                     label: 'label',
@@ -119,7 +121,21 @@
             // 删除菜单
             deleteList(index) {
                 deleteMenus(this.list[index].menu_id).then(res => {
-                   console.log(res);
+                  if (res.data.error === 0) {
+                      this.$message({
+                          message: '删除成功',
+                          type: 'success',
+                          showClose: true
+                      });
+                      this.showlist();
+                  } else {
+                      this.$message({
+                          message: res.data.data,
+                          type: 'error',
+                          showClose: true,
+                          duration: 1000
+                      });
+                  }
                 });
             },
 //            显示菜单详情
@@ -132,7 +148,10 @@
                         this.addMenu.username = res.data.data.name;
                         this.addMenu.link = res.data.data.link;
                         this.addMenu.status = res.data.data.status === 1 ? '显示' : '隐藏';
-                        this.addMenu.fatherMenu = res.data.data.type;
+                       for (let item of this.list) {
+                           if (res.data.data.pid === item.menu_id) {
+                           }
+                       }
                     }
                 });
             },
@@ -140,7 +159,7 @@
             showlist() {
                 menulist(1).then(res => {
                     if (res.data.error === 0) {
-                        console.log(res);
+//                        console.log(res);
                         this.list = res.data.data.data;
                         this.total = res.data.data.total;
                     }
@@ -150,10 +169,10 @@
             droplist() {
                 menulist(2).then(res => {
                     if (res.data.error === 0) {
-                        console.log(res.data.data);
                         let array = res.data.data;
                         this.options = this.parseTreeJson(array);
                         this.options = array;
+                        console.log(this.options);
                     }
                 });
             },
@@ -171,11 +190,10 @@
             parseTreeJson(treeNodes) {
                 if (!treeNodes || !treeNodes.length) return;
                 for (let i = 0, len = treeNodes.length; i < len; i++) {
-//                    list.push({label: treeNodes[i].name, value: treeNodes[i].type, children: []});
                     let childs = treeNodes[i].children;
                     treeNodes[i].label = treeNodes[i].name;
-                    treeNodes[i].value = treeNodes[i].name;
-                    delete treeNodes[i].name;
+                    treeNodes[i].value = treeNodes[i].menu_id;
+//                    delete treeNodes[i].name;
 //                    delete treeNodes[i].pid;
                     delete treeNodes[i].type;
                     delete treeNodes[i].link;
@@ -188,16 +206,19 @@
                 }
             },
 //            编辑菜单
-            editsubmit() {
+            editSubmit() {
                 this.$refs['addMenu'].validate((valid) => {
                     if (valid) {
-                        updatemenu(this.list[this.currentIndex].menu_id, this.addMenu.username, this.addMenu.link, this.addMenu.status === '显示' ? 1 : 2, this.addMenu.fatherMenu.length || 0).then(res => {
+//                        console.log(this.parseTreeJson(this.options, this.addMenu.fatherMenu[this.addMenu.fatherMenu.length - 1]));
+//                        console.log(this.addMenu.fatherMenu[this.addMenu.fatherMenu.length - 1]))
+                        updatemenu(this.list[this.currentIndex].menu_id, this.addMenu.username, this.addMenu.link, this.addMenu.status === '显示' ? 1 : 2, this.addMenu.fatherMenu[this.addMenu.fatherMenu.length - 1] || 0).then(res => {
                             if (res.data.error === 0) {
                                 this.$message({
                                     message: '编辑成功',
                                     type: 'success',
                                     showClose: true
                                 });
+                                this.showlist();
                             }
                         });
                     } else {
@@ -211,7 +232,7 @@
             addsubmit() {
                 this.$refs['addMenu'].validate((valid) => {
                     if (valid) {
-                        addMenu(this.addMenu.username, this.addMenu.link, this.addMenu.status === '显示' ? 1 : 2, this.addMenu.fatherMenu.length || 0).then(res => {
+                        addMenu(this.addMenu.username, this.addMenu.link, this.addMenu.status === '显示' ? 1 : 2, this.addMenu.fatherMenu[this.addMenu.fatherMenu.length - 1] || 0).then(res => {
                             if (res.data.error === 0) {
                                 this.$message({
                                     message: '添加成功',

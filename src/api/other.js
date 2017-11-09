@@ -1,12 +1,12 @@
 import fetch from '@/common/js/fetch';
 
 // 添加权限
-export function addPermission(name, permission_key, description, column) {
+export function addPermission(name, permission_key, description, colum) {
     const params = {
         name,
         permission_key,
         description,
-        column
+        colum
     };
     return fetch({
         method: 'post',
@@ -19,17 +19,17 @@ export function detailPermission(id) {
     return fetch({
         method: 'get',
         url: 'admin/permission/detail',
-        params: id
+        params: {id}
     });
 }
 // 编辑权限
-export function updatePermission(id, name, permission_key, description, column) {
+export function updatePermission(id, name, permission_key, description, colum) {
     const params = {
         id,
         name,
         permission_key,
         description,
-        column
+        colum
     };
     return fetch({
         method: 'post',

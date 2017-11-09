@@ -16,66 +16,80 @@
                     <tr v-for="(item,index) in userMessage">
                         <td style="border-right:0">{{item.name}}</td>
                         <td style="border-left:0">
-                            <el-button size="mini">
-                                <router-link to="/adminPermission" style="color:#739dff">权限设置</router-link>
+                            <el-button size="mini" type="primary">
+                                <router-link to="/adminPermission">权限设置</router-link>
                             </el-button>
-                            <el-button size="mini" @click="duerdel">删除</el-button>
+                            <el-button size="mini" type="warning" @click="editUser(index)">编辑</el-button>
+                            <el-button size="mini" @click="duerdel(index)">删除</el-button>
                         </td>
                     </tr>
                     </tbody>
                 </table>
-                <el-button type="primary" @click="adduserVisible=true" style="float:right">添加角色</el-button>
+                <el-button type="primary" @click="addUser" style="float:right">添加角色</el-button>
             </div>
         </div>
         <!--添加角色-->
-        <el-dialog :visible.sync="adduserVisible" title="添加角色" class="adduserForm">
-            <el-form :model="adduserForm">
-                <el-form-item label="角色名称：" label-width="100px">
-                    <el-input v-model="adduserForm.username"></el-input>
-                </el-form-item>
-                <el-form-item style="display:flex;justify-content: space-around">
-                    <el-button type="primary" @click.native="addUserSubmit">确定</el-button>
-                    <el-button @click="adduserVisible=false">取消</el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
+        <div>
+            <el-dialog :visible.sync="adduserVisible" :title="operation" class="adduserForm">
+                <el-form :model="adduserForm">
+                    <el-form-item label="角色名称：" label-width="100px" :error = "submitError.username">
+                        <el-input v-model="adduserForm.username"></el-input>
+                    </el-form-item>
+                    <el-form-item label="角色描述：" label-width="100px" :error ="submitError.description">
+                        <el-input v-model="adduserForm.description"></el-input>
+                    </el-form-item>
+                    <el-form-item style="display:flex;justify-content: space-around">
+                        <el-button type="primary" @click.native="Submit">确定</el-button>
+                        <el-button @click="adduserVisible=false">取消</el-button>
+                    </el-form-item>
+                </el-form>
+            </el-dialog>
+        </div>
+
     </div>
 </template>
 <script>
-    import {getUserList, addUser} from '../../../api/setuser';
-
+    import {getRole, addRole, detailRoles, updateRoles, deleteRole} from '../../../api/setuser';
+//    updateRoles, detailRoles, deleteRole
     export default {
         created() {
             this.updateList();
         },
         data() {
             return {
+                operation: '',
                 adduserVisible: false,
-                adduserForm: {
-                    username: ''
+                currentIndex: '',
+                submitError: {
+                    username: '',
+                    description: ''
                 },
-                userMessage: [
-//                    {
-//                        admin: '超级管理员',
-//                        operation: {
-//                            Authorization: '权限设置',
-//                            del: '删除'
-//                        }
-//
-//                    }
-
-                ]
+                adduserForm: {
+                    username: '',
+                    description: ''
+                },
+                userMessage: []
             };
         },
         methods: {
-            duerdel() {
+            duerdel(index) {
                 this.$confirm('确定删除吗?删除后该角色下的用户将失去所有权限', '', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    this.$message({
-                        type: 'success',
-                        message: '删除成功！'
+                    deleteRole(this.userMessage[index].id).then(res => {
+                       if (res.data.error === 0) {
+                           this.$message({
+                               type: 'success',
+                               message: '删除成功！'
+                           });
+                           this.updateList();
+                       } else {
+                           this.$message({
+                               type: 'error',
+                               message: res.data.data
+                           });
+                       }
                     });
                 }).catch(() => {
                     this.$message({
@@ -84,27 +98,45 @@
                     });
                 });
             },
+            Submit() {
+              if (this.operation === '添加角色') {
+                  this.addUserSubmit();
+              } else {
+                  this.editUserSubmit(this.userMessage[this.currentIndex].id);
+              }
+            },
             //     更新列表
             updateList() {
-                getUserList().then((res) => {
+                getRole().then((res) => {
+                    console.log(res);
                     res = res.data;
                     if (res.error === 0) {
                         this.userMessage = res.data || [];
                     }
                 });
             },
+//            打开添加角色弹窗
+            addUser() {
+                this.adduserVisible = true;
+                this.operation = '添加角色';
+            },
+//            打开编辑角色弹窗
+            editUser(index) {
+                this.adduserVisible = true;
+                this.operation = '编辑角色';
+                this.currentIndex = index;
+                this.showDetail(this.userMessage[this.currentIndex].id);
+            },
 //        添加角色
             addUserSubmit() {
                 if (this.adduserForm.username === '') {
-                    this.$message({
-                        message: '内容不能为空',
-                        type: 'warning',
-                        showClose: true,
-                        duration: 2000
-                    });
+                   this.submitError.username = '权限名不能为空';
+                    return false;
+                } else if (this.adduserForm.description === '') {
+                    this.submitError.description = '权限描述不能为空';
                     return false;
                 } else {
-                    addUser(this.adduserForm.username).then((res) => {
+                    addRole(this.adduserForm.username, this.adduserForm.description).then((res) => {
                         if (res.data.error === 0) {
                             this.$message({
                                 message: '添加成功，请稍等',
@@ -116,14 +148,59 @@
                             this.adduserVisible = false;
                         } else {
                             this.$message({
-                                message: '申请失败，请稍后重试！',
-                                type: 'success',
+                                message: res.data.data,
+                                type: 'error',
                                 showClose: true
                             });
                             this.applyDialogVisible = false;
                         }
                     });
                 }
+            },
+//            编辑角色提交
+            editUserSubmit() {
+                if (this.adduserForm.username === '') {
+                    this.submitError.username = '权限名不能为空';
+                    return false;
+                } else if (this.adduserForm.description === '') {
+                    this.submitError.description = '权限描述不能为空';
+                    return false;
+                } else {
+                    updateRoles(this.userMessage[this.currentIndex].id, this.adduserForm.username, this.adduserForm.description).then((res) => {
+                        if (res.data.error === 0) {
+                            this.$message({
+                                message: '编辑成功，请稍等',
+                                type: 'warning',
+                                showClose: true,
+                                duration: 2000
+                            });
+                            this.updateList();
+                            this.adduserVisible = false;
+                        } else {
+                            this.$message({
+                                message: res.data.data,
+                                type: 'error',
+                                showClose: true
+                            });
+                            this.applyDialogVisible = false;
+                        }
+                    });
+                }
+            },
+//            显示角色详情
+            showDetail(index) {
+                detailRoles(index).then(res => {
+                   if (res.data.error === 0) {
+                       this.adduserForm.username = res.data.data.name;
+                       this.adduserForm.description = res.data.data.description;
+                   } else {
+                      this.$message({
+                          message: res.data.data,
+                          type: 'error',
+                          showClose: true
+                      });
+                   }
+                });
             }
         }
     };
@@ -149,6 +226,9 @@
         padding: 10px;
         text-align: center;
         background: #556386;
+        span{
+            color:#fff;
+        }
     }
 
     }

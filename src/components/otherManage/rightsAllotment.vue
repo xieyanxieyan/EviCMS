@@ -26,8 +26,8 @@
                     <td>{{item.name}}</td>
                     <td>{{item.permission_key}}</td>
                     <td>
-                        <el-button size="small" @click="editAdmin">编辑</el-button>
-                        <el-button size="small">删除</el-button>
+                        <el-button size="small" @click="editAdmin(index)">编辑</el-button>
+                        <el-button size="small" @click="deleteAdmin(index)">删除</el-button>
                     </td>
                 </tr>
                 </tbody>
@@ -55,7 +55,7 @@
                               prop="description">
                     <el-input v-model="addForm.description"></el-input>
                 </el-form-item>
-                <el-form-item label="上级栏目:">
+                <el-form-item label="上级栏目:" prop="column">
                     <el-select v-model="addForm.column" placeholder="请选择">
                         <el-option
                             v-for="item in list"
@@ -68,14 +68,14 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button @click="centerDialogVisible = false">取 消</el-button>
-                    <el-button @click="submitAdd()" type="primary">确 定</el-button>
+                    <el-button @click="submit()" type="primary">确 定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
     </div>
 </template>
 <script>
-    import {addPermission, permissionList} from '../../api/other';
+    import {addPermission, permissionList, detailPermission, updatePermission, deletePermission} from '../../api/other';
 
     export default {
         created() {
@@ -86,6 +86,8 @@
                 operation: '',
                 list: [],
                 total: 0,
+                currentId: '',
+                currentIndex: '',
                 centerDialogVisible: false,
                 addForm: {
                     username: '',
@@ -98,20 +100,53 @@
         methods: {
 //            获取权限列表
             __list() {
-                permissionList(1, 0).then(res => {
+                permissionList(2, 0).then(res => {
                   if (res.data.error === 0) {
                       this.list = res.data.data.data;
                       this.total = res.data.data.total;
+                  } else if (res.data.error === 2) {
+                      this.$message({
+                          message: '操作失败',
+                          type: 'error',
+                          showClose: true
+                      });
                   }
+                }).catch(err => {
+                    console.log(err);
                 });
             },
             addAdmin() {
                 this.centerDialogVisible = true;
                 this.operation = '添加权限';
             },
-            editAdmin() {
+//            点击编辑权限，显示出具体信息
+            editAdmin(index) {
                 this.centerDialogVisible = true;
                 this.operation = '编辑权限';
+                this.currentIndex = index;
+                detailPermission(this.list[index].id).then(res => {
+                  if (res.data.error === 0) {
+                        this.addForm.username = res.data.data.name;
+                        this.addForm.description = res.data.data.description;
+                        this.addForm.value = res.data.data.permission_key;
+                        this.addForm.column = res.data.data.id;
+                  } else if (res.data.error === 2) {
+                      this.$message({
+                          message: '操作失败',
+                          type: 'error',
+                          showClose: true
+                      });
+                  }
+                });
+            },
+            submit() {
+              if (this.operation === '添加权限') {
+                  this.submitAdd();
+                  this.__list();
+              } else {
+                  this.submitEdit();
+              }
+                setTimeout(this.__list, 2000);
             },
 //            提交添加权限
             submitAdd() {
@@ -126,6 +161,7 @@
                                     type: 'success',
                                     showClose: true
                                 });
+                                this.resetForm();
                             }
                         });
                     } else {
@@ -133,6 +169,44 @@
                         return false;
                     }
                 });
+            },
+//            提交编辑权限
+            submitEdit() {
+                this.$refs['addForm'].validate((valid) => {
+                    if (valid) {
+                        this.centerDialogVisible = false;
+                        return new Promise((resolve, reject) => {
+                            updatePermission(this.currentIndex, this.addForm.username, this.addForm.value, this.addForm.description, this.addForm.column).then(res => {
+                               console.log(res);
+                                if (res.data.error === 0) {
+                                    this.$message({
+                                        message: '提交成功',
+                                        type: 'success',
+                                        showClose: true
+                                    });
+                                    this.resetForm();
+                                }
+                                resolve();
+                            }).catch(error => {
+                                console.log(reject(error));
+                            });
+                        });
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+//            删除权限
+            deleteAdmin(index) {
+                deletePermission(this.list[index].id).then(res => {
+                    console.log(res);
+                    this.__list();
+                });
+            },
+//        重置表单
+            resetForm() {
+                this.$refs['addForm'].resetFields();
             }
         }
     };
