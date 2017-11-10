@@ -188,7 +188,8 @@ const routes = [
                 }
             },
             {
-                path: '/adminPermission',
+                path: '/adminPermission/:adminPer_id',
+                name: 'adminPermission',
                 component: adminPermission,
                 meta: {
                     requireAuth: true

@@ -42,7 +42,7 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="replaySubmit()" style="margin-right:80px;">提交回复</el-button>
-                        <el-button>返回</el-button>
+                        <el-button @click="">返回</el-button>
                     </el-form-item>
                 </el-form>
             </div>

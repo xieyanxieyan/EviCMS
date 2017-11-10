@@ -16,8 +16,8 @@
                     <tr v-for="(item,index) in userMessage">
                         <td style="border-right:0">{{item.name}}</td>
                         <td style="border-left:0">
-                            <el-button size="mini" type="primary">
-                                <router-link to="/adminPermission">权限设置</router-link>
+                            <el-button size="mini" type="primary" @click="toNextPage(index)">
+                                权限设置
                             </el-button>
                             <el-button size="mini" type="warning" @click="editUser(index)">编辑</el-button>
                             <el-button size="mini" @click="duerdel(index)">删除</el-button>
@@ -32,10 +32,10 @@
         <div>
             <el-dialog :visible.sync="adduserVisible" :title="operation" class="adduserForm">
                 <el-form :model="adduserForm">
-                    <el-form-item label="角色名称：" label-width="100px" :error = "submitError.username">
+                    <el-form-item label="角色名称：" label-width="100px" :error="submitError.username">
                         <el-input v-model="adduserForm.username"></el-input>
                     </el-form-item>
-                    <el-form-item label="角色描述：" label-width="100px" :error ="submitError.description">
+                    <el-form-item label="角色描述：" label-width="100px" :error="submitError.description">
                         <el-input v-model="adduserForm.description"></el-input>
                     </el-form-item>
                     <el-form-item style="display:flex;justify-content: space-around">
@@ -50,7 +50,7 @@
 </template>
 <script>
     import {getRole, addRole, detailRoles, updateRoles, deleteRole} from '../../../api/setuser';
-//    updateRoles, detailRoles, deleteRole
+    //    updateRoles, detailRoles, deleteRole
     export default {
         created() {
             this.updateList();
@@ -78,18 +78,18 @@
                     cancelButtonText: '取消'
                 }).then(() => {
                     deleteRole(this.userMessage[index].id).then(res => {
-                       if (res.data.error === 0) {
-                           this.$message({
-                               type: 'success',
-                               message: '删除成功！'
-                           });
-                           this.updateList();
-                       } else {
-                           this.$message({
-                               type: 'error',
-                               message: res.data.data
-                           });
-                       }
+                        if (res.data.error === 0) {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功！'
+                            });
+                            this.updateList();
+                        } else {
+                            this.$message({
+                                type: 'error',
+                                message: res.data.data
+                            });
+                        }
                     });
                 }).catch(() => {
                     this.$message({
@@ -99,11 +99,11 @@
                 });
             },
             Submit() {
-              if (this.operation === '添加角色') {
-                  this.addUserSubmit();
-              } else {
-                  this.editUserSubmit(this.userMessage[this.currentIndex].id);
-              }
+                if (this.operation === '添加角色') {
+                    this.addUserSubmit();
+                } else {
+                    this.editUserSubmit(this.userMessage[this.currentIndex].id);
+                }
             },
             //     更新列表
             updateList() {
@@ -114,6 +114,11 @@
                         this.userMessage = res.data || [];
                     }
                 });
+            },
+//            到权限设置页
+            toNextPage(index) {
+                console.log(this.userMessage[index].id);
+                this.$router.push({name: 'adminPermission', params: {adminPer_id: this.userMessage[index].id}});
             },
 //            打开添加角色弹窗
             addUser() {
@@ -130,7 +135,7 @@
 //        添加角色
             addUserSubmit() {
                 if (this.adduserForm.username === '') {
-                   this.submitError.username = '权限名不能为空';
+                    this.submitError.username = '权限名不能为空';
                     return false;
                 } else if (this.adduserForm.description === '') {
                     this.submitError.description = '权限描述不能为空';
@@ -190,16 +195,16 @@
 //            显示角色详情
             showDetail(index) {
                 detailRoles(index).then(res => {
-                   if (res.data.error === 0) {
-                       this.adduserForm.username = res.data.data.name;
-                       this.adduserForm.description = res.data.data.description;
-                   } else {
-                      this.$message({
-                          message: res.data.data,
-                          type: 'error',
-                          showClose: true
-                      });
-                   }
+                    if (res.data.error === 0) {
+                        this.adduserForm.username = res.data.data.name;
+                        this.adduserForm.description = res.data.data.description;
+                    } else {
+                        this.$message({
+                            message: res.data.data,
+                            type: 'error',
+                            showClose: true
+                        });
+                    }
                 });
             }
         }
@@ -207,6 +212,7 @@
 </script>
 <style lang="scss">
     @import '../../../scss/mixin.scss';
+
     #userSet {
         padding: 0 15px;
 
@@ -214,7 +220,7 @@
         padding: 15px 0;
 
     span {
-       @include span;
+    @include span;
     }
 
     }
@@ -226,9 +232,11 @@
         padding: 10px;
         text-align: center;
         background: #556386;
-        span{
-            color:#fff;
-        }
+
+    span {
+        color: #fff;
+    }
+
     }
 
     }

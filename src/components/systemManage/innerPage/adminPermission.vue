@@ -3,7 +3,7 @@
         <div class="adminPermisssionTop">
             <span>管理员设置--角色设置--管理员权限设置</span>
             <div class="topButton">
-                <el-button type="primary">保存</el-button>
+                <el-button type="primary" @click="privileges">保存</el-button>
                 <el-button>返回</el-button>
             </div>
         </div>
@@ -11,90 +11,81 @@
             <div><strong>超级管理员</strong></div>
             <div class="selectItem">
                 <div v-for="(item, key, index) in permissionList">
+                    <template>
                     <i></i>
-                    <el-checkbox :indeterminate="'isIndeterminate'+index+1" v-model="checkAlluser" @change="handleCheckAlluserChange">{{key}}</el-checkbox>
+                    <el-checkbox :indeterminate="isIndeterminate[index].isIndeterminate" v-model="checkAll[index].checkAll" @change="handleCheckAllChange($event, index)">{{key}}</el-checkbox>
                     <div style="margin: 15px 0;"></div>
-                    <el-checkbox-group v-model="checkUsers" @change="handleCheckedUsersChange">
-                        <el-checkbox v-for="(user, index) in item" :label="user" :key="user">{{user.name}}</el-checkbox>
+                    <el-checkbox-group v-model="checkUsers[index]" @change="handleCheckedChange($event, index)">
+                        <el-checkbox v-for="(user, index) in item" :label="user.name" :key="user.id">{{user.name}}</el-checkbox>
                     </el-checkbox-group>
+                    </template>
                 </div>
-            </div>
+            </div>id
         </div>
     </div>
 </template>
 <script>
-    import {permissionList} from '../../../api/setuser';
-    const userOptions = ['查看用户信息', '编辑用户资料', '冻结用户账号', '添加新用户', '管理用户界面'];
-    const operaOptions = ['投诉建议管理', '退款管理', '纸质出证管理', '出庭管理'];
-    const dataAnaOptions = ['查看用户统计', '查看行为统计', '查看财务统计'];
-    const systemAdmOptions = ['添加/编辑管理员', '设置管理员权限', '冻结管理员', '查看管理日志', '管理密匙'];
+    import {permissionList, ownpermission, rolesAssignment} from '../../../api/setuser';
     export default {
         created() {
             this.getPermissionList();
+            ownpermission(this.$route.params.adminPer_id).then(res => {
+                if (res.data.error === 0) {
+                    console.log(res);
+                } else {
+                    this.$message({
+                        message: res.data.data,
+                        type: 'error',
+                        showClose: true
+                    });
+                }
+            });
         },
         data() {
             return {
-                checkAlluser: true, // 选中所有项
+                checkAll: [], // 选中所有项
                 checkUsers: [],
                 permissionList: [],
-                users: userOptions,
-                isIndeterminate1: true,
-                checkAllopera: true,
-                checkOperas: [],
-                operas: operaOptions,
-                isIndeterminate2: true,
-                checkAlldataAna: true,
-                checkdataAnas: [],
-                dataAnas: dataAnaOptions,
-                isIndeterminate3: true,
-                checkAllsystemAdm: true,
-                checksystemAdms: [],
-                systemAdms: systemAdmOptions,
-                isIndeterminate4: true
+                users: [], // 显示有多少项
+                isIndeterminate: [], // 控制是否全选
+                checkedCount: []
+
             };
         },
         methods: {
-            handleCheckAlluserChange(event) {
-                this.checkUsers = event.target.checked ? userOptions : [];
-                this.isIndeterminate1 = false;
+            handleCheckAllChange(event, index) {
+                console.log(event.target.checked);
+                this.checkUsers[index] = event.target.checked ? this.users[index] : [];
+                console.log(this.users[index], 'this.user');
+                this.isIndeterminate[index].isIndeterminate = false;
             },
-            handleCheckedUsersChange(value) {
-                let checkedCount = value.length;
-                this.checkAlluser = checkedCount === this.users.length;
-                this.isIndeterminate1 = checkedCount > 0 && checkedCount < this.users.length;
+            handleCheckedChange(value, index) {
+                console.log(value, '值');
+                this.checkedCount[index] = value.length;
+                console.log(this.checkCount[index], 'count');
+                this.checkAll[index].checkAll = this.checkedCount[index] === this.users[index].length;
+                console.log(this.checkAll, '所有的');
+                this.isIndeterminate[index].isIndeterminate = this.checkedCount[index] > 0 && this.checkedCount[index] < this.users[0].length;
+                console.log(this.checkAll[0].checkAll, '选所有了吗');
             },
-            handleCheckAlloperaChange(event) {
-                this.checkOperas = event.target.checked ? operaOptions : [];
-                this.isIndeterminate2 = false;
-            },
-            handleCheckedOperasChange(value) {
-                let checkedCount = value.length;
-                this.checkAllopera = checkedCount === this.operas.length;
-                this.isIndeterminate2 = checkedCount > 0 && checkedCount < this.operas.length;
-            },
-            handleCheckAlldataAnaChange(event) {
-                this.checkdataAnas = event.target.checked ? dataAnaOptions : [];
-                this.isIndeterminate3 = false;
-            },
-            handleCheckeddataAnasChange(value) {
-                let checkedCount = value.length;
-                this.checkAlldataAna = checkedCount === this.dataAnas.length;
-                this.isIndeterminate3 = checkedCount > 0 && checkedCount < this.dataAnas.length;
-            },
-            handleCheckAllsystemAdmChange(event) {
-                this.checksystemAdms = event.target.checked ? systemAdmOptions : [];
-                this.isIndeterminate4 = false;
-            },
-            handleCheckedsystemAdmsChange(value) {
-                let checkedCount = value.length;
-                this.checkAllsystemAdm = checkedCount === this.systemAdms.length;
-                this.isIndeterminate4 = checkedCount > 0 && checkedCount < this.systemAdms.length;
+//            分配权限
+            privileges() {
+                let string = '';
+                rolesAssignment(this.$route.params.adminPer_id, string).then(res => {
+                    console.log(res);
+                });
             },
             getPermissionList() {
                 permissionList(1).then(res => {
                    if (res.data.error === 0) {
                        this.permissionList = res.data.data;
-                       console.log(res.data.data);
+                       for (let item in this.permissionList) {
+                            this.users.push(this.permissionList[item]); // 删了会报错
+                           this.isIndeterminate.push({isIndeterminate: true});
+                           this.checkAll.push({checkAll: true});
+                       }
+//                       console.log(this.isIndeterminate);
+//                       console.log(this.checkAll);
                    }
                 });
             }

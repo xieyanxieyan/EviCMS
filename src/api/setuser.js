@@ -168,6 +168,7 @@ export function frezeAdmin(admin_id, status) {
         params
     });
 }
+
 // 权限列表
 export function permissionList(type) {
     const params = {
@@ -176,6 +177,31 @@ export function permissionList(type) {
     return fetch({
         method: 'get',
         url: 'admin/permission/list',
+        params
+    });
+}
+
+// 查看角色下的所有权限
+export function ownpermission(role_id) {
+    const params = {
+        role_id
+    };
+    return fetch({
+        method: 'get',
+        url: 'admin/roles/ownpermission',
+        params
+    });
+}
+
+// 分配权限
+export function rolesAssignment(role_id, permissions) {
+    const params = {
+        role_id,
+        permissions
+    };
+    return fetch({
+        method: 'post',
+        url: 'admin/roles/assignment',
         params
     });
 }

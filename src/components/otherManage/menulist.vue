@@ -239,6 +239,7 @@
                                     type: 'success',
                                     showClose: true
                                 });
+                                this.$refs['addMenu'].resetFields();
                             }
                         });
                     } else {

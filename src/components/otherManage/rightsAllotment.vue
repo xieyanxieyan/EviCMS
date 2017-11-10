@@ -58,10 +58,10 @@
                 <el-form-item label="上级栏目:" prop="column">
                     <el-select v-model="addForm.column" placeholder="请选择">
                         <el-option
-                            v-for="item in list"
-                            :key="item.id"
+                            v-for="item in menuList"
+                            :key="item.menu_id"
                             :label="item.name"
-                            :value="item.id"
+                            :value="item.menu_id"
                         >
                         </el-option>
                     </el-select>
@@ -75,17 +75,24 @@
     </div>
 </template>
 <script>
-    import {addPermission, permissionList, detailPermission, updatePermission, deletePermission} from '../../api/other';
+    import {addPermission, permissionList, menulist, detailPermission, updatePermission, deletePermission} from '../../api/other';
 
     export default {
         created() {
             this.__list();
+            menulist(2).then(res => {
+                if (res.data.error === 0) {
+                    this.menuList = res.data.data;
+                    console.log(res.data.data);
+                }
+            });
         },
         data() {
             return {
-                operation: '',
-                list: [],
-                total: 0,
+                operation: '',  // 当前操作
+                list: [], // 列表项
+                menuList: [], // 下拉列表的项
+                total: 0,  // 总条数
                 currentId: '',
                 currentIndex: '',
                 centerDialogVisible: false,
