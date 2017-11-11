@@ -13,7 +13,7 @@
         data() {
             return {
                 checkAll: false,
-                checkedCities: ['上海', '北京'],
+                checkedCities: ['北京'],
                 cities: ['上海', '北京', '广州', '深圳'],
                 isIndeterminate: true
             };
