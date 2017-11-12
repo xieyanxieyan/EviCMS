@@ -133,10 +133,11 @@
                 this.currentIndex = index;
                 detailPermission(this.list[index].id).then(res => {
                   if (res.data.error === 0) {
+                      console.log(res.data.data);
                         this.addForm.username = res.data.data.name;
                         this.addForm.description = res.data.data.description;
                         this.addForm.value = res.data.data.permission_key;
-                        this.addForm.column = res.data.data.id;
+                        this.addForm.column = res.data.data.name;
                   } else if (res.data.error === 2) {
                       this.$message({
                           message: '操作失败',

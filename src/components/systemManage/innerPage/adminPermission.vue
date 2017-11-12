@@ -15,7 +15,7 @@
                     <i></i>
                     <el-checkbox :indeterminate="isIndeterminate[index].isIndeterminate" v-model="checkAll[index].checkAll" @change="handleCheckAllChange($event, index)">{{key}}</el-checkbox>
                     <div style="margin: 15px 0;"></div>
-                    <el-checkbox-group v-model="checkUsers[index]" @change="handleCheckedChange($event, index)">
+                    <el-checkbox-group v-model="checkUsers" @change="handleCheckedChange($event, index)">
                         <el-checkbox v-for="(user, index) in item" :label="user" :key="user.index">{{user.name}}</el-checkbox>
                     </el-checkbox-group>
                     </template>
@@ -27,8 +27,6 @@
 <script>
     import {permissionList, ownpermission, rolesAssignment} from '../../../api/setuser';
     export default {
-        beforeCreated() {
-        },
         created() {
             this.getPermissionList(); // 获取页面上的列表
         },
@@ -45,15 +43,15 @@
             };
         },
         methods: {
+
             // 回到上一级
             routerBack() {
                 this.$router.go(-1);
             },
             handleCheckAllChange(event, index) {
-                console.log(event.target.checked);
-                this.checkUsers[index] = event.target.checked ? this.users[index] : [];
-                console.log(this.users[index], 'this.user');
-                console.log(this.checkUsers[index]); //  选择的项
+                let userChecked;
+                userChecked = event.target.checked ? this.users[index] : [];
+                this.checkUsers.push.apply(this.checkUsers, userChecked);
                 this.isIndeterminate[index].isIndeterminate = false;
             },
             handleCheckedChange(value, index) {
@@ -71,9 +69,7 @@
                 let string = [];
                 console.log(this.checkUsers, 'aiyayaya');
                 for (let i of this.checkUsers) {
-                    for (let ii of i) {
-                        string.push(ii.id);
-                    }
+                        string.push(i.id);
                 }
                 string = string.join(',');
                 rolesAssignment(this.$route.params.adminPer_id, string).then(res => {
@@ -110,11 +106,11 @@
                    }).then(() => {
                        ownpermission(this.$route.params.adminPer_id).then(res => {
                            if (res.data.error === 0) {
-                               let index = -1;
+//                               let index = -1;
                                console.log(this.prevelege);
                                for (let ii in this.prevelege) {
-                                   index++;
-                                   this.checkUsers[index] = [];
+//                                   index++;
+//                                   this.checkUsers[index] = [];
                                    console.log(this.prevelege[ii], '第一层');
                                    for (let iii of this.prevelege[ii]) {
                                        console.log(iii, '第二层');
@@ -122,7 +118,7 @@
 //                                           console.log(item, 'item');
                                            if (item.permission_id === iii.id) {
                                                console.log(item.permission_id, '相同');
-                                               this.checkUsers[index].push(iii);
+                                               this.checkUsers.push(iii);
                                            }
                                        }
                                    }

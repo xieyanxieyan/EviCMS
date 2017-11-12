@@ -145,11 +145,13 @@
                 this.currentIndex = index;
                 detailmenu(this.list[this.currentIndex].menu_id).then(res => {
                     if (res.data.error === 0) {
+                        console.log(res.data.data);
                         this.addMenu.username = res.data.data.name;
                         this.addMenu.link = res.data.data.link;
                         this.addMenu.status = res.data.data.status === 1 ? '显示' : '隐藏';
                        for (let item of this.list) {
                            if (res.data.data.pid === item.menu_id) {
+
                            }
                        }
                     }
