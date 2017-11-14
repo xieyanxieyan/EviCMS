@@ -89,13 +89,14 @@ export function detailmenu(menu_id) {
 }
 
 // 编辑菜单
-export function updatemenu(menu_id, name, link, status, pid) {
+export function updatemenu(menu_id, name, link, status, pid, role_id) {
     const params = {
         menu_id,
         name,
         link,
         status,
-        pid
+        pid,
+        role_id
     };
     return fetch({
         method: 'post',

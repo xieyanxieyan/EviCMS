@@ -26,6 +26,7 @@ import adminPermission from '@/components/systemManage/innerPage/adminPermission
 import rightAllotment from '@/components/otherManage/rightsAllotment';
 import test from '@/components/test';
 import menulist from '@/components/otherManage/menulist';
+import giveRovoke from '@/components/otherManage/giveRevoke';
 Vue.use(VueRouter);
 const routes = [
     {
@@ -215,6 +216,14 @@ const routes = [
               meta: {
                   requireAuth: true
               }
+            },
+            {
+                path: '/giveRovoke/:rovokeId',
+                name: 'giveRovoke',
+                component: giveRovoke,
+                meta: {
+                    requireAuth: true
+                }
             }
         ]
     },

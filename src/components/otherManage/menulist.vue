@@ -31,6 +31,7 @@
                     <td>
                         <el-button size="small" @click="editList(index)">编辑</el-button>
                         <el-button size="small" @click="deleteList(index)">删除</el-button>
+                        <el-button size="small" @click="toNextPage(index)">分配权限</el-button>
                     </td>
                 </tr>
                 </tbody>
@@ -60,7 +61,7 @@
                     <el-cascader
                         v-model="addMenu.fatherMenu"
                         :options="options"
-                        :value = "value"
+                        :value="value"
                         :show-all-levels="false"
                         :change-on-select="true"
                         @change="handleChange">
@@ -121,21 +122,21 @@
             // 删除菜单
             deleteList(index) {
                 deleteMenus(this.list[index].menu_id).then(res => {
-                  if (res.data.error === 0) {
-                      this.$message({
-                          message: '删除成功',
-                          type: 'success',
-                          showClose: true
-                      });
-                      this.showlist();
-                  } else {
-                      this.$message({
-                          message: res.data.data,
-                          type: 'error',
-                          showClose: true,
-                          duration: 1000
-                      });
-                  }
+                    if (res.data.error === 0) {
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success',
+                            showClose: true
+                        });
+                        this.showlist();
+                    } else {
+                        this.$message({
+                            message: res.data.data,
+                            type: 'error',
+                            showClose: true,
+                            duration: 1000
+                        });
+                    }
                 });
             },
 //            显示菜单详情
@@ -149,13 +150,26 @@
                         this.addMenu.username = res.data.data.name;
                         this.addMenu.link = res.data.data.link;
                         this.addMenu.status = res.data.data.status === 1 ? '显示' : '隐藏';
-                       for (let item of this.list) {
-                           if (res.data.data.pid === item.menu_id) {
-
-                           }
-                       }
+//                        this.parseTreeJson(this.options, res.data.data.pid);
+//                        for (let item of this.list) {
+//                            if (res.data.data.pid === item.menu_id) {
+//
+//                            }
+//                        }
                     }
                 });
+            },
+//            寻找父级链接
+            findFatherLink(treeNodes, id) {
+                if (!treeNodes || !treeNodes.length) return;
+                for (let i = 0, len = treeNodes.length; i < len; i++) {
+                    let childs = treeNodes[i].children;
+                    if (childs && childs.length > 0) {
+                        this.findFatherLink(childs);
+                    } else {
+                        delete treeNodes[i].children;
+                    }
+                }
             },
 //            显示菜单列表
             showlist() {
@@ -189,10 +203,13 @@
                 }
             },
 //            不定菜单生成
-            parseTreeJson(treeNodes) {
+            parseTreeJson(treeNodes, id) {
                 if (!treeNodes || !treeNodes.length) return;
                 for (let i = 0, len = treeNodes.length; i < len; i++) {
                     let childs = treeNodes[i].children;
+                    if (id) {
+                      console.log(id);
+                    }
                     treeNodes[i].label = treeNodes[i].name;
                     treeNodes[i].value = treeNodes[i].menu_id;
 //                    delete treeNodes[i].name;
@@ -251,9 +268,13 @@
                 });
                 this.centerDialogVisible = false;
             },
+            toNextPage(index) {
+                this.$router.push({name: 'giveRovoke', params: {rovokeId: this.list[index].menu_id}});
+            },
             handleChange(value) {
-                console.log(value);
+                console.log(value, '值');
                 this.addMenu.fatherMenu = value;
+                console.log(this.value);
             }
         }
     };

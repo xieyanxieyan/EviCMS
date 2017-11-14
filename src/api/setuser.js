@@ -1,7 +1,7 @@
 import fetch from '@/common/js/fetch';
 
 // 角色列表
-export function getUserList() {
+export function getRoleList() {
     return fetch({
         method: 'get',
         url: 'admin/roles/list'
