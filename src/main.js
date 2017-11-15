@@ -6,6 +6,7 @@ import App from './App.vue';
 import router from './router';
 import VCharts from 'v-charts';
 import ElementUI from 'element-ui';
+import './mock/index';
 import store from './store';
 // import 'normalize.css';
 import 'element-ui/lib/theme-default/index.css';

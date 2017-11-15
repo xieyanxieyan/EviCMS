@@ -19,7 +19,8 @@
 </template>
 <script>
     import {getRoleList} from '../../api/setuser';
-        import {detailmenu, updatemenu} from '../../api/other';
+    import {detailmenu, updatemenu} from '../../api/other';
+
     export default {
         created() {
             this.getList();
@@ -53,38 +54,38 @@
                         }
                     }).then(res => {
                         detailmenu(this.$route.params.rovokeId).then(res => {
-                           this.detail = res.data.data;
-                           console.log(res.data.data.role_id);
-                           for (let s of this.roles) {
-                               if (res.data.data.role_id.indexOf(s.id) !== -1) {
-                                   this.checkedRoles.push(s);
-                               }
-                           }
+                            this.detail = res.data.data;
+                            console.log(res.data.data.role_id);
+                            for (let s of this.roles) {
+                                if (res.data.data.role_id.indexOf(s.id) !== -1) {
+                                    this.checkedRoles.push(s);
+                                }
+                            }
                         });
                     });
                 });
             },
             // 保存权限
             saveRovoke() {
-               let str = [];
-               for (let item of this.checkedRoles) {
-                   str.push(item.id);
-               }
-              str = str.join(',');
-              console.log(str);
+                let str = [];
+                for (let item of this.checkedRoles) {
+                    str.push(item.id);
+                }
+                str = str.join(',');
+                console.log(str);
                 updatemenu(this.detail.menu_id, this.detail.name, this.detail.link, this.detail.status, this.detail.pid, str).then(res => {
-                   if (res.data.error === 0) {
-                       this.$message({
-                           message: '保存成功',
-                           type: 'success',
-                           showClose: true
-                       });
-                   } else {
-                       this.$message({
-                           message: res.data.data,
-                           type: 'error'
-                       });
-                   }
+                    if (res.data.error === 0) {
+                        this.$message({
+                            message: '保存成功',
+                            type: 'success',
+                            showClose: true
+                        });
+                    } else {
+                        this.$message({
+                            message: res.data.data,
+                            type: 'error'
+                        });
+                    }
                 });
             },
             // 返回
@@ -97,22 +98,31 @@
 <style lang="scss">
     /*@import '../../style/common.scss';*/
     @import '../../scss/mixin.scss';
-#revoke{
-    padding:0 15px;
-    .revokeTop{
-        padding:15px 0;
-        span{
-            @include span;
-        }
+
+    #revoke {
+        padding: 0 15px;
+
+    .revokeTop {
+        padding: 15px 0;
+
+    span {
+    @include span;
     }
-    .revokeCon{
-        position:relative;
-        padding:15px 40px 15px;
+
+    }
+    .revokeCon {
+        position: relative;
+        padding: 15px 40px 15px;
         min-height: calc(100vh - 100px);
         background: #fff;
     }
-    .button{
 
+    .button {
+        position:absolute;
+        bottom:30px;
+
+        /*display: flex;*/
+        /*bottom:0;*/
     }
-}
+    }
 </style>

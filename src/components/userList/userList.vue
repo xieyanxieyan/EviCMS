@@ -27,7 +27,7 @@
                         <el-form-item>
                             <el-button type="primary" @click="serachList">搜索</el-button>
                             <span class="grayline">|</span>
-                            <el-button>
+                       0     <el-button>
                                 <router-link to="/addUser"> 添加用户</router-link>
                             </el-button>
                         </el-form-item>

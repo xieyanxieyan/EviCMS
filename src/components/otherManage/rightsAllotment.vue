@@ -5,7 +5,7 @@
             权限分配
         </span>
         </div>
-        <div>
+        <div class="add">
             <el-button size="small" @click="addAdmin">
                 添加权限
             </el-button>
@@ -26,7 +26,7 @@
                     <td>{{item.name}}</td>
                     <td>{{item.permission_key}}</td>
                     <td>
-                        <el-button size="small" @click="editAdmin(index)">编辑</el-button>
+                        <el-button size="small" @click="editAdmin(index)" type="primary">编辑</el-button>
                         <el-button size="small" @click="deleteAdmin(index)">删除</el-button>
                     </td>
                 </tr>
@@ -244,7 +244,9 @@
     span {
         color: #fff;
     }
-
+    }
+    .add{
+        margin-bottom: 15px;
     }
 
     }

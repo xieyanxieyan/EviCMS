@@ -29,9 +29,9 @@
                         </template>
                     </td>
                     <td>
-                        <el-button size="small" @click="editList(index)">编辑</el-button>
+                        <el-button size="small" type="primary" @click="editList(index)">编辑</el-button>
                         <el-button size="small" @click="deleteList(index)">删除</el-button>
-                        <el-button size="small" @click="toNextPage(index)">分配权限</el-button>
+                        <el-button size="small" type="success" @click="toNextPage(index)">分配权限</el-button>
                     </td>
                 </tr>
                 </tbody>
