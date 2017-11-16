@@ -12,12 +12,16 @@
             <div class="selectItem">
                 <div v-for="(item, key, index) in permissionList">
                     <template>
-                    <i></i>
-                    <el-checkbox :indeterminate="isIndeterminate[index].isIndeterminate" v-model="checkAll[index].checkAll" @change="handleCheckAllChange($event, index)">{{key}}</el-checkbox>
-                    <div style="margin: 15px 0;"></div>
-                    <el-checkbox-group v-model="checkUsers" @change="handleCheckedChange($event, index)">
-                        <el-checkbox v-for="(user, index) in item" :label="user" :key="user.index">{{user.name}}</el-checkbox>
-                    </el-checkbox-group>
+                        <i></i>
+                        <el-checkbox :indeterminate="isIndeterminate[index].isIndeterminate"
+                                     v-model="checkAll[index].checkAll" @change="handleCheckAllChange($event, index)">
+                            {{key}}
+                        </el-checkbox>
+                        <div style="margin: 15px 0;"></div>
+                        <el-checkbox-group v-model="checkUsers" @change="handleCheckedChange($event, index)">
+                            <el-checkbox v-for="(user, index) in item" :label="user" :key="user.index">{{user.name}}
+                            </el-checkbox>
+                        </el-checkbox-group>
                     </template>
                 </div>
             </div>
@@ -26,6 +30,7 @@
 </template>
 <script>
     import {permissionList, ownpermission, rolesAssignment} from '../../../api/setuser';
+
     export default {
         created() {
             this.getPermissionList(); // 获取页面上的列表
@@ -69,7 +74,7 @@
                 let string = [];
                 console.log(this.checkUsers, 'aiyayaya');
                 for (let i of this.checkUsers) {
-                        string.push(i.id);
+                    string.push(i.id);
                 }
                 string = string.join(',');
                 rolesAssignment(this.$route.params.adminPer_id, string).then(res => {
@@ -90,117 +95,103 @@
             },
 //            获取所有权限
             getPermissionList() {
-               return new Promise(() => {
-                   permissionList(1).then(res => {
-                       if (res.data.error === 0) {
-                           this.permissionList = res.data.data;
-                           this.prevelege = this.permissionList;
-                           for (let item in this.permissionList) {
-                               this.users.push(this.permissionList[item]); // 删了会报错
-                               this.isIndeterminate.push({isIndeterminate: true});
-                               this.checkAll.push({checkAll: false});
-                           }
+                return new Promise(() => {
+                    permissionList(1).then(res => {
+                        if (res.data.error === 0) {
+                            this.permissionList = res.data.data;
+                            this.prevelege = this.permissionList;
+                            for (let item in this.permissionList) {
+                                this.users.push(this.permissionList[item]); // 删了会报错
+                                this.isIndeterminate.push({isIndeterminate: true});
+                                this.checkAll.push({checkAll: false});
+                            }
 //                       console.log(this.isIndeterminate);
 //                       console.log(this.checkAll);
-                       }
-                   }).then(() => {
-                       ownpermission(this.$route.params.adminPer_id).then(res => {
-                           if (res.data.error === 0) {
+                        }
+                    }).then(() => {
+                        ownpermission(this.$route.params.adminPer_id).then(res => {
+                            if (res.data.error === 0) {
 //                               let index = -1;
-                               console.log(this.prevelege);
-                               for (let ii in this.prevelege) {
+                                console.log(this.prevelege);
+                                for (let ii in this.prevelege) {
 //                                   index++;
 //                                   this.checkUsers[index] = [];
-                                   console.log(this.prevelege[ii], '第一层');
-                                   for (let iii of this.prevelege[ii]) {
-                                       console.log(iii, '第二层');
-                                       for (let item of res.data.data) {
+                                    console.log(this.prevelege[ii], '第一层');
+                                    for (let iii of this.prevelege[ii]) {
+                                        console.log(iii, '第二层');
+                                        for (let item of res.data.data) {
 //                                           console.log(item, 'item');
-                                           if (item.permission_id === iii.id) {
-                                               console.log(item.permission_id, '相同');
-                                               this.checkUsers.push(iii);
-                                           }
-                                       }
-                                   }
-                               }
-                               console.log(this.checkUsers, 'checkeduser');
-                           } else {
-                               this.$message({
-                                   message: res.data.data,
-                                   type: 'error',
-                                   showClose: true
-                               });
-                           }
-                       });
-                   }).catch(err => {
-                       console.log(err);
-                   });
-               });
+                                            if (item.permission_id === iii.id) {
+                                                console.log(item.permission_id, '相同');
+                                                this.checkUsers.push(iii);
+                                            }
+                                        }
+                                    }
+                                }
+                                console.log(this.checkUsers, 'checkeduser');
+                            } else {
+                                this.$message({
+                                    message: res.data.data,
+                                    type: 'error',
+                                    showClose: true
+                                });
+                            }
+                        });
+                    }).catch(err => {
+                        console.log(err);
+                    });
+                });
             }
         }
     };
 </script>
 <style lang="scss" type="text/scss">
     @import '../../../scss/mixin';
-#adminPermission{
-    padding:0 15px;
-    .adminPermisssionTop{
-        padding:15px 0;
-        span{
-           @include span;
+
+    #adminPermission {
+        padding: 0 15px;
+        .adminPermisssionTop {
+            padding: 15px 0;
+            span {
+                @include span;
+            }
+            .topButton {
+                float: right;
+                .el-button {
+                    border-radius: 0;
+                    padding: 5px 15px;
+                    span {
+                        border: 0;
+                    }
+                }
+
+            }
         }
-        .topButton{
-           float:right;
-            .el-button {
-                border-radius:0;
-                padding:5px 15px;
-                span{
-                    border:0;
+        .adminpermissioncontent {
+            background: #fff;
+            min-height: calc(100vh - 120px);
+            & > div:nth-child(1) {
+                padding: 10px 20px;
+                border-bottom: 1px solid #eee;
+            }
+            .selectItem {
+                padding: 50px;
+                & i {
+
+                }
+                & > div {
+                    position: relative;
+                    margin-bottom: 30px;
+                    padding-left: 30px;
+                    @for $i from 1 to 10 {
+                    　　.selectItem>div:nth-child(#{$i}) i {
+                            @include dotted(darken(#cc3, 10%));
+                            top: 8px;
+                            left: 0px;
+                        }
+                    }
                 }
             }
-
-
         }
     }
-.adminpermissioncontent{
-    background: #fff;
-    min-height:calc( 100vh - 120px);
-    &>div:nth-child(1){
-        padding:10px 20px;
-        border-bottom:1px solid #eee;
-    }
-    .selectItem{
-        padding:50px;
-        & i{
-
-        }
-        &>div{
-            position:relative;
-            margin-bottom:30px;
-            padding-left:30px;
-            &:nth-child(1) i{
-                @include dotted(#437dff);
-                top:8px;
-                left:0px;
-            }
-            &:nth-child(2) i{
-                @include dotted(#4cce6d);
-                top:8px;
-                left:0px;
-
-            }
-            &:nth-child(3) i{
-                @include dotted(#f5cf68);
-                top:8px;
-                left:0px;
-            }
-            &:nth-child(4) i{
-                @include dotted(#eb5d41);
-                top:8px;
-                left:0px;
-            }
-        }
-    }
-}
-}
 </style>
