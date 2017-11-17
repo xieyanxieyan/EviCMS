@@ -1,44 +1,63 @@
 <template>
-    <div id="appwraper">
-        <sidebar></sidebar>
+    <div id="app-wrapper">
+        <keep-alive>
+            <sidebar></sidebar>
+        </keep-alive>
         <div class="main">
-            <topbar></topbar>
-            <router-view></router-view>
+            <keep-alive>
+                <top-bar></top-bar>
+            </keep-alive>
+            <transition>
+                <router-view :key="key"></router-view>
+            </transition>
         </div>
     </div>
 </template>
 <script>
     import sidebar from './sidebar';
-    import topbar from './topBar.vue';
+    import topBar from './topBar.vue';
+
     export default {
-        name: 'appwraper',
+        name: 'app',
+        computed: {
+            key() {
+                return this.$route.name !== undefined ? this.$route.name + +new Date() : this.$route + +new Date();
+            }
+        },
         components: {
             sidebar,
-            topbar
+            topBar
         }
     };
 </script>
 <style>
     .main {
         margin-left: 200px;
-        min-width:900px;
+        min-width: 900px;
     }
-    .main{
-        height:100%;
+
+    .main {
+        height: 100%;
     }
-    body{
-        margin:0;
-        padding:0;
+
+    body {
+        margin: 0;
+        padding: 0;
         background: #eeeeee;
-        font-size:13px;
+        font-size: 13px;
     }
-    .clear:after{
-        content:'';
-        display:block;
-        clear:both;
+
+    .clear:after {
+        content: '';
+        display: block;
+        clear: both;
     }
-    input{
-        outline:none;
+
+    input {
+        outline: none;
     }
-    tbody{background:#fff;}
+
+    tbody {
+        background: #fff;
+    }
 </style>

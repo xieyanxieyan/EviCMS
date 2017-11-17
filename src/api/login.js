@@ -12,3 +12,10 @@ export function adminLogin(username, password, code) {
         params
     });
 }
+// 退出登录
+export function logOut() {
+    return fetch({
+        method: 'get',
+        url: '/admin/logout'
+    });
+}

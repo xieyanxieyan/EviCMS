@@ -140,6 +140,24 @@
                         {
                             name: '管理员设置',
                             url: '/adminManage'
+                        },
+                        {
+                            name: '操作日志',
+                            url: '/operationLog'
+                        },
+                        {
+                            name: '密钥管理',
+                            url: '/keyManage'
+                        }
+                    ],
+                    '其他管理': [
+                        {
+                            name: '权限分配',
+                            url: '/rightAllotment'
+                        },
+                        {
+                            name: '菜单管理',
+                            url: '/menulist'
                         }
                     ]
                 }
@@ -147,10 +165,10 @@
         },
         methods: {
             handleOpen(key, keyPath) {
-                console.log(key, keyPath);
+//                console.log(key, keyPath);
             },
             handleClose(key, keyPath) {
-                console.log(key, keyPath);
+//                console.log(key, keyPath);
             }
         }
     };
