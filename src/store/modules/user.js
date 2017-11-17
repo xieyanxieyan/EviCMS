@@ -40,6 +40,13 @@ const user = {
                         commit('SET_PERMISSION', data.permissions);
                         commit('SET_ADMIN', data.admin_id);
                         commit('SET_LOGIN_EXPIRE', data.login_expire);
+                        // let arr = [];
+                        // arr.push(data.menus);
+                        // arr.push(data.permissions);
+                        // arr.push(data.name);
+                        localStorage.setItem('name', data.name);
+                        localStorage.setItem('permission', JSON.stringify(data.permissions));
+                        localStorage.setItem('menus', JSON.stringify(data.menus));
                         resolve(0);
                     } else if (res.data.error === 100001) {
                         resolve(100001);
@@ -62,6 +69,7 @@ const user = {
                         if (res.data.error === 0) {
                             commit('SET_AUTH_TOKEN', ''); //  将token置为空
                             removeToken(); // 移除cookie中的token
+                            localStorage.clear();
                             resolve(0);
                         } else {
                             resolve(res.data.error);

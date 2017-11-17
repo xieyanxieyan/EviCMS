@@ -9,11 +9,11 @@
                  v-for="(item,key,index) in this.options">
             <el-submenu index="">
                 <template slot="title">
-                    {{key}}
+                    {{item.name}}
                 </template>
-                <el-menu-item-group v-for="(list,index) in item" :key="list.id" :label="list">
+                <el-menu-item-group v-for="(list,index) in item.children" :key="list.id" :label="list">
                     <el-menu-item index="">
-                        <router-link :to='list.url'>{{list.name}}</router-link>
+                        <router-link :to='list.link'>{{list.name}}</router-link>
                     </el-menu-item>
                     <!--<el-menu-item index="'index'-'ind'">-->
                     <!--<router-link to="/survestaff">公测员管理</router-link>-->
@@ -88,87 +88,27 @@
 
 <script>
     export default {
+        created() {
+            this.getOptions();
+        },
         data() {
             return {
                 index: 0,
-                options: {
-                    '用户管理':
-                        [
-                            {
-                                name: '用户列表',
-                                url: '/userlist'
-                            },
-                            {
-                                name: '公测员列表',
-                                url: '/survestaff'
-                            }
-                        ],
-                    '运营管理':
-                        [
-                            {
-                                name: '投诉建议管理',
-                                url: '/compManage'
-                            },
-                            {
-                                name: '退款处理',
-                                url: '/refund'
-                            },
-                            {
-                                name: '出证管理',
-                                url: '/HisManage'
-                            },
-                            {
-                                name: '出庭管理',
-                                url: '/TrialManage'
-                            }
-                        ],
-                    '数据分析': [
-                        {
-                            name: '用户数据',
-                            url: '/userData'
-                        },
-                        {
-                            name: '行为数据',
-                            url: '/userData'
-                        },
-                        {
-                            name: '交易统计',
-                            url: '/tradeData'
-                        }
-                    ],
-                    '系统管理': [
-                        {
-                            name: '管理员设置',
-                            url: '/adminManage'
-                        },
-                        {
-                            name: '操作日志',
-                            url: '/operationLog'
-                        },
-                        {
-                            name: '密钥管理',
-                            url: '/keyManage'
-                        }
-                    ],
-                    '其他管理': [
-                        {
-                            name: '权限分配',
-                            url: '/rightAllotment'
-                        },
-                        {
-                            name: '菜单管理',
-                            url: '/menulist'
-                        }
-                    ]
-                }
+                options: []
             };
         },
         methods: {
             handleOpen(key, keyPath) {
 //                console.log(key, keyPath);
+//                console.log(this.$store.state.user.menus);
             },
             handleClose(key, keyPath) {
 //                console.log(key, keyPath);
+            },
+            getOptions() {
+                let storage = window.localStorage ? localStorage.getItem('menus') : [];
+                storage = storage ? JSON.parse(storage) : [];
+                this.options = storage;
             }
         }
     };

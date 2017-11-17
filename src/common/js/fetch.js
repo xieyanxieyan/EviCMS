@@ -8,7 +8,6 @@ const service = axios.create({
     }
 );
 service.interceptors.request.use(config => {
-    console.log(store.getters.token);
     // 发送请求之前检测Token
     if (store.getters.token) {
         config.headers['auth-token'] = getToken(); // 为每个请求添加token

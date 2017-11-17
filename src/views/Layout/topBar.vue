@@ -3,25 +3,31 @@
         <div>
             <span style="margin-right:15px; cursor:pointer;" @click="logout">退出登录</span>
             <span class="line">|</span>
-            <span>{{admin}}管理员：admin</span>
+            <span>管理员：{{name}}</span>
         </div>
     </div>
 </template>
 <script>
     export default {
+        created() {
+            this.getName();
+        },
         data() {
-            return {
-                admin: '2'
-            };
+          return {
+              name: ''
+          };
         },
         methods: {
+            getName() {
+              this.name = window.localStorage.getItem('name');
+            },
             logout() {
 //                console.log('d');
                 this.$store.dispatch('adminLogout')
                     .then((res) => {
                     if (res === 0) {
                         // 退出登录
-//                        location.reload();
+                        location.reload();
                     } else if (res === 100001) {
                         this.$message({
                             message: '该管理员不存在',
