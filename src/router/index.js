@@ -230,16 +230,6 @@ const routes = [
     {
         path: '/login',
         component: Login
-        // beforeEnter: (to, from, next) => {
-        //     if (store.getters.op_key === '') {
-        //         next({
-        //             path: '/login',
-        //             query: {redirect: to.fullPath}
-        //         });
-        //     } else {
-        //         next();
-        //     }
-        // }
     }
 ];
 export default new VueRouter({

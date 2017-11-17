@@ -31,7 +31,7 @@ export function editUser(user_id, phone, password, amount, reason) {
     const params = {
         user_id,
         phone,
-        password: CryptoJS.MD5(password).toString(),
+       password,
         amount,
         reason
     };

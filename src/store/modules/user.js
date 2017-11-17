@@ -32,7 +32,6 @@ const user = {
                 adminLogin(user_Info.username, user_Info.password, user_Info.code).then(res => {
                     if (res.data.error === 0) {
                         // 对返回的结果进行存储到cookies
-                        console.log(res);
                         const data = res.data.data;
                         setToken(data.auth_token);
                         commit('SET_AUTH_TOKEN', data.auth_token);

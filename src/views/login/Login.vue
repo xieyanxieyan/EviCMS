@@ -131,8 +131,6 @@
                                         });
                                         break;
                                 }
-
-                                console.log(res);
                             }).catch(err => {
                                 this.$message.error(err);
                             });
