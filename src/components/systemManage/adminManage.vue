@@ -4,10 +4,10 @@
             <span>管理员管理</span>
         </div>
         <div class="adminSelect">
-            <el-button size="small">
+            <el-button size="small"  v-bind:class ="{hide:addManage}">
                 <span @click="addAdmin">添加管理员</span>
             </el-button>
-            <el-button size="small">
+            <el-button size="small"  v-bind:class="{hide:userSet}">
                 <router-link to="/userSet" style="color:#333;">角色设置</router-link>
             </el-button>
             <el-form :inline="true" :model="formInline" class="demo-form-inline">
@@ -58,7 +58,7 @@
                     <th>操作</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody v-bind:class="{hide:adminList}">
                 <tr v-for="(item,index) in adminMessage">
                     <td>{{item.admin_id}}</td>
                     <td>{{item.username}}</td>
@@ -73,7 +73,7 @@
                         </template>
                     </td>
                     <td>客服</td>
-                    <td><span @click="editMessage(index)" class="bluebutton">编辑</span>
+                    <td><span @click="editMessage(index)" class="bluebutton" v-bind:class="{hide:adminEdit}">编辑</span>
                         <template v-if="item.status === 1">
                                 <span @click="frozen(index)" class="redbutton">
                                       冻结
@@ -91,14 +91,20 @@
 </template>
 <script>
     import {getAdminList, frezeAdmin} from '../../api/setuser';
-    import {formatDate} from '../../assets/public';
+    import {formatDate, contains} from '../../assets/public';
 
     export default {
         created() {
             this._userList();
+            this.permissionControl();
         },
         data() {
             return {
+                addManage: false, // 添加管理员权限
+                userSet: false, // 管理员角色设置
+                adminList: false, // 管理员列表是否显示
+                adminEdit: false, // 管理员编辑权限
+                adminFrozen: false, // 管理员冻结权限
                 formInline: {
                     user: '',
                     region: '',
@@ -144,6 +150,14 @@
                 } else if (this.adminMessage[index].status === 2) {
                     this.frozenStatus(index, 1);
                 }
+            },
+            // 权限控制函数
+            permissionControl() {
+                this.addManage = !contains('admin_add'); // 添加管理员
+                this.userSet = !contains('admin_roles_list'); // 管理员角色设置
+                this.adminList = !contains('admin_list'); // 管理员列表显示
+                this.adminEdit = !contains('admin_update'); // 管理员列表编辑权限
+                this.adminFrozen = !contains('admin_freeze'); // 管理员列表冻结权限
             }
         }
     };

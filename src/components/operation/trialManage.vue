@@ -71,7 +71,7 @@
                     <th>操作</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody v-class="{hide:trailList}">
                 <tr v-for="(item,index) in TrialData">
                     <td>{{item.request_time}}</td>
                     <td>{{item.username}}</td>
@@ -82,18 +82,31 @@
                 </tbody>
             </table>
         </div>
+        <div v-bind:class="{hide: trailList}">
+            <el-pagination
+                layout="prev, pager, next,total"
+                :total="total"
+                :page-size="13"
+                :current-page.sync="currentPage"
+                @current-change="handleCurrentChange()"
+            ></el-pagination>
+        </div>
     </div>
 </template>
 <script>
     import {trailManage} from '../../api/operation';
-    import {translateTime} from '../../assets/public';
+    import {translateTime, contains} from '../../assets/public';
     export default {
         created() {
             this.showtrailList();
         },
         data () {
             return {
+                trailList: false, // 出庭管理列表是否显示
+                trailDetail: false, // 出庭管理详情是否显示
                 currentTabIndex: 0,
+                total: 0,
+                currentPage: 1,
                 activeName: '4',
                 timeFrom: {
                     value1: '',
@@ -135,6 +148,14 @@
             },
             todetailCourt(index) {
                 this.$router.push({name: 'detailCourt', params: {courtId: this.TrialData[index].apply_id}});
+            },
+            // 权限控制函数
+            controlPermission() {
+                this.trailList = !contains('operation_court_list');  // 是否有出庭列表权限
+                this.trailDetail = !contains('operation_certify_detail'); // 是否有出庭详情权限
+            },
+            handleCurrentChange() {
+                console.log('click');
             }
         }
     };

@@ -42,7 +42,7 @@
                 </el-form-item>
             </el-form>
         </div>
-        <div>
+        <div v-bind="{hide: refundList}">
             <table cellspacing="0" cellpadding="0" border="0">
                 <thead>
                 <tr>
@@ -77,14 +77,14 @@
                     </td>
                     <td>
                         <span>用户界面</span>
-                        <span @click="handleRefund(index)">处理</span>
+                        <span @click="handleRefund(index)" v-bind:class="{hide:refundDeal}">处理</span>
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
         <!--分页-->
-        <div class="pagination">
+        <div class="pagination" v-bind:class="{hide:refundList}">
             <el-pagination
                 layout="prev, pager, next,total"
                 :total= "total"
@@ -116,10 +116,11 @@
 </template>
 <script>
     import {getRefundList, refundHandle} from '../../api/operation';
-    import {translateTime} from '../../assets/public';
+    import {translateTime, contains} from '../../assets/public';
     export default {
         created() {
             this._showRefundList();
+            this.controlPermission();
         },
         data() {
             return {
@@ -129,6 +130,8 @@
                 currentTabIndex: 0,
                 activeName: '1',
                 currentPage: 1,
+                refundDeal: false, // 退款处理的处理按钮是否显示
+                refundList: false, // 退款处理列表是否显示
                 repectReason: '',
                 total: 0,
                 topForm: {
@@ -171,6 +174,11 @@
             handleRefund(index) {
                 this.refunddialog = true;
                 this.activeId = index;
+            },
+            // 权限控制函数
+            controlPermission() {
+                this.refundList = !contains('operation_refund_list'); // 是否有显示列表权限
+                this.refundDeal = !contains('operation_refund_handle');  // 是否有退款处理的权限
             }
         }
     };

@@ -1,11 +1,13 @@
 import fetch from '../common/js/fetch.js';
 import CryptoJS from 'crypto-js';
 //  用户列表
-export function getUserList(phone, reg_time_begin, reg_time_end) {
+export function getUserList(phone, reg_time_begin, reg_time_end, perPage, page) {
     const params = {
        phone,
        reg_time_begin,
-       reg_time_end
+       reg_time_end,
+        perPage,
+        page
     };
     return fetch({
         method: 'get',
@@ -65,11 +67,13 @@ export function userFreeze(user_id, status) {
     });
 }
 // 公测用户列表
-export function getBetaList(phone, reg_time_begin, reg_time_end) {
+export function getBetaList(phone, reg_time_begin, reg_time_end, perPage, page) {
     const params = {
         phone,
         reg_time_begin,
-        reg_time_end
+        reg_time_end,
+        perPage,
+        page
     };
     return fetch({
         method: 'get',

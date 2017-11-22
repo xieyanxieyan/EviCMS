@@ -28,9 +28,9 @@
                     if (res === 0) {
                         // 退出登录
                         location.reload();
-                    } else if (res === 100001) {
+                    } else {
                         this.$message({
-                            message: '该管理员不存在',
+                            message: res.data.data,
                             type: 'error',
                             showClose: true
                         });

@@ -6,28 +6,28 @@
                 <div class="top-area">
                     <el-form :inline="true" :model="form">
                         <el-form-item label="用户名称：">
-                            <el-input v-model="form.phone"   size="small"></el-input>
+                            <el-input v-model="form.phone" size="small"></el-input>
                         </el-form-item>
                         <el-form-item label="注册时间:">
                             <template>
-                            <div>
-                            <el-date-picker
-                                size="small"
-                                v-model="form.value"
-                                type="daterange"
-                                align="right"
-                                unlink-panels
-                                range-separator="至"
-                                start-placeholder="开始日期"
-                                end-placeholder="结束日期">
-                            </el-date-picker>
-                            </div>
+                                <div>
+                                    <el-date-picker
+                                        size="small"
+                                        v-model="form.value"
+                                        type="daterange"
+                                        align="right"
+                                        unlink-panels
+                                        range-separator="至"
+                                        start-placeholder="开始日期"
+                                        end-placeholder="结束日期">
+                                    </el-date-picker>
+                                </div>
                             </template>
                         </el-form-item>
                         <el-form-item>
                             <el-button type="primary" @click="serachList">搜索</el-button>
                             <span class="grayline">|</span>
-                           <el-button>
+                            <el-button v-bind:class="{hide:addUser}">
                                 <router-link to="/addUser"> 添加用户</router-link>
                             </el-button>
                         </el-form-item>
@@ -47,7 +47,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="(item,index) in userList.data">
+                    <tr v-for="(item,index) in userList.data" v-bind:class="{hide:showList}">
                         <td>{{item.user_id}}</td>
                         <td>{{item.cell_phone}}</td>
                         <td>{{item.reg_time}}</td>
@@ -60,10 +60,12 @@
                             </template>
                         </td>
                         <td>
-                            <span @click="touserDetail(index)"><a href="javascript:void(0);">详情/编辑</a></span>
+                            <span @click="touserDetail(index)" v-bind:class="{hide: detail}"><a
+                                href="javascript:void(0);">详情/编辑</a></span>
                             <span class="inter"><a href="javascript:void(0);">用户界面</a></span>
                             <template v-if="item.status === 0">
-                                <span @click="frozen(index)" class="redbutton">
+                                <span @click="frozen(index)" class="redbutton"
+                                      v-bind:class="{hide:frezen}">
                                     <a href="javascript:void(0);">冻结</a>
                                 </span>
                             </template>
@@ -82,7 +84,7 @@
                     <el-pagination
                         layout="prev, pager, next,total"
                         :total="total"
-                        :page-size="13"
+                        :page-size="perpage"
                         :current-page.sync="currentPage"
                         @current-change="handleCurrentChange()"
                     >
@@ -96,17 +98,25 @@
 
 <script>
     import {getUserList, userFreeze} from '../../api/User';
-    import {translateTime} from '../../assets/public';
+    import {translateTime, contains} from '../../assets/public';
+//    import {contains} from '../../assets/public';
+
     export default {
         created() {
             this.getList();
+            this.controlPermission();
         },
         data() {
             return {
                 total: 0,
                 currentTabIndex: 0,
                 userList: [],
+                detail: false, // 详情编辑权限
                 currentPage: 1,
+                frezen: false, // 冻结解冻权限
+                showList: false, // 是否显示列表权限
+                addUser: false, // 是否显示添加用户按钮
+                perpage: 15,
                 form: {
                     phone: '',
                     begin_time: '',
@@ -118,7 +128,7 @@
         },
         methods: {
             getList() {
-                getUserList(this.form.phone, this.form.begin_time, this.form.end_time).then(res => {
+                getUserList(this.form.phone, this.form.begin_time, this.form.end_time, this.perpage, this.currentPage).then(res => {
                     this.userList = res.data.data;
                     this.total = this.userList.total;
                 });
@@ -151,7 +161,14 @@
                 this.getList();
             },
             handleCurrentChange() {
-                console.log('分页');
+                this.getList();
+            },
+            // 控制权限函数
+            controlPermission() {
+                this.detail = !contains('user_detail');// 如果有这个字段，显示详情
+                this.showList = !contains('user_list');  // 如果有这个字段，显示列表
+                this.frezen = !contains('user_freeze'); // 是否冻结
+                 this.addUser = !contains('user_add'); // 是否有添加用户权限
             }
         }
     };
@@ -161,7 +178,9 @@
 <style lang="scss">
     #userList {
         padding: 0 15px;
-
+.hide{
+    display:none;
+}
     a {
         color: #333;
         /*display:inline-block;*/
@@ -174,9 +193,11 @@
 
     .top-area {
         float: right;
-        .el-form-item {
-            margin-bottom: 0;
-        }
+
+    .el-form-item {
+        margin-bottom: 0;
+    }
+
     }
 
     .userList {

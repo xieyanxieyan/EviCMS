@@ -70,7 +70,7 @@
                     <th>操作</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody v-bind:class="{hide: hisList}">
                 <tr v-for="(item,index) in hisData">
                     <td>{{item.req_time}}</td>
                     <td>{{item.phone}}</td>
@@ -87,13 +87,14 @@
                             出证失败
                         </template>
                     </td>
-                    <td><a href="javascript:void(0);" @click="toHisDetail(index)"
+                    <td><a href="javascript:void(0);"
+                           @click="toHisDetail(index)"
                            style="color:#20a0ff;padding:0 5px;border:1px solid">出证详情</a></td>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <div class="pagination">
+        <div class="pagination" v-bind:class="{hide: hisList}">
             <el-pagination
                 layout="prev, pager, next,total"
                 :total="total"
@@ -106,10 +107,11 @@
 </template>
 <script>
     import {certifyList} from '../../api/operation';
-
+    import {contains} from '../../assets/public';
     export default {
         created() {
             this.certList();
+            this.controlPermission();
         },
         data() {
             return {
@@ -117,6 +119,8 @@
                 activeName: 'first',
                 currentPage: 0,
                 total: 0,
+                hisList: true, // 出证列表是否显示
+                hisDetail: true, // 出证详情按钮是否显示
                 formIn: {
                     username: '',
                     cert_num: '',
@@ -146,6 +150,11 @@
                         detailId: this.hisData[index].apply_id
                     }
                 });
+            },
+            // 权限控制
+            controlPermission() {
+                this.hisList = !contains('operation_certify_list'); // 是否有显示出证列表权限
+                this.hisDetail = !contains('operation_certify_detail'); // 是否有出证详情权限
             }
         }
     };

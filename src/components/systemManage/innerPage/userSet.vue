@@ -12,15 +12,15 @@
                         <th>操作</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody v-bind:class="{hide:roleList}">
                     <tr v-for="(item,index) in userMessage">
                         <td style="border-right:0">{{item.name}}</td>
                         <td style="border-left:0">
-                            <el-button size="mini" type="primary" @click="toNextPage(index)">
+                            <el-button size="mini" v-bind:class="{hide: roleSet}" type="primary" @click="toNextPage(index)">
                                 权限设置
                             </el-button>
-                            <el-button size="mini" type="warning" @click="editUser(index)">编辑</el-button>
-                            <el-button size="mini" @click="duerdel(index)">删除</el-button>
+                            <el-button size="mini" type="warning" @click="editUser(index)" v-bind:class="{hide:roleEdit}">编辑</el-button>
+                            <el-button size="mini" @click="duerdel(index)" v-bind:class="{hide:roleDele}">删除</el-button>
                         </td>
                     </tr>
                     </tbody>
@@ -50,6 +50,7 @@
 </template>
 <script>
     import {getRole, addRole, detailRoles, updateRoles, deleteRole} from '../../../api/setuser';
+    import {contains} from '../../../assets/public';
     //    updateRoles, detailRoles, deleteRole
     export default {
         created() {
@@ -57,6 +58,10 @@
         },
         data() {
             return {
+                roleSet: false, // 是否有设置权限
+                roleEdit: false, // 是否有编辑权限
+                roleDele: false, // 是否有删除权限
+                roleList: false, // 是否显示权限列表
                 operation: '',
                 adduserVisible: false,
                 currentIndex: '',
@@ -206,6 +211,13 @@
                         });
                     }
                 });
+            },
+            // 权限控制函数
+            permissionControl() {
+               this.roleSet = !contains('s'); // 是否有权限设置
+                this.roleEdit = !contains('d'); // 是否有角色编辑
+                this.roleDele = !contains('s'); // 是否有角色删除
+                this.roleList = !contains('s'); // 是否显示权限列表
             }
         }
     };
@@ -214,6 +226,9 @@
     @import '../../../scss/mixin.scss';
 
     #userSet {
+        .hide{
+            display:none;
+        }
         padding: 0 15px;
 
     .userSetTop {

@@ -16,7 +16,7 @@
                 <el-form-item>
                     <el-button style="background:#999999;color:#fff">搜索</el-button>
                    <span>|</span>
-                    <el-button type="primary" @click="isVisible=true">添加</el-button>
+                    <el-button type="primary" @click="isVisible=true" v-bind:class="{hide:addButton}">添加</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -41,9 +41,9 @@
                     <td>{{item.expire_time}}</td>
                     <td>{{item.complimentary}}</td>
                     <td>{{item.user.status}}</td>
-                    <td><span style="margin-right:20px;border:1px solid #437DFF;color:#437DFF;"
+                    <td><span style="margin-right:20px;border:1px solid #437DFF;color:#437DFF;" v-bind:class = "{hide: editButton}"
                               @click="edit(index)">编辑</span>
-                        <span style="border:1px solid;color: #ff4949;" @click="deletestaff">删除</span>
+                        <span style="border:1px solid;color: #ff4949;" @click="deletestaff" v-bind:class = "{hide: deleButton}">删除</span>
                     </td>
                 </tr>
                 </tbody>
@@ -53,7 +53,7 @@
                 <el-pagination
                     layout="prev, pager, next,total"
                     :total="total"
-                    :page-size="13"
+                    :page-size="size"
                     :current-page.sync="currentPage"
                     @current-change="handleCurrentChange()"
                 >
@@ -143,7 +143,7 @@
 <script>
     //    import {addetaUser} from '../../api/User';
     import {addetaUser, getBetaList, betaUpdate} from '../../api/User';
-
+    import {contains} from '../../assets/public';
     export default {
         created() {
             this._surveStaffList();
@@ -155,6 +155,11 @@
                 iseditVisible: false,
                 labelPosition: 'left',
                 isVisible: false,
+                size: 15, // 页面显示大小
+                editButton: false, // 显示隐藏编辑按钮
+                deleButton: false, // 显示隐藏删除按钮
+                addButton: false, // 显示隐藏添加按钮
+                List: false, // 显示隐藏列表
                 formInline: {
                     user: '',
                     region: ''
@@ -199,7 +204,7 @@
             },
 //            公测用户列表
             _surveStaffList() {
-                getBetaList(this.formInline.user).then(res => {
+                getBetaList(this.formInline.user, this.size, this.currentPage).then(res => {
                     this.manageDate = res.data.data.data || [];
                     this.total = res.data.data.total;
                 });
@@ -246,6 +251,13 @@
 //            分页功能
             handleCurrentChange() {
                 console.log('分页');
+            },
+            // 权限控制
+            controlPermission() {
+                this.edit = !contains('user_beta_update'); // 是否有编辑权限
+                this.dele = !contains('user_beta_delete'); // 是否有删除权限
+                this.add = !contains('user_beta_add'); // 是否有添加权限
+                this.List = !contains('user_beta_list');  // 是否显示公测员列表
             }
         }
     };
@@ -253,6 +265,9 @@
 <style lang="scss" type="text/scss">
     .survestaff {
         padding: 0 15px;
+        .hide{
+            display:none;
+        }
         .top {
             .el-form {
                 margin: 0;
@@ -266,14 +281,6 @@
                 input {
                     outline: none;
                 }
-                /*.line {*/
-                    /*width: 0;*/
-                    /*height: 20px;*/
-                    /*display: inline-block;*/
-                    /*border: 1px solid #999;*/
-                    /*margin: 0 5px;*/
-                /*}*/
-
             }
         }
 

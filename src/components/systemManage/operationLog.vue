@@ -43,7 +43,7 @@
                     <th>原因</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody v-bind:class="{hide:operationList}">
                 <tr v-for="(item,index) in operationData">
                     <td>{{item.admin_id}}</td>
                     <td>{{item.username}}</td>
@@ -65,13 +65,14 @@
 </template>
 <script>
     import {getAdminLog} from '../../api/setuser';
-    import {formatDate} from '../../assets/public';
+    import {formatDate, contains} from '../../assets/public';
     export default {
         created() {
             this._adminList();
         },
         data () {
             return {
+                operationList: true, // 控制
                 pickerOptions0: {
                     disabledDate(time) {
                         return time.getTime() > Date.now();
@@ -94,6 +95,10 @@
                       console.log(this.operationData);
                    }
                 });
+            },
+            // 权限控制
+            permissionControl() {
+                this.operationList = contains('s');
             }
         }
     };

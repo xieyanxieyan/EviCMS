@@ -30,12 +30,14 @@
                     </td>
                     <td>
                         <el-button size="small" type="primary" @click="editList(index)">编辑</el-button>
-                        <el-button size="small" @click="deleteList(index)">删除</el-button>
+                        <el-button size="small" @click="deleteList">删除</el-button>
                         <el-button size="small" type="success" @click="toNextPage(index)">分配权限</el-button>
                     </td>
                 </tr>
                 </tbody>
             </table>
+            <!--是否删除弹窗-->
+
         </div>
         <!--添加菜单弹窗-->
         <el-dialog
@@ -87,6 +89,7 @@
             return {
                 options: [{label: '顶级菜单', value: 0, children: []}],
                 value: [],
+                visible2: false,
                 defaultProps: {
                     children: 'children',
                     label: 'label',
@@ -115,29 +118,45 @@
             };
         },
         methods: {
+            del(index) {
+                this.visible2 = true;
+                this.currentIndex = index;
+            },
             addList() {
                 this.operation = '添加菜单';
                 this.centerDialogVisible = true;
             },
             // 删除菜单
-            deleteList(index) {
-                deleteMenus(this.list[index].menu_id).then(res => {
-                    if (res.data.error === 0) {
-                        this.$message({
-                            message: '删除成功',
-                            type: 'success',
-                            showClose: true
+            deleteList() {
+                    this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        deleteMenus(this.list[this.currentIndex].menu_id).then(res => {
+                            if (res.data.error === 0) {
+                                this.$message({
+                                    message: '删除成功',
+                                    type: 'success',
+                                    showClose: true
+                                });
+                                this.visible2 = false;
+                                this.showlist();
+                            } else {
+                                this.$message({
+                                    message: res.data.data,
+                                    type: 'error',
+                                    showClose: true,
+                                    duration: 1000
+                                });
+                            }
                         });
-                        this.showlist();
-                    } else {
+                    }).catch(() => {
                         this.$message({
-                            message: res.data.data,
-                            type: 'error',
-                            showClose: true,
-                            duration: 1000
+                            type: 'info',
+                            message: '已取消删除'
                         });
-                    }
-                });
+                    });
             },
 //            显示菜单详情
             editList(index) {

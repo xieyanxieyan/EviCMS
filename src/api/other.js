@@ -38,10 +38,9 @@ export function updatePermission(id, name, permission_key, description, colum) {
     });
 }
 // 权限列表
-export function permissionList(type, pid) {
+export function permissionList(type) {
     const params = {
-        type,
-        pid
+        type
     };
     return fetch({
         method: 'get',

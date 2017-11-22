@@ -26,7 +26,7 @@
                         <th>操作</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody v-bind:class="{hide:compList}">
                     <tr v-for="(item,index) in compManage">
                         <td>{{item.request_time}}</td>
                         <td>{{item.username}}</td>
@@ -43,14 +43,13 @@
                                 <span class="redtext">未处理</span>
                             </template>
                         </td>
-                        <td><a href="javascript:void(0);" style="border:1px solid #20A0FF;padding:3px 15px;" @click="tofeedbackDetail(index)">处理</a></td>
+                        <td><a href="javascript:void(0);" class="{hide:deal}" style="border:1px solid #20A0FF;padding:3px 15px;" @click="tofeedbackDetail(index)">处理</a></td>
                     </tr>
                     </tbody>
                 </table>
                 <!--分页-->
-                <div class="pagination">
+                <div class="pagination"  :class="{hide:compList}">
                     <el-pagination
-
 
                         layout="prev, pager, next,total"
                         :total= "total"
@@ -67,16 +66,20 @@
 
 <script>
     import {feedbackList} from '../../api/operation';
+    import {contains} from '../../assets/public';
     export default {
         created() {
             this._getCompManage();
+            this.controlPermission();
         },
         data () {
             return {
                 total: 0,
                 currentPage: 1,
                 currentTabIndex: 0,
+                compList: false, // 判断是否有显示列表权限
                 activeName: 0,
+                deal: false, // 投诉建议处理权限
                 compManage: [
                 ]
             };
@@ -95,7 +98,7 @@
                    if (res.data.error === 0) {
                        this.compManage = res.data.data.data;
                      this.total = res.data.data.total;
-                     console.log(res.data.data.data);
+//                     console.log(res.data.data.data);
                    }
                 });
             },
@@ -104,6 +107,11 @@
             },
             handleCurrentChange() {
                 console.log('分页');
+            },
+            // 判断权限
+            controlPermission() {
+                this.compList = !contains('operation_feedback_list'); // 是否有显示列表权限
+                this.deal = !contains('operation_feedback_reply'); // 是否有回复权限
             }
         }
     };

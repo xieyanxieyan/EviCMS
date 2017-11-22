@@ -2,7 +2,7 @@
     <div id="rightsAllotment">
         <div class="rightsAllotmenttop">
         <span>
-            权限分配
+            权限列表
         </span>
         </div>
         <div class="add">
@@ -26,13 +26,27 @@
                     <td>{{item.name}}</td>
                     <td>{{item.permission_key}}</td>
                     <td>
-                        <el-button size="small" @click="editAdmin(index)" type="primary">编辑</el-button>
-                        <el-button size="small" @click="deleteAdmin(index)">删除</el-button>
+                       <template> <el-button size="small" @click="editAdmin(index)" type="primary">编辑</el-button></template>
+                        <template>
+                            <el-button size="small"  @click="del(index)">删除</el-button>
+                        </template>
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
+        <!--是否删除弹窗-->
+        <el-dialog
+            title="提示"
+            :visible.sync="visible2"
+            size="tiny"
+        >
+            <span>确定删除吗？</span>
+            <span slot="footer" class="dialog-footer">
+    <el-button @click="visible2 = false">取 消</el-button>
+    <el-button type="primary" @click="deleteAdmin()">确 定</el-button>
+  </span>
+        </el-dialog>
         <!--添加权限弹窗-->
         <el-dialog
             :title="operation"
@@ -93,6 +107,7 @@
                 list: [], // 列表项
                 menuList: [], // 下拉列表的项
                 total: 0,  // 总条数
+                visible2: false, // 是否删除弹窗
                 currentId: '',
                 currentIndex: '',
                 centerDialogVisible: false,
@@ -107,13 +122,13 @@
         methods: {
 //            获取权限列表
             __list() {
-                permissionList(2, 0).then(res => {
+                permissionList().then(res => {
                   if (res.data.error === 0) {
                       this.list = res.data.data.data;
                       this.total = res.data.data.total;
-                  } else if (res.data.error === 2) {
+                  } else {
                       this.$message({
-                          message: '操作失败',
+                          message: res.data.data,
                           type: 'error',
                           showClose: true
                       });
@@ -121,6 +136,11 @@
                 }).catch(err => {
                     console.log(err);
                 });
+            },
+            // 删除弹框弹出来时将index值更改
+            del(index) {
+                this.visible2 = true;
+                this.currentIndex = index;
             },
             addAdmin() {
                 this.centerDialogVisible = true;
@@ -138,9 +158,9 @@
                         this.addForm.description = res.data.data.description;
                         this.addForm.value = res.data.data.permission_key;
                         this.addForm.column = res.data.data.name;
-                  } else if (res.data.error === 2) {
+                  } else {
                       this.$message({
-                          message: '操作失败',
+                          message: res.data.data,
                           type: 'error',
                           showClose: true
                       });
@@ -180,18 +200,20 @@
             },
 //            提交编辑权限
             submitEdit() {
+                this.resetForm();
                 this.$refs['addForm'].validate((valid) => {
                     if (valid) {
                         this.centerDialogVisible = false;
                         return new Promise((resolve, reject) => {
-                            updatePermission(this.currentIndex, this.addForm.username, this.addForm.value, this.addForm.description, this.addForm.column).then(res => {
-                               console.log(res);
+                            updatePermission(this.list[this.currentIndex].id, this.addForm.username, this.addForm.value, this.addForm.description, this.addForm.column).then(res => {
+                               console.log(res, '权限');
                                 if (res.data.error === 0) {
                                     this.$message({
                                         message: '提交成功',
                                         type: 'success',
                                         showClose: true
                                     });
+                                    this.__list();
                                     this.resetForm();
                                 }
                                 resolve();
@@ -206,10 +228,12 @@
                 });
             },
 //            删除权限
-            deleteAdmin(index) {
-                deletePermission(this.list[index].id).then(res => {
-                    console.log(res);
-                    this.__list();
+            deleteAdmin() {
+                deletePermission(this.list[this.currentIndex].id).then(res => {
+                   if (res.data.error === 0) {
+                       this.visible2 = false;
+                       this.__list();
+                   }
                 });
             },
 //        重置表单

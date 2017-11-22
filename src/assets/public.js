@@ -25,3 +25,14 @@ export function formatDate(needTime) {
         return y + '-' + add0(m) + '-' + add0(d) + ' ' + add0(h) + ':' + add0(mm) + ':' + add0(s);
     }
 }
+// 判断元素是否在数组之中
+export function contains(obj) {
+    let arr = JSON.parse(localStorage.getItem('permission'));
+    let i = arr.length;
+    while (i--) {
+        if (arr[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
