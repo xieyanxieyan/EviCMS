@@ -86,7 +86,7 @@
             <el-pagination
                 layout="prev, pager, next,total"
                 :total="total"
-                :page-size="13"
+                :page-size="perPage"
                 :current-page.sync="currentPage"
                 @current-change="handleCurrentChange()"
             ></el-pagination>
@@ -107,6 +107,7 @@
                 currentTabIndex: 0,
                 total: 0,
                 currentPage: 1,
+                perPage: 15, // 每页显示的条数
                 activeName: '4',
                 timeFrom: {
                     value1: '',
@@ -130,12 +131,12 @@
             },
             showtrailList() {
                 if (this.activeName === '4') {
-                    trailManage(translateTime(this.timeFrom.value1), translateTime(this.timeFrom.value2)).then(res => {
+                    trailManage(translateTime(this.timeFrom.value1), translateTime(this.timeFrom.value2), parseInt(this.activeName), this.perPage, this.page).then(res => {
                         this.TrialData = res.data.data.data;
                         console.log(res.data.data.data, this.activeName);
                     });
                 } else {
-                    trailManage(translateTime(this.timeFrom.value1), translateTime(this.timeFrom.value2), parseInt(this.activeName)).then(res => {
+                    trailManage(translateTime(this.timeFrom.value1), translateTime(this.timeFrom.value2), parseInt(this.activeName), this.perPage, this.page).then(res => {
                        if (res.data.error === 0) {
                            this.TrialData = res.data.data.data;
                            console.log(this.TrialData);
@@ -155,7 +156,7 @@
                 this.trailDetail = !contains('operation_certify_detail'); // 是否有出庭详情权限
             },
             handleCurrentChange() {
-                console.log('click');
+                this.showtrailList();
             }
         }
     };

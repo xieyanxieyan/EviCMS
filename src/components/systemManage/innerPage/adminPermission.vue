@@ -48,7 +48,6 @@
             };
         },
         methods: {
-
             // 回到上一级
             routerBack() {
                 this.$router.go(-1);
@@ -60,13 +59,9 @@
                 this.isIndeterminate[index].isIndeterminate = false;
             },
             handleCheckedChange(value, index) {
-                console.log(value, '值');
                 this.checkedCount[index] = value.length || [];
-                console.log(this.checkedCount[index], 'count');
                 this.checkAll[index].checkAll = this.checkedCount[index] === this.users[index].length;
-                console.log(this.checkAll[index].checkAll, '所有的');
                 this.isIndeterminate[index].isIndeterminate = this.checkedCount[index] > 0 && this.checkedCount[index] < this.users[0].length;
-                console.log(this.checkAll[0].checkAll, '选所有了吗');
                 return false;
             },
 //            分配权限
@@ -114,11 +109,7 @@
 //                               let index = -1;
                                 console.log(this.prevelege);
                                 for (let ii in this.prevelege) {
-//                                   index++;
-//                                   this.checkUsers[index] = [];
-                                    console.log(this.prevelege[ii], '第一层');
                                     for (let iii of this.prevelege[ii]) {
-                                        console.log(iii, '第二层');
                                         for (let item of res.data.data) {
 //                                           console.log(item, 'item');
                                             if (item.permission_id === iii.id) {

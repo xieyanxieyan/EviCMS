@@ -75,6 +75,17 @@
                 </el-form-item>
             </el-form>
         </el-dialog>
+        <!--分页-->
+        <div class="pagination"  :class="{hide:compList}">
+            <el-pagination
+                layout="prev, pager, next,total"
+                :total= "total"
+                :page-size="perpage"
+                :current-page.sync="currentPage"
+                @current-change="handleCurrentChange()"
+            >
+            </el-pagination>
+        </div>
     </div>
 </template>
 <script>
@@ -87,6 +98,9 @@
         },
         data() {
             return {
+                perpage: 15, // 每页显示多少条
+                total: 0, // 一共有多少条
+                currentPage: 1, // 当前显示多少页
                 options: [{label: '顶级菜单', value: 0, children: []}],
                 value: [],
                 visible2: false,
@@ -98,7 +112,6 @@
                 },
                 currentIndex: '',
                 operation: '',
-                total: '',
                 centerDialogVisible: false,
                 list: [],
                 addMenu: {
@@ -118,6 +131,10 @@
             };
         },
         methods: {
+            // 处理分页
+            handleCurrentChange() {
+                console.log('click');
+            },
             del(index) {
                 this.visible2 = true;
                 this.currentIndex = index;

@@ -25,7 +25,7 @@
                     </tr>
                     </tbody>
                 </table>
-                <el-button type="primary" @click="addUser" style="float:right">添加角色</el-button>
+                <el-button type="primary" @click="addUser" v-bind:class="{hide:roleAdd}"style="float:right">添加角色</el-button>
             </div>
         </div>
         <!--添加角色-->
@@ -55,6 +55,7 @@
     export default {
         created() {
             this.updateList();
+            this.permissionControl();
         },
         data() {
             return {
@@ -62,6 +63,7 @@
                 roleEdit: false, // 是否有编辑权限
                 roleDele: false, // 是否有删除权限
                 roleList: false, // 是否显示权限列表
+                roleAdd: false, // 是否有添加角色权限
                 operation: '',
                 adduserVisible: false,
                 currentIndex: '',
@@ -214,10 +216,12 @@
             },
             // 权限控制函数
             permissionControl() {
+                console.log(localStorage.getItem('permission'));
                this.roleSet = !contains('s'); // 是否有权限设置
-                this.roleEdit = !contains('d'); // 是否有角色编辑
-                this.roleDele = !contains('s'); // 是否有角色删除
-                this.roleList = !contains('s'); // 是否显示权限列表
+                this.roleEdit = !contains('admin_roles_update'); // 是否有角色编辑
+                this.roleDele = !contains('admin_roles_delete'); // 是否有角色删除
+                this.roleList = !contains('admin_roles_list'); // 是否显示角色列表
+                this.roleAdd = !contains('admin_roles_add'); // 是否有添加角色权限
             }
         }
     };

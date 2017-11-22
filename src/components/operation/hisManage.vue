@@ -98,7 +98,7 @@
             <el-pagination
                 layout="prev, pager, next,total"
                 :total="total"
-                :page-size="13"
+                :page-size="perPage"
                 :current-page.sync="currentPage"
                 @current-change="handleCurrentChange()"
             ></el-pagination>
@@ -119,6 +119,7 @@
                 activeName: 'first',
                 currentPage: 0,
                 total: 0,
+                perPage: 15, // 每页显示多少条
                 hisList: true, // 出证列表是否显示
                 hisDetail: true, // 出证详情按钮是否显示
                 formIn: {
@@ -132,10 +133,10 @@
         },
         methods: {
             handleClick: function () {
-                console.log('click');
+                this.certList();
             },
             certList() {
-                certifyList(this.formIn.username, this.formIn.cert_num, this.formIn.time_begin, this.formIn.time_end).then(res => {
+                certifyList(this.formIn.username, this.formIn.cert_num, this.formIn.time_begin, this.formIn.time_end, this.perPage, this.currentPage).then(res => {
                     this.hisData = res.data.data.data;
                     this.total = res.data.data.total;
                 });

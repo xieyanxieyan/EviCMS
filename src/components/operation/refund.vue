@@ -88,7 +88,7 @@
             <el-pagination
                 layout="prev, pager, next,total"
                 :total= "total"
-                :page-size="13"
+                :page-size="perPage"
                 :current-page.sync="currentPage"
                 @current-change="handleCurrentChange()"
             ></el-pagination>
@@ -128,6 +128,7 @@
                 labelPosition: 'left',
                 refunddialog: false, //  拒绝退款弹窗
                 currentTabIndex: 0,
+                perPage: 15, // 默认一页显示多少条
                 activeName: '1',
                 currentPage: 1,
                 refundDeal: false, // 退款处理的处理按钮是否显示
@@ -152,11 +153,11 @@
             },
 //            分页
             handleCurrentChange() {
-                console.log('分页');
+                this._showRefundList();
             },
 //            处理退款
             _showRefundList() {
-                getRefundList(this.topForm.username, this.topForm.cert_no, translateTime(this.topForm.value1), translateTime(this.topForm.value2)).then(res => {
+                getRefundList(this.topForm.username, this.topForm.cert_no, translateTime(this.topForm.value1), translateTime(this.topForm.value2), this.perPage, this.currentPage).then(res => {
                     if (res.data.error === 0) {
                         this.tableItem = res.data.data.data;
                         this.total = res.data.data.total;

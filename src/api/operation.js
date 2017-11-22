@@ -1,9 +1,11 @@
 import fetch from '@/common/js/fetch';
 
 // 投诉建议列表
-export function feedbackList(status) {
+export function feedbackList(status, perPage, page) {
     const params = {
-        status
+        status,
+        perPage,
+        page
     };
     return fetch({
         method: 'get',
@@ -38,13 +40,15 @@ export function feedbackreplay(report_id, content) {
 }
 
 // 退款列表
-export function getRefundList(username, cert_no, time_begin, time_end, status) {
+export function getRefundList(username, cert_no, time_begin, time_end, status, perPage, page) {
     const params = {
         username,
         cert_no,
         time_begin,
         time_end,
-        status
+        status,
+        perPage,
+        page
     };
     return fetch({
         method: 'get',
@@ -80,12 +84,14 @@ export function getCertifyDetail(apply_id) {
 }
 
 // 出证列表
-export function certifyList(phone, cert_num, time_begin, time_end) {
+export function certifyList(phone, cert_num, time_begin, time_end, perPage, page) {
     const params = {
         phone,
         cert_num,
         time_begin,
-        time_end
+        time_end,
+        perPage,
+        page
     };
     return fetch({
         method: 'get',
@@ -111,11 +117,13 @@ export function certifyUpdate(apply_id, username, phone, address, exp_num, exp_c
     });
 }
 // 出庭列表
-export function trailManage(time_begin, time_end, status) {
+export function trailManage(time_begin, time_end, status, perPage, page) {
     const params = {
         time_begin,
         time_end,
-        status
+        status,
+        perPage,
+        page
     };
     return fetch({
         method: 'get',

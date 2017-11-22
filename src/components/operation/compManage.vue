@@ -50,10 +50,9 @@
                 <!--分页-->
                 <div class="pagination"  :class="{hide:compList}">
                     <el-pagination
-
                         layout="prev, pager, next,total"
                         :total= "total"
-                        :page-size="13"
+                        :page-size="perpage"
                         :current-page.sync="currentPage"
                         @current-change="handleCurrentChange()"
                     >
@@ -77,6 +76,7 @@
                 total: 0,
                 currentPage: 1,
                 currentTabIndex: 0,
+                perpage: 15, // 每页的条数
                 compList: false, // 判断是否有显示列表权限
                 activeName: 0,
                 deal: false, // 投诉建议处理权限
@@ -94,7 +94,7 @@
             },
 //            获取公测员列表
             _getCompManage(num) {
-                feedbackList(num).then(res => {
+                feedbackList(num, this.perpage, this.currentPage).then(res => {
                    if (res.data.error === 0) {
                        this.compManage = res.data.data.data;
                      this.total = res.data.data.total;
@@ -106,7 +106,7 @@
                 this.$router.push({name: 'complaint', params: {report_id: this.compManage[index].report_id}});
             },
             handleCurrentChange() {
-                console.log('分页');
+                this._getCompManage();
             },
             // 判断权限
             controlPermission() {

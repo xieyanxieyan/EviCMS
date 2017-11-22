@@ -204,7 +204,7 @@
             },
 //            公测用户列表
             _surveStaffList() {
-                getBetaList(this.formInline.user, this.size, this.currentPage).then(res => {
+                getBetaList(this.formInline.user, '', '', this.size, this.currentPage).then(res => {
                     this.manageDate = res.data.data.data || [];
                     this.total = res.data.data.total;
                 });
@@ -250,7 +250,7 @@
             },
 //            分页功能
             handleCurrentChange() {
-                console.log('分页');
+                this._surveStaffList();
             },
             // 权限控制
             controlPermission() {
