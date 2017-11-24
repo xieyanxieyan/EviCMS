@@ -10,20 +10,20 @@
             <div class="userMessage">
                 <span>
                     <strong>用户序号：</strong>
-                    <small>{{userdetails.user_id}}</small>
+                    <small>{{userdetails.user.user_id}}</small>
                 </span>
                 <span>
                     <strong>注册时间：</strong>
-                    <small>{{userdetails.reg_time}}</small>
+                    <small>{{userdetails.user.reg_time}}</small>
                 </span>
                 <span>
                     <strong>充值余额（元）：</strong>
-                    <small>{{userdetails.due}}</small>
+                    <small>{{userdetails.cash}}</small>
                 </span>
                 <span>
                     <strong>储存空间（KB）：</strong>
-                <small style="margin-right:20px;">{{userdetails.space}}</small>
-                <small>剩余({{userdetails.remainspace}})</small>
+                <small style="margin-right:20px;">{{userdetails.totalStore}}</small>
+                <small>剩余({{userdetails.restStore}})</small>
                     </span>
             </div>
             <div class="fromcon">
@@ -110,7 +110,7 @@
                 if (this.operate === '修改') {
                     this.editSubmit();
                 } else {
-                    console.log(this.form.name);
+//                    console.log(this.form.name);
                     this.save();
                 }
             }

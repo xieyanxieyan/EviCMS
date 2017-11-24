@@ -85,7 +85,7 @@ export function getBetaList(phone, reg_time_begin, reg_time_end, perPage, page) 
 export function addetaUser(phone, password, amount, expire_time, recommend_user) {
   const params = {
       phone,
-      password: CryptoJS.MD5(password).toString(),
+      password,
       amount,
       expire_time,
       recommend_user
@@ -96,11 +96,22 @@ export function addetaUser(phone, password, amount, expire_time, recommend_user)
       params
   });
 }
+// 公测用户详情
+export function betaDetail(user_id) {
+  const params = {
+      user_id
+  };
+  return fetch({
+      method: 'get',
+      url: 'user/beta/detail',
+      params
+  });
+}
 // 公测用户编辑
 export function betaUpdate(phone, password, amount, expire_time, recommend_user, user_id) {
 const params = {
     phone,
-    password: CryptoJS.MD5(password),
+    password,
     amount,
     expire_time,
     recommend_user,
@@ -118,5 +129,27 @@ export function betaUserDetail(user_id) {
         method: 'get',
         url: 'beta/detail',
         user_id
+    });
+}
+// 公测用户删除
+export function betaDelete(id) {
+    const params = {
+        id
+    };
+    return fetch({
+        method: 'get',
+        url: 'user/beta/delete',
+        params
+    });
+}
+// 管理员登入WEB
+export function admin_web(user_id) {
+    const params = {
+        user_id
+    };
+    return fetch({
+        method: 'get',
+        url: 'user/admin_web',
+        params
     });
 }

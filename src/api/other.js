@@ -38,9 +38,11 @@ export function updatePermission(id, name, permission_key, description, colum) {
     });
 }
 // 权限列表
-export function permissionList(type) {
+export function permissionList(type, perPage, page) {
     const params = {
-        type
+        type,
+        perPage,
+        page
     };
     return fetch({
         method: 'get',
@@ -104,9 +106,11 @@ export function updatemenu(menu_id, name, link, status, pid, role_id) {
     });
 }
 // 菜单列表
-export function menulist(type) {
+export function menulist(type, perPage, page) {
     const params = {
-        type
+        type,
+        perPage,
+        page
     };
     return fetch({
         method: 'get',

@@ -62,7 +62,7 @@
                         <td>
                             <span @click="touserDetail(index)" v-bind:class="{hide: detail}"><a
                                 href="javascript:void(0);">详情/编辑</a></span>
-                            <span class="inter"><a href="javascript:void(0);">用户界面</a></span>
+                            <span class="inter"><a href="javascript:void(0);" @click="admin_web(index)">用户界面</a></span>
                             <template v-if="item.status === 0">
                                 <span @click="frozen(index)" class="redbutton"
                                       v-bind:class="{hide:frezen}">
@@ -97,8 +97,9 @@
 </template>
 
 <script>
-    import {getUserList, userFreeze} from '../../api/User';
+    import {getUserList, userFreeze, admin_web} from '../../api/User';
     import {translateTime, contains} from '../../assets/public';
+    import {setToken} from '../../common/js/auth';
 //    import {contains} from '../../assets/public';
 
     export default {
@@ -131,6 +132,7 @@
                 getUserList(this.form.phone, this.form.begin_time, this.form.end_time, this.perpage, this.currentPage).then(res => {
                     this.userList = res.data.data;
                     this.total = this.userList.total;
+                    console.log(this.userList);
                 });
             },
             serachList() {
@@ -162,6 +164,16 @@
             },
             handleCurrentChange() {
                 this.getList();
+            },
+            // 登入web系统
+            admin_web(index) {
+                admin_web(this.userList.data[index].user_id).then(res => {
+                    if (res.data.error === 0) {
+//                        console.log(res.data.data.data.auth_token, 's');
+                        setToken(res.data.data.data.auth_token);
+                        window.location.href = 'http://www.51zbb.net?auth-token=' + res.data.data.data.auth_token;
+                    }
+                });
             },
             // 控制权限函数
             controlPermission() {

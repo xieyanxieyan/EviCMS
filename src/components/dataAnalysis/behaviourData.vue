@@ -26,16 +26,16 @@
                     <td>操作总数</td>
                     <td>{{AllData.loginCount}}</td>
                     <td>{{AllData.webPrintCount}}</td>
+                    <td>{{AllData.documentCount}}</td>
+                    <td>{{AllData.radioCount}}</td>
+                    <td>{{AllData.videoCount}}</td>
+                    <td>{{AllData.photoCount}}</td>
+                    <td>{{AllData.screenCount}}</td>
                     <td>99</td>
-                    <td>99</td>
-                    <td>99</td>
-                    <td>99</td>
-                    <td>99</td>
-                    <td>99</td>
-                    <td>99</td>
-                    <td>99</td>
+                    <td>{{AllData.fullAmountCount}}</td>
+                    <td>{{AllData.singleAmountCount}}</td>
                     <td>{{AllData.certifyCount}}</td>
-                    <td>99</td>
+                    <td>{{AllData.paperCount}}</td>
                     <td>{{AllData.courtCount}}</td>
                 </tr>
                 </tbody>
@@ -99,21 +99,21 @@
                 <th>纸质出证</th>
                 <th>出庭</th>
                 </thead>
-                <tbody>
+                <tbody v-bind:class="{hide: showList}">
                 <tr v-for="(item, index) in searchData">
                     <td>{{item.date}}</td>
                     <td>{{item.loginCount}}</td>
                     <td>{{item.webPrintCount}}</td>
+                    <td>{{item.documentCount}}</td>
+                    <td>{{item.radioCount}}</td>
+                    <td>{{item.videoCount}}</td>
+                    <td>{{item.photoCount}}</td>
+                    <td>{{item.screenCount}}</td>
                     <td>99</td>
-                    <td>99</td>
-                    <td>99</td>
-                    <td>99</td>
-                    <td>99</td>
-                    <td>99</td>
-                    <td>99</td>
-                    <td>99</td>
+                    <td>{{item.fullAmountCount}}</td>
+                    <td>{{item.singleAmountCount}}</td>
                     <td>{{item.certifyCount}}</td>
-                    <td>99</td>
+                    <td>{{item.paperCount}}</td>
                     <td>{{item.courtCount}}</td>
                 </tr>
                 </tbody>
@@ -126,7 +126,7 @@
 </template>
 <script>
     import {actionsTotal, actionTime} from '../../api/statistic';
-    import {translateTime} from '../../assets/public';
+    import {translateTime, contains} from '../../assets/public';
     export default {
         created() {
             this.chartData = {
@@ -149,6 +149,7 @@
         },
         data () {
             return {
+                showList: false, // 是否有显示列表权限
                 currentTabIndex: 0,
                 activeName: 'first',
                 operaionName: '',
@@ -184,6 +185,7 @@
                 actionsTotal().then(res => {
                     if (res.data.error === 0) {
                         this.AllData = res.data.data || [];
+                        console.log(this.AllData, 'd');
                     }
                 });
             },
@@ -191,9 +193,14 @@
                 actionTime(translateTime(this.searchForm.value1), translateTime(this.searchForm.value2), parseInt(this.searchForm.value)).then(res => {
                    if (res.data.error === 0) {
                        this.searchData = res.data.data;
-                       console.log(this.searchData);
+                       console.log(this.searchData, 'sss');
                    }
                 });
+            },
+            // 权限控制函数
+            permissionControl() {
+                this.AllData = !contains('statistic_actions_total') ? this.AllData : {}; // 操作分类总数列表
+                this.searchData = !contains('statistic_actions_time') ? this.searchData : {}; // 操作分类按时间接口
             }
         }
     };

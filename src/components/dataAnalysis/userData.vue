@@ -73,7 +73,7 @@
                     <th>登录用户数</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody v-bind:class="{hide: showList}">
                 <tr v-for="(item,indx) in statisticalData">
                     <td>{{item.date}}</td>
                     <td>{{item.userCount}}</td>
@@ -91,7 +91,7 @@
 </template>
 <script>
     import {userTotal, userTime} from '../../api/statistic';
-    import {translateTime} from '../../assets/public';
+    import {translateTime, contains} from '../../assets/public';
     export default {
         created() {
             this._userTotalDate();
@@ -101,13 +101,10 @@
         },
         data () {
             return {
+                showList: false, // 是否有显示列表权限
                 chartData: {
                 columns: ['时间', '新增注册用户数', '新增充值用户数', '登录用户数'],
-                rows: [
-//                    {'新时间增注册用户数': 1523, '时间': '1月1日', '新增充值用户数': 1523, '登录用户数': 0.12},
-//                    {'新增注册用户数': 1523, '时间': '1月1日', '新增充值用户数': 1523, '登录用户数': 0.12},
-//                    {'新增注册用户数': 1523, '时间': '1月1日', '新增充值用户数': 1523, '登录用户数': 0.12}
-                ]
+                rows: []
             },
             chartSettings: {
                 metrics: ['新增注册用户数', '新增充值用户数', '登录用户数'],
@@ -168,6 +165,11 @@
                   this.ArrayList(this.statisticalData, this.chartData.rows);
                    }
                 });
+            },
+            // 权限控制函数
+            permissionControl() {
+                this.showList = !contains('statistic_users_time'); // 是否有显示列表权限
+                this.userData = !contains('statistic_users_total') ? this.userData : ''; // 是否有显示总数权限
             }
         }
     };

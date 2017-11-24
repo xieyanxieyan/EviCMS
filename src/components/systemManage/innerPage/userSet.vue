@@ -115,7 +115,7 @@
             //     更新列表
             updateList() {
                 getRole().then((res) => {
-                    console.log(res);
+//                    console.log(res);
                     res = res.data;
                     if (res.error === 0) {
                         this.userMessage = res.data || [];
@@ -124,7 +124,7 @@
             },
 //            到权限设置页
             toNextPage(index) {
-                console.log(this.userMessage[index].id);
+//                console.log(this.userMessage[index].id);
                 this.$router.push({name: 'adminPermission', params: {adminPer_id: this.userMessage[index].id}});
             },
 //            打开添加角色弹窗
@@ -216,8 +216,8 @@
             },
             // 权限控制函数
             permissionControl() {
-                console.log(localStorage.getItem('permission'));
-               this.roleSet = !contains('s'); // 是否有权限设置
+//                console.log(localStorage.getItem('permission'));
+               this.roleSet = !contains('admin_roles_ownpermission'); // 是否有权限设置
                 this.roleEdit = !contains('admin_roles_update'); // 是否有角色编辑
                 this.roleDele = !contains('admin_roles_delete'); // 是否有角色删除
                 this.roleList = !contains('admin_roles_list'); // 是否显示角色列表

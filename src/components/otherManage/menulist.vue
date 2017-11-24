@@ -15,7 +15,7 @@
                 <th>状态</th>
                 <th>菜单操作</th>
                 </thead>
-                <tbody>
+                <tbody v-bind:class="{hide:showList}">
                 <tr v-for="(item,index) in list">
                     <td>{{item.menu_id}}</td>
                     <td>{{item.name}}</td>
@@ -29,9 +29,9 @@
                         </template>
                     </td>
                     <td>
-                        <el-button size="small" type="primary" @click="editList(index)">编辑</el-button>
-                        <el-button size="small" @click="deleteList">删除</el-button>
-                        <el-button size="small" type="success" @click="toNextPage(index)">分配权限</el-button>
+                        <el-button v-bind:class="{hide: showEdit}" size="small" type="primary" @click="editList(index)">编辑</el-button>
+                        <el-button v-bind:class="{hide: showDel}"size="small" @click="deleteList">删除</el-button>
+                        <el-button v-bind:class="{hide: showGive}" size="small" type="success" @click="toNextPage(index)">分配权限</el-button>
                     </td>
                 </tr>
                 </tbody>
@@ -76,7 +76,7 @@
             </el-form>
         </el-dialog>
         <!--分页-->
-        <div class="pagination"  :class="{hide:compList}">
+        <div class="pagination"  :class="{hide:showList}">
             <el-pagination
                 layout="prev, pager, next,total"
                 :total= "total"
@@ -90,14 +90,19 @@
 </template>
 <script>
     import {addMenu, menulist, detailmenu, updatemenu, deleteMenus} from '../../api/other';
-
+    import {contains} from '../../assets/public';
     export default {
         created() {
             this.showlist();
             this.droplist();
+            this.permissionControl();
         },
         data() {
             return {
+                showList: false, // 是否显示列表
+                showEdit: false, // 是否显示编辑
+                showDel: false, // 是否显示删除
+                showGive: false, // 是否显示分配权限按纽
                 perpage: 15, // 每页显示多少条
                 total: 0, // 一共有多少条
                 currentPage: 1, // 当前显示多少页
@@ -133,7 +138,7 @@
         methods: {
             // 处理分页
             handleCurrentChange() {
-                console.log('click');
+               this.showlist();
             },
             del(index) {
                 this.visible2 = true;
@@ -209,7 +214,7 @@
             },
 //            显示菜单列表
             showlist() {
-                menulist(1).then(res => {
+                menulist(1, this.perpage, this.currentPage).then(res => {
                     if (res.data.error === 0) {
 //                        console.log(res);
                         this.list = res.data.data.data;
@@ -311,6 +316,14 @@
                 console.log(value, '值');
                 this.addMenu.fatherMenu = value;
                 console.log(this.value);
+            },
+            // 控制菜单列表权限
+            permissionControl() {
+                this.compList = !contains('admin_menus_list');
+                this.compAdd = !contains('admin_menus_add');
+                this.compEdit = !contains('admin_menus_update'); // 是否显示编辑菜单按钮
+                this.compDel = !contains('admin_menus_delete');  // 是否显示删除菜单按钮
+                this.compDet = !contains('admin_menus_detail'); // 是否显示菜单详情
             }
         }
     };
@@ -325,7 +338,10 @@
     .addlist {
         margin-bottom: 15px;
     }
+.pagination{
+    text-align: center;
 
+}
     .menulist {
         padding: 15px 0;
 

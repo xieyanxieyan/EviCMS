@@ -62,25 +62,27 @@
             </table>
         </div>
         <div class="tradechart">
-        <ve-line :data="chartData" :settings="chartSettings"></ve-line>
+            <ve-line :data="chartData" :settings="chartSettings"></ve-line>
         </div>
-        </div>
+    </div>
 </template>
 <script>
     import {tradeTime} from '../../api/statistic';
-    import {translateTime} from '../../assets/public';
-    export default{
+    import {translateTime, contains} from '../../assets/public';
+
+    export default {
         created() {
             this.searchList();
+            this.permissionControl();
             this.chartData = {
                 columns: ['时间', '新增注册用户数', '新增充值用户数', '登录用户数'],
                 rows: [
-                    { '成本': 1523, '日期': '1月1日', '利润': 1523, '占比': 0.12, '其他': 100 },
-                    { '成本': 1223, '日期': '1月2日', '利润': 1523, '占比': 0.345, '其他': 100 },
-                    { '成本': 2123, '日期': '1月3日', '利润': 1523, '占比': 0.7, '其他': 100 },
-                    { '成本': 4123, '日期': '1月4日', '利润': 1523, '占比': 0.31, '其他': 100 },
-                    { '成本': 3123, '日期': '1月5日', '利润': 1523, '占比': 0.12, '其他': 100 },
-                    { '成本': 7123, '日期': '1月6日', '利润': 1523, '占比': 0.65, '其他': 100 }
+                    {'成本': 1523, '日期': '1月1日', '利润': 1523, '占比': 0.12, '其他': 100},
+                    {'成本': 1223, '日期': '1月2日', '利润': 1523, '占比': 0.345, '其他': 100},
+                    {'成本': 2123, '日期': '1月3日', '利润': 1523, '占比': 0.7, '其他': 100},
+                    {'成本': 4123, '日期': '1月4日', '利润': 1523, '占比': 0.31, '其他': 100},
+                    {'成本': 3123, '日期': '1月5日', '利润': 1523, '占比': 0.12, '其他': 100},
+                    {'成本': 7123, '日期': '1月6日', '利润': 1523, '占比': 0.65, '其他': 100}
                 ]
             };
             this.chartSettings = {
@@ -117,10 +119,14 @@
             searchList() {
                 tradeTime(translateTime(this.searchForm.value1), translateTime(this.searchForm.value2), parseInt(this.searchForm.value)).then(res => {
                     if (res.data.error === 0) {
-                       this.tradeList = res.data.data;
-                       console.log(this.tradeList);
+                        this.tradeList = res.data.data;
+                        console.log(this.tradeList);
                     }
                 });
+            },
+            // 权限控制函数
+            permissionControl() {
+                this.tradeList = !contains('statistic_trades_time'); // 是否有交易统计接口
             }
         }
     };
@@ -128,32 +134,34 @@
 <style lang="scss" type="text/scss">
     @import '../../style/common';
     @import '../../scss/mixin.scss';
-#tradeData{
-    padding:0 15px;
-  .tradeData{
-      padding:15px 0;
-      span{
-        @include span;
-      }
-  }
 
-    .el-form{
+    #tradeData {
+        padding: 0 15px;
+        .tradeData {
+            padding: 15px 0;
+            span {
+                @include span;
+            }
+        }
+        table {
+            table-layout: fixed;
+        }
+        .el-form {
 
-        .el-select{
-            width:100px;
+            .el-select {
+                width: 100px;
+            }
+            .el-col-3 {
+                text-align: right;
+                padding-right: 5px;
+            }
+            .el-form-item {
+                margin-bottom: 0;
+            }
         }
-        .el-col-3{
-            text-align:right;
-            padding-right:5px;
-        }
-        .el-form-item{
-            margin-bottom:0;
+        .tradechart {
+            background: #fff;
+            margin-top: 10px;
         }
     }
-
-    .tradechart{
-        background: #fff;
-        margin-top:10px;
-    }
-}
 </style>

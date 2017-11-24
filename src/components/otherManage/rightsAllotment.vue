@@ -6,7 +6,7 @@
         </span>
         </div>
         <div class="add">
-            <el-button size="small" @click="addAdmin">
+            <el-button size="small" @click="addAdmin" v-bind:class="{hide:compAdd}">
                 添加权限
             </el-button>
         </div>
@@ -21,19 +21,36 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(item,index) in list" >
+                <tr v-for="(item,index) in list">
                     <td>{{item.id}}</td>
                     <td>{{item.name}}</td>
                     <td>{{item.permission_key}}</td>
                     <td>
-                       <template> <el-button size="small" @click="editAdmin(index)" type="primary">编辑</el-button></template>
                         <template>
-                            <el-button size="small"  @click="del(index)">删除</el-button>
+                            <el-button size="small" @click="editAdmin(index)" v-bind:class="{hide:compEdit}"
+                                       type="primary">编辑
+                            </el-button>
+                        </template>
+                        <template>
+                            <el-button size="small" v-bind:class="{hide:compDel}" @click="del(index)">删除</el-button>
                         </template>
                     </td>
                 </tr>
                 </tbody>
             </table>
+        </div>
+        <!--分页-->
+        <div style="text-align: inherit">
+            <div class="pagination" :class="{hide:compList}">
+                <el-pagination
+                    layout="prev, pager, next,total"
+                    :total="total"
+                    :page-size="perpage"
+                    :current-page.sync="currentPage"
+                    @current-change="handleCurrentChange()"
+                >
+                </el-pagination>
+            </div>
         </div>
         <!--是否删除弹窗-->
         <el-dialog
@@ -89,12 +106,20 @@
     </div>
 </template>
 <script>
-    import {addPermission, permissionList, menulist, detailPermission, updatePermission, deletePermission} from '../../api/other';
+    import {
+        addPermission,
+        permissionList,
+        menulist,
+        detailPermission,
+        updatePermission,
+        deletePermission
+    } from '../../api/other';
+    import {contains} from '../../assets/public';
 
     export default {
         created() {
             this.__list();
-            menulist(2).then(res => {
+            menulist(2, this.perpage, this.currentPage).then(res => {
                 if (res.data.error === 0) {
                     this.menuList = res.data.data;
                     console.log(res.data.data);
@@ -103,6 +128,12 @@
         },
         data() {
             return {
+                compList: false, // 是否有显示列表权限
+                compDel: false, // 是否有删除列表权限
+                compEdit: false, // 是否有编辑列表权限
+                compAdd: false, // 是否有添加列表权限
+                perpage: 15, // m每页显示条数
+                currentPage: 1, // 当前页
                 operation: '',  // 当前操作
                 list: [], // 列表项
                 menuList: [], // 下拉列表的项
@@ -121,18 +152,28 @@
         },
         methods: {
 //            获取权限列表
+            handleCurrentChange() {
+                this.__list();
+            },
+            // 权限控制函数
+            permissionControl() {
+                this.compList = !contains('admin_permission_list');
+                this.compAdd = !contains('admin_permission_add');
+                this.compEdit = !contains('admin_permission_update');
+                this.compDel = !contains('admin_permission_delete');
+            },
             __list() {
-                permissionList().then(res => {
-                  if (res.data.error === 0) {
-                      this.list = res.data.data.data;
-                      this.total = res.data.data.total;
-                  } else {
-                      this.$message({
-                          message: res.data.data,
-                          type: 'error',
-                          showClose: true
-                      });
-                  }
+                permissionList('', this.perpage, this.currentPage).then(res => {
+                    if (res.data.error === 0) {
+                        this.list = res.data.data.data;
+                        this.total = res.data.data.total;
+                    } else {
+                        this.$message({
+                            message: res.data.data,
+                            type: 'error',
+                            showClose: true
+                        });
+                    }
                 }).catch(err => {
                     console.log(err);
                 });
@@ -152,28 +193,28 @@
                 this.operation = '编辑权限';
                 this.currentIndex = index;
                 detailPermission(this.list[index].id).then(res => {
-                  if (res.data.error === 0) {
-                      console.log(res.data.data);
+                    if (res.data.error === 0) {
+                        console.log(res.data.data);
                         this.addForm.username = res.data.data.name;
                         this.addForm.description = res.data.data.description;
                         this.addForm.value = res.data.data.permission_key;
                         this.addForm.column = res.data.data.name;
-                  } else {
-                      this.$message({
-                          message: res.data.data,
-                          type: 'error',
-                          showClose: true
-                      });
-                  }
+                    } else {
+                        this.$message({
+                            message: res.data.data,
+                            type: 'error',
+                            showClose: true
+                        });
+                    }
                 });
             },
             submit() {
-              if (this.operation === '添加权限') {
-                  this.submitAdd();
-                  this.__list();
-              } else {
-                  this.submitEdit();
-              }
+                if (this.operation === '添加权限') {
+                    this.submitAdd();
+                    this.__list();
+                } else {
+                    this.submitEdit();
+                }
                 setTimeout(this.__list, 2000);
             },
 //            提交添加权限
@@ -206,7 +247,7 @@
                         this.centerDialogVisible = false;
                         return new Promise((resolve, reject) => {
                             updatePermission(this.list[this.currentIndex].id, this.addForm.username, this.addForm.value, this.addForm.description, this.addForm.column).then(res => {
-                               console.log(res, '权限');
+                                console.log(res, '权限');
                                 if (res.data.error === 0) {
                                     this.$message({
                                         message: '提交成功',
@@ -230,10 +271,10 @@
 //            删除权限
             deleteAdmin() {
                 deletePermission(this.list[this.currentIndex].id).then(res => {
-                   if (res.data.error === 0) {
-                       this.visible2 = false;
-                       this.__list();
-                   }
+                    if (res.data.error === 0) {
+                        this.visible2 = false;
+                        this.__list();
+                    }
                 });
             },
 //        重置表单
@@ -250,16 +291,27 @@
     #rightsAllotment {
         padding: 0 15px;
 
+    .hide {
+        display: none;
+    }
+    .pagination{
+        text-align: center;
+        .el-pagination{
+            display:inline-block;
+        }
+    }
     .rightsAllotmenttop {
         padding: 15px 0;
 
     span {
     @include span;
     }
+
     }
     table {
         table-layout: fixed;
     }
+
     .el-dialog__header {
         text-align: center;
         background: #556386;
@@ -268,8 +320,9 @@
     span {
         color: #fff;
     }
+
     }
-    .add{
+    .add {
         margin-bottom: 15px;
     }
 

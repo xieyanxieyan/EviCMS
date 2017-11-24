@@ -117,7 +117,7 @@
             return {
                 currentTabIndex: 0,
                 activeName: 'first',
-                currentPage: 0,
+                currentPage: 1,
                 total: 0,
                 perPage: 15, // 每页显示多少条
                 hisList: true, // 出证列表是否显示
@@ -142,7 +142,7 @@
                 });
             },
             handleCurrentChange() {
-                console.log('处理分页');
+                this.certList();
             },
             toHisDetail(index) {
                 this.$router.push({

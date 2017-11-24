@@ -26,7 +26,7 @@
                         <th>操作</th>
                     </tr>
                     </thead>
-                    <tbody v-bind:class="{hide:compList}">
+                    <tbody v-bind:class = "{hide:compList}">
                     <tr v-for="(item,index) in compManage">
                         <td>{{item.request_time}}</td>
                         <td>{{item.username}}</td>

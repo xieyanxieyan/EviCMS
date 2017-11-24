@@ -104,7 +104,6 @@ export function getAdminList(username, time_begin, time_end) {
 }
 
 //  获取管理员日志
-
 export function getAdminLog(username, time_begin, time_end) {
     const params = {
         username,
@@ -113,7 +112,7 @@ export function getAdminLog(username, time_begin, time_end) {
     };
     return fetch({
         method: 'get',
-        url: 'admin/logs',
+        url: 'admin/logs/list',
         params
     });
 }

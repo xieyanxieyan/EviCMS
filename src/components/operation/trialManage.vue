@@ -82,7 +82,7 @@
                 </tbody>
             </table>
         </div>
-        <div v-bind:class="{hide: trailList}">
+        <div v-bind:class="{hide: trailList}" class="pagination">
             <el-pagination
                 layout="prev, pager, next,total"
                 :total="total"
@@ -166,6 +166,9 @@
     @import '../../scss/mixin.scss';
     #TrialManage {
         padding: 0 15px;
+    .pagination{
+        text-align: center;
+    }
     .TrialManagetop {
         padding: 15px 0;
 

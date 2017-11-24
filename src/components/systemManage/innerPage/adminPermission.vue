@@ -3,11 +3,11 @@
         <div class="adminPermisssionTop">
             <span>管理员设置--角色设置--管理员权限设置</span>
             <div class="topButton">
-                <el-button type="primary" @click="privileges">保存</el-button>
+                <el-button type="primary" @click="privileges" v-bind:class="{hide: save}">保存</el-button>
                 <el-button @click="routerBack">返回</el-button>
             </div>
         </div>
-        <div class="adminpermissioncontent">
+        <div class="adminpermissioncontent" v-bind:class="{hide: list}">
             <div><strong>超级管理员</strong></div>
             <div class="selectItem">
                 <div v-for="(item, key, index) in permissionList">
@@ -30,13 +30,16 @@
 </template>
 <script>
     import {permissionList, ownpermission, rolesAssignment} from '../../../api/setuser';
-
+    import {contains} from '../../../assets/public';
     export default {
         created() {
             this.getPermissionList(); // 获取页面上的列表
+            this.permissionControl();
         },
         data() {
             return {
+                save: false, // 是否有保存权限
+                list: false, // 是否有显示列表权限
                 checkAll: [], // 选中所有项
                 checkUsers: [], // 选中的列表
                 permissionList: [], // 显示的列表
@@ -132,6 +135,10 @@
                         console.log(err);
                     });
                 });
+            },
+            permissionControl() {
+                this.list = !contains('admin_roles_ownpermission'); // 是否有显示列表权限
+                this.save = !contains('admin_roles_assignment'); // 是否有保存权限
             }
         }
     };
@@ -140,6 +147,9 @@
     @import '../../../scss/mixin';
 
     #adminPermission {
+        .hide{
+            display:none;
+        }
         padding: 0 15px;
         .adminPermisssionTop {
             padding: 15px 0;

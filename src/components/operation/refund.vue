@@ -161,6 +161,7 @@
                     if (res.data.error === 0) {
                         this.tableItem = res.data.data.data;
                         this.total = res.data.data.total;
+                        console.log(this.tableItem);
                     }
                 });
             },

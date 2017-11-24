@@ -15,8 +15,8 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button style="background:#999999;color:#fff">搜索</el-button>
-                   <span>|</span>
-                    <el-button type="primary" @click="isVisible=true" v-bind:class="{hide:addButton}">添加</el-button>
+                    <span>|</span>
+                    <el-button type="primary" @click="add()" v-bind:class="{hide:addButton}">添加</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -41,9 +41,11 @@
                     <td>{{item.expire_time}}</td>
                     <td>{{item.complimentary}}</td>
                     <td>{{item.user.status}}</td>
-                    <td><span style="margin-right:20px;border:1px solid #437DFF;color:#437DFF;" v-bind:class = "{hide: editButton}"
+                    <td><span style="margin-right:20px;border:1px solid #437DFF;color:#437DFF;"
+                              v-bind:class="{hide: editButton}"
                               @click="edit(index)">编辑</span>
-                        <span style="border:1px solid;color: #ff4949;" @click="deletestaff" v-bind:class = "{hide: deleButton}">删除</span>
+                        <span style="border:1px solid;color: #ff4949;" @click="deletestaff(index)"
+                              v-bind:class="{hide: deleButton}">删除</span>
                     </td>
                 </tr>
                 </tbody>
@@ -61,18 +63,18 @@
             </div>
         </div>
         <!--添加公测员弹窗-->
-        <el-dialog title="添加公测员" :visible.sync='isVisible'>
-            <el-form :label-position="labelPosition" label-width="100px" :model="form">
-                <el-form-item label="公测员名称：">
+        <el-dialog :title="operation" :visible.sync='isVisible'>
+            <el-form :label-position="labelPosition" :rules="rules" ref="form" label-width="105px" :model="form">
+                <el-form-item label="公测员名称：" prop="surveerName">
                     <el-input v-model="form.surveerName"></el-input>
                 </el-form-item>
-                <el-form-item label="推荐人名称：">
+                <el-form-item label="推荐人名称：" prop="surveerReferral">
                     <el-input v-model="form.surveerReferral"></el-input>
                 </el-form-item>
-                <el-form-item label="密码：">
+                <el-form-item label="密码：" prop="password">
                     <el-input v-model="form.password"></el-input>
                 </el-form-item>
-                <el-form-item label="手机号：">
+                <el-form-item label="手机号：" prop="phoneNum">
                     <el-col :span="6">
                         <el-select v-model="form.region">
                             <el-option label="(+86)" value="(+86)"></el-option>
@@ -84,16 +86,18 @@
                         <el-input v-model="form.phoneNum"></el-input>
                     </el-col>
                 </el-form-item>
-                <el-form-item label="赠送余额：">
+                <el-form-item label="赠送余额：" prop="vacancies">
                     <el-input v-model="form.vacancies"></el-input>
                 </el-form-item>
-                <el-form-item label="到期时间：">
-                    <el-input v-model="form.duetime"></el-input>
+                <el-form-item label="到期时间：" prop="duetime">
+                    <!--<el-input v-model="form.duetime"></el-input>-->
+                    <el-date-picker type="date" placeholder="选择日期" v-model="form.duetime"></el-date-picker>
+                </el-form-item>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary"
                                size="small"
-                               @click="addSubmit">提交
+                               @click="Submit()">提交
                     </el-button>
                     <el-button @click="isVisible = false"
                                size="small">取消
@@ -101,49 +105,13 @@
                 </el-form-item>
             </el-form>
         </el-dialog>
-        <!--编辑公测员弹窗-->
-        <el-dialog title="编辑公测员" :visible.sync='iseditVisible'>
-            <el-form :label-position="labelPosition" label-width="100px" :model="form">
-                <el-form-item label="公测员名称：">
-                    <el-input v-model="formEdit.surveerName"></el-input>
-                </el-form-item>
-                <el-form-item label="推荐人名称：">
-                    <el-input v-model="formEdit.surveerReferral"></el-input>
-                </el-form-item>
-                <el-form-item label="密码：">
-                    <el-input v-model="formEdit.password"></el-input>
-                </el-form-item>
-                <el-form-item label="手机号：">
-                    <el-col :span="6">
-                        <el-select v-model="formEdit.region">
-                            <el-option label="(+86)" value="(+86)"></el-option>
-                            <el-option label="(+85)" value="(+85)"></el-option>
-                        </el-select>
-                    </el-col>
-                    <!--<el-col :span="2"> </el-col>-->
-                    <el-col :span="18">
-                        <el-input v-model="formEdit.phoneNum"></el-input>
-                    </el-col>
-                </el-form-item>
-                <el-form-item label="赠送余额：">
-                    <el-input v-model="formEdit.vacancies"></el-input>
-                </el-form-item>
-                <el-form-item label="到期时间：">
-                    <el-input v-model="formEdit.expireTime"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="updateSubmit()">提交</el-button>
-                    <el-button @click="iseditVisible = false">取消</el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
-
     </div>
 </template>
 <script>
     //    import {addetaUser} from '../../api/User';
-    import {addetaUser, getBetaList, betaUpdate} from '../../api/User';
-    import {contains} from '../../assets/public';
+    import {addetaUser, betaDetail, getBetaList, betaDelete, betaUpdate} from '../../api/User';
+    import {contains, translateTime} from '../../assets/public';
+
     export default {
         created() {
             this._surveStaffList();
@@ -151,6 +119,7 @@
         data() {
             return {
                 total: 0,
+                operation: '添加用户',
                 currentPage: 1,
                 iseditVisible: false,
                 labelPosition: 'left',
@@ -160,11 +129,32 @@
                 deleButton: false, // 显示隐藏删除按钮
                 addButton: false, // 显示隐藏添加按钮
                 List: false, // 显示隐藏列表
+                rules: {
+//                    surveerName: [
+//                        {required: true, message: '请添加公测员名称', trigger: 'blur'}
+//                    ],
+//                    surveerReferral: [
+//                        {required: true, message: '添加推荐人名称', trigger: 'blur'}
+//                    ],
+//                    password: [
+//                        {required: true, message: '填写密码', trigger: 'blur'}
+//                    ],
+//                    phoneNum: [
+//                        {required: true, message: '请填写电话', trigger: 'blur'}
+//                    ],
+//                    vacancies: [
+//                        {type: 'number', required: true, message: '填写赠送余额', trigger: 'blur'}
+//                    ],
+//                    duetime: [
+//                        {type: 'date', required: true, message: '请填写到期时间', trigger: 'blur'}
+//                    ]
+                },
                 formInline: {
                     user: '',
                     region: ''
                 },
                 form: {
+                    id: '',
                     surveerName: '',
                     surveerReferral: '',
                     phoneNum: '',
@@ -172,28 +162,41 @@
                     duetime: '',
                     password: ''
                 },
-                formEdit: {
-                    surveerName: '',
-                    surveerReferral: '',
-                    phoneNum: '',
-                    vacancies: '',
-                    expireTime: '',
-                    password: ''
-                },
                 currentIndex: 0,
                 manageDate: []
             };
         },
         methods: {
+//            添加公测员点开按钮
+            add() {
+                this.isVisible = true;
+                this.operation = '添加公测员';
+                this.form.surveerName = '';
+                this.form.surveerReferral = '';
+                this.form.phoneNum = '';
+                this.form.vacancies = '';
+                this.form.duetime = '';
+                this.form.password = '';
+            },
 //            删除公测员
-            deletestaff() {
+            deletestaff(index) {
                 this.$confirm('确定删除吗，删除后不可恢复！', '', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    this.$message({
-                        type: 'success',
-                        message: '删除成功！'
+                    betaDelete(this.manageDate[index].id).then(res => {
+                       if (res.data.error === 0) {
+                           this.$message({
+                               type: 'success',
+                               message: '删除成功！'
+                           });
+                           this._surveStaffList();
+                       } else {
+                           this.$message({
+                               message: res.data.data,
+                               type: 'error'
+                           });
+                       }
                     });
                 }).catch(() => {
                     this.$message({
@@ -207,35 +210,64 @@
                 getBetaList(this.formInline.user, '', '', this.size, this.currentPage).then(res => {
                     this.manageDate = res.data.data.data || [];
                     this.total = res.data.data.total;
+                    console.log(this.manageDate);
                 });
+            },
+//            表单提交
+            Submit() {
+                if (this.operation === '添加公测员') {
+                    this.addSubmit();
+                } else {
+                    this.updateSubmit();
+                }
             },
 //            公测用户添加
             addSubmit() {
-                addetaUser(this.form.phoneNum, this.form.password, this.form.vacancies, this.form.duetime, this.form.surveerReferral).then(res => {
+                addetaUser(this.form.phoneNum, this.form.password, this.form.vacancies, translateTime(this.form.duetime), this.form.surveerReferral).then(res => {
                     console.log(res);
                     if (res.data.error === 0) {
                         this.isVisible = false;
-                        alert('成功');
-                        this.form.surveerName = '';
-                        this.form.surveerReferral = '';
-                        this.form.phoneNum = '';
-                        this.form.vacancies = '';
-                        this.form.duetime = '';
-                        this.form.password = '';
+                        this._surveStaffList();
+                        this.$message({
+                            message: '操作成功',
+                            type: 'error',
+                            showClose: true
+                        });
+                    } else {
+                        this.$message({
+                            message: res.data.data,
+                            type: 'error',
+                            showClose: true
+                        });
                     }
                 });
             },
             edit(index) {
-                this.iseditVisible = true;
-                this.formEdit.phoneNum = this.manageDate[index].user.cell_phone;
-                this.formEdit.password = this.manageDate[index].id;
-                this.formEdit.expireTime = this.manageDate[index].expire_time;
-                this.formEdit.surveerReferral = this.manageDate[index].recommend_user;
+                this.operation = '编辑公测员';
+                this.isVisible = true;
+                betaDetail(this.manageDate[index].user_id).then(res => {
+                    if (res.data.error === 0) {
+                        let data = res.data.data;
+                        console.log(data);
+                        this.form.id = data.user[0].user_id;
+                        this.form.surveerName = data.user[0].user.id;
+                        this.form.surveerReferral = data.user[0].recommend_user;
+                        this.form.phoneNum = data.user[0].user.cell_phone;
+                        this.form.password = data.user[0].user.pwd;
+                        this.form.vacancies = data.gift_cash;
+                        this.form.duetime = data.user[0].expire_time;
+                    } else {
+                        this.$message({
+                            message: res.data.error,
+                            type: 'error',
+                            showClose: true
+                        });
+                    }
+                });
             },
 //            公测员编辑
-
             updateSubmit() {
-                betaUpdate(this.formEdit.phoneNum, this.formEdit.password, this.formEdit.vacancies, this.formEdit.duetime, this.formEdit.surveerReferral).then(res => {
+                betaUpdate(this.form.phoneNum, this.form.password, this.form.vacancies, translateTime(this.form.duetime), this.form.surveerReferral, this.form.id).then(res => {
                     console.log(res);
                     if (res.data.error === 0) {
                         this.$message({
@@ -244,7 +276,7 @@
                             showClose: true,
                             duration: 3000
                         });
-                        this.iseditVisible = false;
+                        this.isVisible = false;
                     }
                 });
             },
@@ -265,8 +297,8 @@
 <style lang="scss" type="text/scss">
     .survestaff {
         padding: 0 15px;
-        .hide{
-            display:none;
+        .hide {
+            display: none;
         }
         .top {
             .el-form {
@@ -274,8 +306,8 @@
                 float: right;
                 .el-form-item {
                     margin-bottom: 0px;
-                    .el-button{
-                        padding:6px 15px;
+                    .el-button {
+                        padding: 6px 15px;
                     }
                 }
                 input {
