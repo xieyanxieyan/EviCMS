@@ -80,7 +80,7 @@
                     </tbody>
                 </table>
                 <!--分页-->
-                <div class="pagination">
+                <div class="pagination" v-if="total>15">
                     <el-pagination
                         layout="prev, pager, next,total"
                         :total="total"
@@ -132,7 +132,7 @@
                 getUserList(this.form.phone, this.form.begin_time, this.form.end_time, this.perpage, this.currentPage).then(res => {
                     this.userList = res.data.data;
                     this.total = this.userList.total;
-                    console.log(this.userList);
+//                    console.log(this.userList);
                 });
             },
             serachList() {

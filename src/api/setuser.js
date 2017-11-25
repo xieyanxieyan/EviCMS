@@ -104,11 +104,13 @@ export function getAdminList(username, time_begin, time_end) {
 }
 
 //  获取管理员日志
-export function getAdminLog(username, time_begin, time_end) {
+export function getAdminLog(username, time_begin, time_end, perPage, page) {
     const params = {
         username,
         time_begin,
-        time_end
+        time_end,
+        perPage,
+        page
     };
     return fetch({
         method: 'get',

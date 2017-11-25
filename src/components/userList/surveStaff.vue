@@ -51,7 +51,7 @@
                 </tbody>
             </table>
             <!--分页-->
-            <div class="pagination">
+            <div class="pagination" v-if="total>15">
                 <el-pagination
                     layout="prev, pager, next,total"
                     :total="total"

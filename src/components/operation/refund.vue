@@ -84,7 +84,7 @@
             </table>
         </div>
         <!--分页-->
-        <div class="pagination" v-bind:class="{hide:refundList}">
+        <div class="pagination" v-bind:class="{hide:refundList}" v-if="total>15">
             <el-pagination
                 layout="prev, pager, next,total"
                 :total= "total"
@@ -157,7 +157,7 @@
             },
 //            处理退款
             _showRefundList() {
-                getRefundList(this.topForm.username, this.topForm.cert_no, translateTime(this.topForm.value1), translateTime(this.topForm.value2), this.perPage, this.currentPage).then(res => {
+                getRefundList(this.topForm.username, this.topForm.cert_no, translateTime(this.topForm.value1), translateTime(this.topForm.value2), '', this.perPage, this.currentPage).then(res => {
                     if (res.data.error === 0) {
                         this.tableItem = res.data.data.data;
                         this.total = res.data.data.total;
@@ -165,10 +165,16 @@
                     }
                 });
             },
+            // 退款处理
             sureSubmit(num) {
                 refundHandle(this.tableItem[this.activeId].request_id, this.repectReason, num).then(res => {
                     console.log(res);
                     if (res.data.error === 0) {
+                        this.$message({
+                            message: '退款成功',
+                            type: 'error',
+                            showClose: true
+                        });
                     }
                 });
                 this.refunddialog = false;

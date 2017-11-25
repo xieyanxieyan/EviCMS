@@ -6,7 +6,7 @@
                  @open="handleOpen"
                  @close="handleClose"
                  theme="dark"
-                 v-for="(item,key,index) in this.options">
+                 v-for="(item,key,index) in this.options" :key="item.id">
             <el-submenu index="">
                 <template slot="title">
                     {{item.name}}

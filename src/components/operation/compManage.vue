@@ -48,7 +48,7 @@
                     </tbody>
                 </table>
                 <!--分页-->
-                <div class="pagination"  :class="{hide:compList}">
+                <div class="pagination"  :class="{hide:compList}" v-if="total > 15">
                     <el-pagination
                         layout="prev, pager, next,total"
                         :total= "total"
@@ -92,7 +92,7 @@
                     this._getCompManage(this.activeName);
                 }
             },
-//            获取公测员列表
+//            获取列表
             _getCompManage(num) {
                 feedbackList(num, this.perpage, this.currentPage).then(res => {
                    if (res.data.error === 0) {
@@ -170,7 +170,7 @@
         .tab-wrapper{
             display: inline-block;
             vertical-align: -28px;
-            margin-left: 35px;
+            margin-left: 10px;
             width: 280px;
         }
     }

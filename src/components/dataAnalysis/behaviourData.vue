@@ -155,6 +155,14 @@
                 operaionName: '',
                 AllData: [],
                 searchData: [],
+                chartData: {
+                    columns: ['日期', '成本', '利润', '占比', '其他'],
+                    rows: []
+                },
+                chartSettings: {
+                    metrics: [],
+                    dimension: []
+                },
                 searchForm: {
                     value: '1',
                     value1: '',

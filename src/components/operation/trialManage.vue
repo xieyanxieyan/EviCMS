@@ -71,7 +71,7 @@
                     <th>操作</th>
                 </tr>
                 </thead>
-                <tbody v-class="{hide:trailList}">
+                <tbody v-bind:class="{hide:trailList}">
                 <tr v-for="(item,index) in TrialData">
                     <td>{{item.request_time}}</td>
                     <td>{{item.username}}</td>
@@ -82,7 +82,7 @@
                 </tbody>
             </table>
         </div>
-        <div v-bind:class="{hide: trailList}" class="pagination">
+        <div  class="pagination" :class="{hide: trailList}" v-if="total>15">
             <el-pagination
                 layout="prev, pager, next,total"
                 :total="total"
@@ -99,6 +99,7 @@
     export default {
         created() {
             this.showtrailList();
+            this.controlPermission();
         },
         data () {
             return {
@@ -133,12 +134,12 @@
                 if (this.activeName === '4') {
                     trailManage(translateTime(this.timeFrom.value1), translateTime(this.timeFrom.value2), parseInt(this.activeName), this.perPage, this.page).then(res => {
                         this.TrialData = res.data.data.data;
-                        console.log(res.data.data.data, this.activeName);
+                        console.log(res.data.data, this.activeName);
                     });
                 } else {
                     trailManage(translateTime(this.timeFrom.value1), translateTime(this.timeFrom.value2), parseInt(this.activeName), this.perPage, this.page).then(res => {
                        if (res.data.error === 0) {
-                           this.TrialData = res.data.data.data;
+                           this.TrialData = res.data.data;
                            console.log(this.TrialData);
                        }
                     });

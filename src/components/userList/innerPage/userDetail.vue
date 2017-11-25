@@ -10,11 +10,11 @@
             <div class="userMessage">
                 <span>
                     <strong>用户序号：</strong>
-                    <small>{{userdetails.user.user_id}}</small>
+                    <small v-if="userdetails.user">{{userdetails.user.user_id}}</small>
                 </span>
                 <span>
                     <strong>注册时间：</strong>
-                    <small>{{userdetails.user.reg_time}}</small>
+                    <small v-if="userdetails.user">{{userdetails.user.reg_time}}</small>
                 </span>
                 <span>
                     <strong>充值余额（元）：</strong>
@@ -50,7 +50,7 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="handle">{{operate}}</el-button>
-                        <el-button>取消</el-button>
+                        <el-button @click="back">返回</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -103,7 +103,7 @@
             },
             _userMessage() {
                 userDetail(this.$route.params.detailId).then(res => {
-                    this.userdetails = res.data.data;
+                    this.userdetails = res.data.data || [];
                 });
             },
             handle() {
@@ -113,8 +113,10 @@
 //                    console.log(this.form.name);
                     this.save();
                 }
+            },
+            back() {
+                this.$router.go(-1);
             }
-
         }
     };
 </script>

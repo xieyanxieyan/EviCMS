@@ -5,10 +5,10 @@
         </div>
         <div class="suggestion">
             <div class="complaintTop">
-                <span><strong>用户</strong>：{{detail.username}}</span>
+                <span><strong>用户</strong>：<small v-if="detail[0].username">{{detail[0].username}}</small></span>
                 <span style="margin:0 20px;color:#eee">|</span>
-                <span><strong>时间：</strong>&nbsp;{{detail.request_time}}</span>
-                <el-button>进入用户界面</el-button>
+                <span><strong>时间：</strong>&nbsp;<small>{{detail[0].request_time}}</small></span>
+                <el-button @click="login_web">进入用户界面</el-button>
             </div>
             <div>
                 <el-form>
@@ -25,7 +25,7 @@
                             <!--<img src=""http://user-imgs.oss-cn-beijing.aliyuncs.com/1506758070722.png" alt="">-->
                             <el-col :span="12">
                                 <el-row>
-                                    <el-col :span="6" v-for="(item,index) in imgs">
+                                    <el-col :span="6" v-for="(item,index) in imgs" :key="item.key">
                                         <img :src="item" alt=""
                                              @click="showpicture(index)">
                                     </el-col>
@@ -42,7 +42,7 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="replaySubmit()" style="margin-right:80px;">提交回复</el-button>
-                        <el-button @click="">返回</el-button>
+                        <el-button @click="back">返回</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -59,7 +59,8 @@
 </template>
 <script>
     import {feedbackdetail, feedbackreplay} from '../../api/operation';
-
+    import {contains} from '../../assets/public';
+    import {admin_web} from '../../api/user';
     export default {
         created() {
             this.feedbackDetail();
@@ -72,7 +73,8 @@
                 replay: '',
                 imgs: [],
                 poc: 0,
-                picVisible: false
+                picVisible: false,
+                user_id: 0
             };
         },
         methods: {
@@ -81,15 +83,19 @@
 //                console.log(this.$route.params.report_id);
                 feedbackdetail(this.$route.params.report_id).then(res => {
                     if (res.data.error === 0) {
+//                        console.log(res.data.data);
+                        this.user_id = res.data.data[0].user_id;
                         let imgs;
                         this.detail = res.data.data || [];
-                        this.content = res.data.data.content;
-                        imgs = res.data.data.imgs.split('[')[1].split(']')[0].split(',');
+                        this.content = res.data.data[0].content;
+                        if (res.data.data.imgs) {
+                            imgs = res.data.data.imgs[0].split('[')[1].split(']')[0].split(',');
+                        }
 //                       console.log(imgs);
                         for (let img in imgs) {
                             this.imgs.push(imgs[img].split('\\').join('').split('"').join(''));
                         }
-                        console.log(this.imgs);
+//                        console.log(this.imgs);
                     }
                 });
             },
@@ -101,6 +107,27 @@
             showpicture(index) {
                 this.picVisible = true;
                 this.poc = index;
+            },
+            // 返回
+            back() {
+                this.$router.go(-1);
+            },
+            // 进入管理员模式该用户的用户界面
+            login_web() {
+                admin_web(this.user_id).then(res => {
+                    if (res.data.error === 0) {
+                        window.location.href = 'http://www.51zbb.net?auth-token=' + res.data.data.data.auth_token;
+                    } else {
+                        this.$message({
+                        message: res.data.data,
+                            type: 'error'
+                        });
+                    }
+                });
+            },
+         //  权限控制函数
+            permissionControl() {
+                this.detail = !contains('operation_feedback_detail') ? this.details : {}; // 是否有显示投诉建议详情的权限
             }
         }
     };

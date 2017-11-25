@@ -9,7 +9,7 @@
                     <el-input v-model="formInline.user"></el-input>
                 </el-form-item>
                 <el-form-item label="统计时间">
-                    <el-col :span="10">
+                    <el-col :span="8">
                         <el-date-picker
                             v-model="formInline.time_begin"
                             type="datetime"
@@ -18,7 +18,7 @@
                         <!--<el-input type="text" placeholder="2017-09-04 01:43:13" v-model="formInline.time_begin"></el-input>-->
                     </el-col >
                     <el-col :span="4">至</el-col>
-                    <el-col :span="10">
+                    <el-col :span="8">
                         <el-date-picker
                             v-model="formInline.time_end"
                             type="datetime"
@@ -43,22 +43,26 @@
                     <th>原因</th>
                 </tr>
                 </thead>
-                <tbody v-bind:class="{hide:operationList}">
-                <tr v-for="(item,index) in operationData">
+                <tbody>
+                <tr v-for="(item,index) in operationData" :key="item.id">
                     <td>{{item.admin_id}}</td>
                     <td>{{item.username}}</td>
-                    <td>{{item.created_at}}</td>
+                    <td>{{item.add_time}}</td>
                     <td>{{item.status}}</td>
-                    <td>用户错误操作需退款</td>
+                    <td>{{item.log_content}}</td>
                 </tr>
                 </tbody>
             </table>
         </div>
         <!--分页功能-->
-        <div class="pagination">
+        <div class="pagination" v-if="total>15">
             <el-pagination
-                layout="prev, pager, next"
-                :total="1000">
+                layout="prev, pager, next,total"
+                :total="total"
+                :page-size="perpage"
+                :current-page.sync="currentPage"
+                @current-change="handleCurrentChange()"
+            >
             </el-pagination>
         </div>
     </div>
@@ -72,7 +76,9 @@
         },
         data () {
             return {
-                operationList: true, // 控制
+                total: 0, // 总条数
+                currentPage: 1, // 当前页码
+                perpage: 15, // 每页多少条
                 pickerOptions0: {
                     disabledDate(time) {
                         return time.getTime() > Date.now();
@@ -89,16 +95,21 @@
         },
         methods: {
             _adminList() {
-                getAdminLog(this.formInline.user, formatDate(this.formInline.time_begin), formatDate(this.formInline.time_end)).then(res => {
+                getAdminLog(this.formInline.user, formatDate(this.formInline.time_begin), formatDate(this.formInline.time_end), this.perPage, this.currentPage).then(res => {
                    if (res.data.error === 0) {
-                      this.operationData = res.data.data;
-                      console.log(this.operationData);
+                      this.operationData = res.data.data.data;
+                      this.total = res.data.data.total;
+                     // console.log(this.operationData, 'admin_logs_list');
                    }
                 });
             },
+            // 分页
+            handleCurrentChange() {
+                this._adminList();
+            },
             // 权限控制
             permissionControl() {
-                this.operationList = contains('s');
+                this.operationData = !contains('admin_logs_list') ? this.operationData : [];
             }
         }
     };

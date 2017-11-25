@@ -94,7 +94,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="pagination" v-bind:class="{hide: hisList}">
+        <div class="pagination" v-bind:class="{hide: hisList}" v-if="total>15">
             <el-pagination
                 layout="prev, pager, next,total"
                 :total="total"
@@ -136,9 +136,10 @@
                 this.certList();
             },
             certList() {
-                certifyList(this.formIn.username, this.formIn.cert_num, this.formIn.time_begin, this.formIn.time_end, this.perPage, this.currentPage).then(res => {
+                certifyList(this.formIn.username, this.formIn.cert_num, this.formIn.time_begin, this.formIn.time_end, this.status, this.perPage, this.currentPage).then(res => {
                     this.hisData = res.data.data.data;
                     this.total = res.data.data.total;
+                    console.log(this.hisData);
                 });
             },
             handleCurrentChange() {
@@ -212,7 +213,6 @@
            .el-form-item{
                margin:0;
            }
-           margin-top:-52px;
         }
         .pagination {
             margin: 15px 0;

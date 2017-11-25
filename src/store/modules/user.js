@@ -64,15 +64,19 @@ const user = {
             return new Promise((resolve, reject) => {
                 logOut()
                     .then((res) => {
-                    console.log(res);
-                        if (res.data.error === 0) {
+                    // console.log(res);
+                    //     if (res.data.error === 0) {
                             commit('SET_AUTH_TOKEN', ''); //  将token置为空
                             removeToken(); // 移除cookie中的token
                             localStorage.clear();
                             resolve(0);
-                        } else {
-                            resolve(res.data.error);
-                        }
+                        // } else {
+                        //     commit('SET_AUTH_TOKEN', ''); //  将token置为空
+                        //     removeToken(); // 移除cookie中的token
+                        //     localStorage.clear();
+                        //     resolve(0);
+                        //     resolve(res.data.error);
+                        // }
                     })
                     .catch(error => {
                         reject(error);
