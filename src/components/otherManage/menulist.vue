@@ -76,7 +76,7 @@
             </el-form>
         </el-dialog>
         <!--分页-->
-        <div class="pagination"  :class="{hide:showList}">
+        <div class="pagination"  :class="{hide:showList}" v-if="total>15">
             <el-pagination
                 layout="prev, pager, next,total"
                 :total= "total"

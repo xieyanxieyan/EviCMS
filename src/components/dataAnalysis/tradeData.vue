@@ -74,25 +74,20 @@
         created() {
             this.searchList();
             this.permissionControl();
-            this.chartData = {
-                columns: ['时间', '新增注册用户数', '新增充值用户数', '登录用户数'],
-                rows: [
-                    {'成本': 1523, '日期': '1月1日', '利润': 1523, '占比': 0.12, '其他': 100},
-                    {'成本': 1223, '日期': '1月2日', '利润': 1523, '占比': 0.345, '其他': 100},
-                    {'成本': 2123, '日期': '1月3日', '利润': 1523, '占比': 0.7, '其他': 100},
-                    {'成本': 4123, '日期': '1月4日', '利润': 1523, '占比': 0.31, '其他': 100},
-                    {'成本': 3123, '日期': '1月5日', '利润': 1523, '占比': 0.12, '其他': 100},
-                    {'成本': 7123, '日期': '1月6日', '利润': 1523, '占比': 0.65, '其他': 100}
-                ]
-            };
-            this.chartSettings = {
-                metrics: ['成本', '利润'],
-                dimension: ['日期']
-            };
+            this.chartData;
+            this.chartSettings;
         },
         data() {
             return {
                 tradeList: [],
+                chartData: {
+                    columns: ['充值', '时间', '用户消费（充值）', '用户消费（赠送）'],
+                    rows: []
+                },
+                chartSettings: {
+                    metrics: ['充值', '用户消费（充值）', '用户消费（赠送）'],
+                    dimension: ['时间']
+                },
                 searchForm: {
                     value: '1',
                     value1: '',
@@ -116,13 +111,22 @@
             };
         },
         methods: {
+            // 按时间查询接口
             searchList() {
+                this.chartData.rows = [];
                 tradeTime(translateTime(this.searchForm.value1), translateTime(this.searchForm.value2), parseInt(this.searchForm.value)).then(res => {
                     if (res.data.error === 0) {
                         this.tradeList = res.data.data;
-                        console.log(this.tradeList);
+                        this.ArrayList(this.tradeList, this.chartData.rows);
                     }
                 });
+            },
+            // 转换表格数组
+            ArrayList(list, array) {
+//                array = [];
+                for (let i = 0; i < list.length; i++) {
+                    array.push({'充值': list[i].topUpFee, '时间': list[i].date, '用户消费（充值）': list[i].consumptionFee, '用户消费（赠送）': list[i].consumptionGiftFee});
+                }
             },
             // 权限控制函数
             permissionControl() {

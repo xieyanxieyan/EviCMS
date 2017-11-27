@@ -119,6 +119,17 @@
                 </tbody>
             </table>
         </div>
+        <!--分页-->
+        <div class="pagination" v-if="total>15">
+            <el-pagination
+                layout="prev, pager, next,total"
+                :total="total"
+                :page-size="size"
+                :current-page.sync="currentPage"
+                @current-change="handleCurrentChange()"
+            >
+            </el-pagination>
+        </div>
         <div class="behaviour">
             <ve-line :data="chartData" :settings="chartSettings"></ve-line>
         </div>
@@ -129,23 +140,10 @@
     import {translateTime, contains} from '../../assets/public';
     export default {
         created() {
-            this.chartData = {
-                columns: ['日期', '成本', '利润', '占比', '其他'],
-                rows: [
-                    { '成本': 1523, '日期': '1月1日', '利润': 1523, '占比': 0.12, '其他': 100 },
-                    { '成本': 1223, '日期': '1月2日', '利润': 1523, '占比': 0.345, '其他': 100 },
-                    { '成本': 2123, '日期': '1月3日', '利润': 1523, '占比': 0.7, '其他': 100 },
-                    { '成本': 4123, '日期': '1月4日', '利润': 1523, '占比': 0.31, '其他': 100 },
-                    { '成本': 3123, '日期': '1月5日', '利润': 1523, '占比': 0.12, '其他': 100 },
-                    { '成本': 7123, '日期': '1月6日', '利润': 1523, '占比': 0.65, '其他': 100 }
-                ]
-            };
-            this.chartSettings = {
-                metrics: ['成本', '利润'],
-                dimension: ['日期']
-            };
             this._getTotalData();
             this.searchList();
+            this.chartData;
+            this.chartSettings;
         },
         data () {
             return {
@@ -154,14 +152,17 @@
                 activeName: 'first',
                 operaionName: '',
                 AllData: [],
+                currentPage: 1, // 当前页
+                size: 15, // 一页显示条数
+                total: 0,
                 searchData: [],
                 chartData: {
-                    columns: ['日期', '成本', '利润', '占比', '其他'],
+                    columns: ['网页打印', '日期', '文档保全', '网页截屏', '录音存证', '录像存证', '拍照存证', '截屏存证', '纸质出证'],
                     rows: []
                 },
                 chartSettings: {
-                    metrics: [],
-                    dimension: []
+                    metrics: ['网页打印', '网页截屏', '录音存证', '录像存证', '拍照存证', '截屏存证', '纸质出证', '文档保全'],
+                    dimension: ['日期']
                 },
                 searchForm: {
                     value: '1',
@@ -193,17 +194,30 @@
                 actionsTotal().then(res => {
                     if (res.data.error === 0) {
                         this.AllData = res.data.data || [];
-                        console.log(this.AllData, 'd');
                     }
                 });
             },
+            // 转换表格数组
+            ArrayList(list, array) {
+//                array = [];
+                for (let i = 0; i < list.length; i++) {
+                    array.push({'网页打印': list[i].webPrintCount, '日期': list[i].date, '网页截屏': list[i].webscreenCount, '文档保全': list[i].documentCount, '录音存证': list[i].radioCount, '录像存证': list[i].videoCount, '拍照存证': list[i].photoCount, '截屏存证': list[i].screenCount, '纸质出证': list[i].paperCount});
+                }
+            },
+            // 获取时间查询结果
             searchList() {
+                this.chartData.rows = [];
                 actionTime(translateTime(this.searchForm.value1), translateTime(this.searchForm.value2), parseInt(this.searchForm.value)).then(res => {
                    if (res.data.error === 0) {
                        this.searchData = res.data.data;
-                       console.log(this.searchData, 'sss');
+                      this.ArrayList(this.searchData, this.chartData.rows);
+                      this.total = res.data.total;
+//                      console.log(res.data);
                    }
                 });
+            },
+            handleCurrentChange() {
+                console.log('click');
             },
             // 权限控制函数
             permissionControl() {

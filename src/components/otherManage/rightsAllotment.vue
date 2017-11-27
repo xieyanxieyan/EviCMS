@@ -41,7 +41,7 @@
         </div>
         <!--分页-->
         <div style="text-align: inherit">
-            <div class="pagination" :class="{hide:compList}">
+            <div class="pagination" :class="{hide:compList}" v-if="total>15">
                 <el-pagination
                     layout="prev, pager, next,total"
                     :total="total"
