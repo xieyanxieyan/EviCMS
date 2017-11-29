@@ -41,7 +41,7 @@
                         </el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="replaySubmit()" style="margin-right:80px;">提交回复</el-button>
+                        <el-button type="primary" :disabled="rep" @click="replaySubmit()" style="margin-right:80px;">提交回复</el-button>
                         <el-button @click="back">返回</el-button>
                     </el-form-item>
                 </el-form>
@@ -67,6 +67,7 @@
         },
         data() {
             return {
+                rep: false,
                 isread: true,
                 detail: [],
                 content: '',
@@ -100,9 +101,26 @@
                 });
             },
             replaySubmit() {
-                feedbackreplay(this.$route.params.report_id, this.replay).then(res => {
-                    console.log(res);
-                });
+                if (this.replay) {
+                    this.rep = false;
+                    feedbackreplay(this.$route.params.report_id, this.replay).then(res => {
+                       if (res.data.error === 0) {
+                           this.$message({
+                               message: '操作成功',
+                               type: 'error',
+                               showClose: true
+                           });
+                       } else {
+                           this.$message({
+                               message: res.data.data,
+                               type: 'error',
+                               showClose: true
+                           });
+                       }
+                    });
+                } else {
+                    this.rep = true;
+                }
             },
             showpicture(index) {
                 this.picVisible = true;

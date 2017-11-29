@@ -27,8 +27,8 @@
                     </span>
             </div>
             <div class="fromcon">
-                <el-form ref="form" :model="form" label-width="120px">
-                    <el-form-item label="手机号：" @keyup.enter.native="handleLogin" :maxlength="11">
+                <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+                    <el-form-item label="手机号：" @keyup.enter.native="handleLogin" :maxlength="11" prop="name">
                         <el-col :span="8">
                             <el-select v-model="form.phone" placeholder="(+86)" :disabled="isUsed">
                                 <el-option label="(+86)" value="(+86)" selected style="width:100%">(+86)</el-option>
@@ -40,12 +40,12 @@
                         </el-col>
                     </el-form-item>
                     <el-form-item label="密码:">
-                        <el-input v-model="form.region" type="password" :disabled="isUsed"></el-input>
+                        <el-input v-model="form.region" type="password" :disabled="isUsed" placeholder="不修改则留空"></el-input>
                     </el-form-item>
                     <el-form-item label="赠送余额（元）:">
                         <el-input v-model="form.type" :disabled="isUsed"></el-input>
                     </el-form-item>
-                    <el-form-item label="修改原因：">
+                    <el-form-item label="修改原因：" prop="reason">
                         <el-input v-model="form.reason" :disabled="isUsed"></el-input>
                     </el-form-item>
                     <el-form-item>
@@ -59,7 +59,23 @@
 </template>
 <script>
     import {editUser, userDetail} from '../../../api/User';
-
+    import {isValidMobile} from '../../../common/js/validate';
+    const checkphone = (rule, value, callback) => {
+        if (!value) {
+            callback(new Error('手机号不能为空'));
+        } else if (!isValidMobile(value)) {
+            callback(new Error('手机号格式错误'));
+        } else {
+            callback();
+        }
+    };
+    const checkreason = (rule, value, callback) => {
+        if (value === '') {
+            callback(new Error('原因必填'));
+        } else {
+            callback();
+        }
+    };
     export default {
         created() {
             this._userMessage();
@@ -69,6 +85,10 @@
                 operate: '修改',
                 labelPosition: 'right',
                 isUsed: true,
+                rules: {
+                    name: [{validator: checkphone, trigger: 'blur'}],
+                    reason: [{validator: checkreason, trigger: 'blur'}]
+                },
                 form: {
                     name: '',
                     region: '',
@@ -89,21 +109,39 @@
                 }
             },
             save() {
-                editUser(this.$route.params.detailId, this.form.name, this.form.region, this.form.type, this.form.reason).then(res => {
+                this.$refs['form'].validate((valid) => {
+                    if (valid) {
+                        editUser(this.$route.params.detailId, this.form.name, this.form.region || 0, this.form.type, this.form.reason).then(res => {
 //                    console.log(res);
-                    if (res.data.error === 0) {
-                        alert('成功');
-                        this.form.name = '';
-                        this.form.region = '';
-                        this.form.type = '';
-                        this.form.phone = '';
-                        this.form.reason = '';
+                            if (res.data.error === 0) {
+                                alert('成功');
+                                this.form.name = '';
+                                this.form.region = '';
+                                this.form.type = '';
+                                this.form.phone = '';
+                                this.form.reason = '';
+                            } else {
+                                this.$message({
+                                    message: res.data.data,
+                                    type: 'error',
+                                    showClose: true
+                                });
+                            }
+                        });
+                    } else {
+                       // console.log('error submit!!');
+                        return false;
                     }
                 });
             },
             _userMessage() {
                 userDetail(this.$route.params.detailId).then(res => {
-                    this.userdetails = res.data.data || [];
+                    let detail = res.data.data;
+                    this.userdetails = detail || [];
+                    this.isUsed = false;
+                    this.form.name = detail.user.cell_phone;
+                    this.form.type = detail.gift_cash;
+                    this.isUsed = true;
                 });
             },
             handle() {

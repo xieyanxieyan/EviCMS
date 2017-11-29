@@ -114,7 +114,7 @@
     };
 </script>
 
-<style>
+<style lang="scss">
     .sidebar-container {
         position: fixed;
         top: 0;
@@ -122,7 +122,6 @@
         left: 0;
         width: 200px;
         background: #324157;
-    }
 
     a {
         text-decoration: none;
@@ -130,7 +129,7 @@
         color: #fff;
     }
 
-    .sidebar-container .el-submenu__title {
+     .el-submenu__title {
         color: #fff;
     }
 
@@ -145,5 +144,8 @@
     .el-menu-item-group__title{
         padding-top:0;
     }
+
+    }
+
 
 </style>

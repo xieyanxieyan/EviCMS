@@ -101,7 +101,6 @@
     import {translateTime, contains} from '../../assets/public';
     import {setToken} from '../../common/js/auth';
 //    import {contains} from '../../assets/public';
-
     export default {
         created() {
             this.getList();
@@ -132,7 +131,6 @@
                 getUserList(this.form.phone, this.form.begin_time, this.form.end_time, this.perpage, this.currentPage).then(res => {
                     this.userList = res.data.data;
                     this.total = this.userList.total;
-//                    console.log(this.userList);
                 });
             },
             serachList() {
@@ -169,7 +167,6 @@
             admin_web(index) {
                 admin_web(this.userList.data[index].user_id).then(res => {
                     if (res.data.error === 0) {
-//                        console.log(res.data.data.data.auth_token, 's');
                         setToken(res.data.data.data.auth_token);
                         window.location.href = 'http://www.51zbb.net?auth-token=' + res.data.data.data.auth_token;
                     }

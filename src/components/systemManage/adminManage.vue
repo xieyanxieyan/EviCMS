@@ -87,6 +87,17 @@
                 </tbody>
             </table>
         </div>
+        <!--分页-->
+        <div class="pagination"  :class="{hide:adminList}" v-if="total > 15">
+            <el-pagination
+                layout="prev, pager, next,total"
+                :total= "total"
+                :page-size="perpage"
+                :current-page.sync="currentPage"
+                @current-change="handleCurrentChange()"
+            >
+            </el-pagination>
+        </div>
     </div>
 </template>
 <script>
@@ -105,6 +116,9 @@
                 adminList: false, // 管理员列表是否显示
                 adminEdit: false, // 管理员编辑权限
                 adminFrozen: false, // 管理员冻结权限
+                total: 0,
+                perpage: 15,
+                currentPage: 1,
                 formInline: {
                     user: '',
                     region: '',
@@ -117,9 +131,9 @@
         methods: {
 //            获取管理员列表
             _userList() {
-                getAdminList(this.formInline.user, formatDate(this.formInline.time_begin), formatDate(this.formInline.time_end)).then(res => {
+                getAdminList(this.formInline.user, formatDate(this.formInline.time_begin), formatDate(this.formInline.time_end), this.perpage, this.currentPage).then(res => {
                     this.adminMessage = res.data.data.data;
-                    console.log(this.adminMessage);
+                   this.total = res.data.data.total;
                 });
             },
 //            编辑信息
@@ -142,6 +156,10 @@
                         this._userList();
                     }
                 });
+            },
+            // 处理分页
+            handleCurrentChange() {
+                this._userList();
             },
             // 点击冻结
             frozen(index) {
@@ -167,7 +185,7 @@
     @import '../../scss/mixin.scss';
     #adminManage {
         padding: 0 15px;
-
+.pagination{text-align:center;}
     .adminSelect {
         margin-bottom: 10px;
     }

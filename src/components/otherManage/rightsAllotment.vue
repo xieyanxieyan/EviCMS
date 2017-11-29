@@ -32,7 +32,7 @@
                             </el-button>
                         </template>
                         <template>
-                            <el-button size="small" v-bind:class="{hide:compDel}" @click="del(index)">删除</el-button>
+                            <el-button size="small" v-bind:class="{hide:compDel}" @click="deleteAdmin(index)">删除</el-button>
                         </template>
                     </td>
                 </tr>
@@ -53,17 +53,6 @@
             </div>
         </div>
         <!--是否删除弹窗-->
-        <el-dialog
-            title="提示"
-            :visible.sync="visible2"
-            size="tiny"
-        >
-            <span>确定删除吗？</span>
-            <span slot="footer" class="dialog-footer">
-    <el-button @click="visible2 = false">取 消</el-button>
-    <el-button type="primary" @click="deleteAdmin()">确 定</el-button>
-  </span>
-        </el-dialog>
         <!--添加权限弹窗-->
         <el-dialog
             :title="operation"
@@ -122,7 +111,6 @@
             menulist(2, this.perpage, this.currentPage).then(res => {
                 if (res.data.error === 0) {
                     this.menuList = res.data.data;
-                    console.log(res.data.data);
                 }
             });
         },
@@ -138,7 +126,7 @@
                 list: [], // 列表项
                 menuList: [], // 下拉列表的项
                 total: 0,  // 总条数
-                visible2: false, // 是否删除弹窗
+            //  visible2: false, // 是否删除弹窗
                 currentId: '',
                 currentIndex: '',
                 centerDialogVisible: false,
@@ -179,10 +167,6 @@
                 });
             },
             // 删除弹框弹出来时将index值更改
-            del(index) {
-                this.visible2 = true;
-                this.currentIndex = index;
-            },
             addAdmin() {
                 this.centerDialogVisible = true;
                 this.operation = '添加权限';
@@ -194,7 +178,6 @@
                 this.currentIndex = index;
                 detailPermission(this.list[index].id).then(res => {
                     if (res.data.error === 0) {
-                        console.log(res.data.data);
                         this.addForm.username = res.data.data.name;
                         this.addForm.description = res.data.data.description;
                         this.addForm.value = res.data.data.permission_key;
@@ -220,7 +203,6 @@
 //            提交添加权限
             submitAdd() {
                 this.$refs['addForm'].validate((valid) => {
-                    console.log(valid);
                     if (valid) {
                         this.centerDialogVisible = false;
                         addPermission(this.addForm.username, this.addForm.value, this.addForm.description, this.addForm.column).then(res => {
@@ -234,7 +216,6 @@
                             }
                         });
                     } else {
-                        console.log('error submit!!');
                         return false;
                     }
                 });
@@ -247,7 +228,6 @@
                         this.centerDialogVisible = false;
                         return new Promise((resolve, reject) => {
                             updatePermission(this.list[this.currentIndex].id, this.addForm.username, this.addForm.value, this.addForm.description, this.addForm.column).then(res => {
-                                console.log(res, '权限');
                                 if (res.data.error === 0) {
                                     this.$message({
                                         message: '提交成功',
@@ -263,18 +243,28 @@
                             });
                         });
                     } else {
-                        console.log('error submit!!');
                         return false;
                     }
                 });
             },
 //            删除权限
-            deleteAdmin() {
-                deletePermission(this.list[this.currentIndex].id).then(res => {
-                    if (res.data.error === 0) {
-                        this.visible2 = false;
-                        this.__list();
-                    }
+            deleteAdmin(index) {
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    deletePermission(this.list[index].id).then(res => {
+                        if (res.data.error === 0) {
+//                            this.visible2 = false;
+                            this.__list();
+                        }
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
                 });
             },
 //        重置表单

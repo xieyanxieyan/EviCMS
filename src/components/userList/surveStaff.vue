@@ -64,7 +64,7 @@
         </div>
         <!--添加公测员弹窗-->
         <el-dialog :title="operation" :visible.sync='isVisible'>
-            <el-form :label-position="labelPosition" :rules="rules" ref="form" label-width="105px" :model="form">
+            <el-form :label-position="labelPosition" :model="form" ref="form" :rules="rules" label-width="110px">
                 <el-form-item label="公测员名称：" prop="surveerName">
                     <el-input v-model="form.surveerName"></el-input>
                 </el-form-item>
@@ -77,13 +77,13 @@
                 <el-form-item label="手机号：" prop="phoneNum">
                     <el-col :span="6">
                         <el-select v-model="form.region">
-                            <el-option label="(+86)" value="(+86)"></el-option>
+                            <el-option label="(+86)" checked value="(+86)"></el-option>
                             <el-option label="(+85)" value="(+85)"></el-option>
                         </el-select>
                     </el-col>
                     <!--<el-col :span="2"> </el-col>-->
                     <el-col :span="18">
-                        <el-input v-model="form.phoneNum"></el-input>
+                        <el-input v-model="form.phoneNum" :maxlength="11"></el-input>
                     </el-col>
                 </el-form-item>
                 <el-form-item label="赠送余额：" prop="vacancies">
@@ -111,12 +111,22 @@
     //    import {addetaUser} from '../../api/User';
     import {addetaUser, betaDetail, getBetaList, betaDelete, betaUpdate} from '../../api/User';
     import {contains, translateTime} from '../../assets/public';
+    import {isValidMobile} from '../../common/js/validate';
 
     export default {
         created() {
             this._surveStaffList();
         },
         data() {
+            const checkphone = (rule, value, callback) => {
+                if (!value) {
+                    callback(new Error('手机号不能为空'));
+                } else if (!isValidMobile(value)) {
+                    callback(new Error('手机号格式不正确'));
+                } else {
+                    callback();
+                }
+            };
             return {
                 total: 0,
                 operation: '添加用户',
@@ -130,24 +140,24 @@
                 addButton: false, // 显示隐藏添加按钮
                 List: false, // 显示隐藏列表
                 rules: {
-//                    surveerName: [
-//                        {required: true, message: '请添加公测员名称', trigger: 'blur'}
-//                    ],
-//                    surveerReferral: [
-//                        {required: true, message: '添加推荐人名称', trigger: 'blur'}
-//                    ],
-//                    password: [
-//                        {required: true, message: '填写密码', trigger: 'blur'}
-//                    ],
-//                    phoneNum: [
-//                        {required: true, message: '请填写电话', trigger: 'blur'}
-//                    ],
-//                    vacancies: [
-//                        {type: 'number', required: true, message: '填写赠送余额', trigger: 'blur'}
-//                    ],
-//                    duetime: [
-//                        {type: 'date', required: true, message: '请填写到期时间', trigger: 'blur'}
-//                    ]
+                    surveerName: [
+                        {required: true, message: '请添加公测员名称', trigger: 'blur'}
+                    ],
+                    surveerReferral: [
+                        {required: true, message: '添加推荐人名称', trigger: 'blur'}
+                    ],
+                    password: [
+                        {required: true, message: '填写密码', trigger: 'blur'}
+                    ],
+                    phoneNum: [
+                        {validator: checkphone, trigger: 'blur'}
+                    ],
+                    vacancies: [
+                        {required: true, message: '填写赠送余额', trigger: 'blur'}
+                    ],
+                    duetime: [
+                        {required: true, message: '请填写到期时间', trigger: 'blur'}
+                    ]
                 },
                 formInline: {
                     user: '',
@@ -185,18 +195,18 @@
                     cancelButtonText: '取消'
                 }).then(() => {
                     betaDelete(this.manageDate[index].id).then(res => {
-                       if (res.data.error === 0) {
-                           this.$message({
-                               type: 'success',
-                               message: '删除成功！'
-                           });
-                           this._surveStaffList();
-                       } else {
-                           this.$message({
-                               message: res.data.data,
-                               type: 'error'
-                           });
-                       }
+                        if (res.data.error === 0) {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功！'
+                            });
+                            this._surveStaffList();
+                        } else {
+                            this.$message({
+                                message: res.data.data,
+                                type: 'error'
+                            });
+                        }
                     });
                 }).catch(() => {
                     this.$message({
@@ -210,16 +220,22 @@
                 getBetaList(this.formInline.user, '', '', this.size, this.currentPage).then(res => {
                     this.manageDate = res.data.data.data || [];
                     this.total = res.data.data.total;
-                    console.log(this.manageDate);
                 });
             },
 //            表单提交
             Submit() {
-                if (this.operation === '添加公测员') {
-                    this.addSubmit();
-                } else {
-                    this.updateSubmit();
-                }
+                this.$refs['form'].validate((valid) => {
+                    if (valid) {
+                        if (this.operation === '添加公测员') {
+                            this.addSubmit();
+                        }
+                        if (this.operation === '编辑公测员') {
+                            this.updateSubmit();
+                        }
+                    } else {
+                        return false;
+                    }
+                });
             },
 //            公测用户添加
             addSubmit() {
@@ -230,7 +246,7 @@
                         this._surveStaffList();
                         this.$message({
                             message: '操作成功',
-                            type: 'error',
+                            type: 'success',
                             showClose: true
                         });
                     } else {
@@ -254,8 +270,8 @@
                         this.form.surveerReferral = data.user[0].recommend_user;
                         this.form.phoneNum = data.user[0].user.cell_phone;
                         this.form.password = data.user[0].user.pwd;
-                        this.form.vacancies = data.gift_cash;
-                        this.form.duetime = data.user[0].expire_time;
+                        this.form.vacancies = data.gift_cash.toString();
+                        this.form.duetime = data.user[0].expire_time.toString();
                     } else {
                         this.$message({
                             message: res.data.error,
@@ -267,7 +283,9 @@
             },
 //            公测员编辑
             updateSubmit() {
-                betaUpdate(this.form.phoneNum, this.form.password, this.form.vacancies, translateTime(this.form.duetime), this.form.surveerReferral, this.form.id).then(res => {
+                let time = this.form.duetime;
+                let timestamp2 = translateTime(Date.parse(new Date(time)));
+                betaUpdate(parseInt(this.form.phoneNum), this.form.password, parseInt(this.form.vacancies), timestamp2, this.form.surveerReferral, this.form.id).then(res => {
                     console.log(res);
                     if (res.data.error === 0) {
                         this.$message({

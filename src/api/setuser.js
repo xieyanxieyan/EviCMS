@@ -90,11 +90,13 @@ export function getAdminLimit(admin_id) {
 }
 
 // 获取管理员列表
-export function getAdminList(username, time_begin, time_end) {
+export function getAdminList(username, time_begin, time_end, perPage, page) {
     const params = {
         username,
         time_begin,
-        time_end
+        time_end,
+        perPage,
+        page
     };
     return fetch({
         method: 'get',

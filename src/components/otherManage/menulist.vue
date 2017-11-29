@@ -187,7 +187,6 @@
                 this.currentIndex = index;
                 detailmenu(this.list[this.currentIndex].menu_id).then(res => {
                     if (res.data.error === 0) {
-                        console.log(res.data.data);
                         this.addMenu.username = res.data.data.name;
                         this.addMenu.link = res.data.data.link;
                         this.addMenu.status = res.data.data.status === 1 ? '显示' : '隐藏';
@@ -216,7 +215,6 @@
             showlist() {
                 menulist(1, this.perpage, this.currentPage).then(res => {
                     if (res.data.error === 0) {
-//                        console.log(res);
                         this.list = res.data.data.data;
                         this.total = res.data.data.total;
                     }
@@ -229,7 +227,6 @@
                         let array = res.data.data;
                         this.parseTreeJson(array);
                         this.options[0].children = array;
-                        console.log(this.options);
                     }
                 });
             },
@@ -248,9 +245,6 @@
                 if (!treeNodes || !treeNodes.length) return;
                 for (let i = 0, len = treeNodes.length; i < len; i++) {
                     let childs = treeNodes[i].children;
-                    if (id) {
-                      console.log(id);
-                    }
                     treeNodes[i].label = treeNodes[i].name;
                     treeNodes[i].value = treeNodes[i].menu_id;
 //                    delete treeNodes[i].name;
@@ -269,8 +263,6 @@
             editSubmit() {
                 this.$refs['addMenu'].validate((valid) => {
                     if (valid) {
-//                        console.log(this.parseTreeJson(this.options, this.addMenu.fatherMenu[this.addMenu.fatherMenu.length - 1]));
-//                        console.log(this.addMenu.fatherMenu[this.addMenu.fatherMenu.length - 1]))
                         updatemenu(this.list[this.currentIndex].menu_id, this.addMenu.username, this.addMenu.link, this.addMenu.status === '显示' ? 1 : 2, this.addMenu.fatherMenu[this.addMenu.fatherMenu.length - 1] || 0).then(res => {
                             if (res.data.error === 0) {
                                 this.$message({

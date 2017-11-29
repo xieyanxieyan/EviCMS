@@ -5,9 +5,9 @@
         <div class=""><span>快速筛选:</span>
             <div class="tab-wrapper">
                 <el-tabs v-model="activeName" @tab-click="handleClick">
-                    <el-tab-pane label="全部" name="1"></el-tab-pane>
-                    <el-tab-pane label="已退款" name="2"></el-tab-pane>
-                    <el-tab-pane label="已拒绝" name="3"></el-tab-pane>
+                    <el-tab-pane label="全部" name=''></el-tab-pane>
+                    <el-tab-pane label="已退款" name="1"></el-tab-pane>
+                    <el-tab-pane label="已拒绝" name="2"></el-tab-pane>
                 </el-tabs>
             </div>
             <el-form class="refundform" :inline="true" v-model="topForm" ref="topForm">
@@ -76,7 +76,7 @@
                         </template>
                     </td>
                     <td>
-                        <span>用户界面</span>
+                        <span @click="admin_web(index)">用户界面</span>
                         <span @click="handleRefund(index)" v-bind:class="{hide:refundDeal}">处理</span>
                     </td>
                 </tr>
@@ -105,8 +105,8 @@
                         <el-input v-model="repectReason"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="info" @click="sureSubmit(1)">确认退款</el-button>
-                        <el-button type="danger" @click="sureSubmit(2)">拒绝退款</el-button>
+                        <el-button type="info" :disabled="isused" @click="sureSubmit(1)">确认退款</el-button>
+                        <el-button type="danger":disabled="isused" @click="sureSubmit(2)">拒绝退款</el-button>
                         <el-button type="primary" @click="close">取消</el-button>
                     </el-form-item>
                 </el-form>
@@ -117,6 +117,8 @@
 <script>
     import {getRefundList, refundHandle} from '../../api/operation';
     import {translateTime, contains} from '../../assets/public';
+    import {admin_web} from '../../api/user';
+//    import {setToken} from '../../common/js/auth';
     export default {
         created() {
             this._showRefundList();
@@ -126,10 +128,11 @@
             return {
                 activeId: 0,
                 labelPosition: 'left',
+                isused: false,
                 refunddialog: false, //  拒绝退款弹窗
                 currentTabIndex: 0,
                 perPage: 15, // 默认一页显示多少条
-                activeName: '1',
+                activeName: '',
                 currentPage: 1,
                 refundDeal: false, // 退款处理的处理按钮是否显示
                 refundList: false, // 退款处理列表是否显示
@@ -146,7 +149,7 @@
         },
         methods: {
             handleClick: function () {
-                console.log('click');
+                this._showRefundList();
             },
             close() {
                 this.refunddialog = false;
@@ -155,9 +158,9 @@
             handleCurrentChange() {
                 this._showRefundList();
             },
-//            处理退款
+//            退款列表
             _showRefundList() {
-                getRefundList(this.topForm.username, this.topForm.cert_no, translateTime(this.topForm.value1), translateTime(this.topForm.value2), '', this.perPage, this.currentPage).then(res => {
+                getRefundList(this.topForm.username, this.topForm.cert_no, translateTime(this.topForm.value1), translateTime(this.topForm.value2), parseInt(this.activeName) || '', this.perPage, this.currentPage).then(res => {
                     if (res.data.error === 0) {
                         this.tableItem = res.data.data.data;
                         this.total = res.data.data.total;
@@ -165,19 +168,39 @@
                     }
                 });
             },
-            // 退款处理
-            sureSubmit(num) {
-                refundHandle(this.tableItem[this.activeId].request_id, this.repectReason, num).then(res => {
-                    console.log(res);
+            // 登入web系统
+            admin_web(index) {
+                admin_web(this.tableItem[index].user_id).then(res => {
                     if (res.data.error === 0) {
-                        this.$message({
-                            message: '退款成功',
-                            type: 'error',
-                            showClose: true
-                        });
+//                        console.log(res.data.data.data.auth_token, 's');
+//                        setToken(res.data.data.data.auth_token);
+                        window.location.href = 'http://www.51zbb.net?auth-token=' + res.data.data.data.auth_token;
                     }
                 });
-                this.refunddialog = false;
+            },
+            // 退款处理
+            sureSubmit(num) {
+                if (this.repectReason) {
+                    this.isused = false;
+                    refundHandle(this.tableItem[this.activeId].request_id, this.repectReason, num).then(res => {
+                        if (res.error === 0) {
+                            this.$message({
+                                message: '处理成功',
+                                type: 'error',
+                                showClose: true
+                            });
+                        } else {
+                            this.$message({
+                                message: res.data.data,
+                                type: 'error',
+                                showClose: true
+                            });
+                        }
+                    });
+                    this.refunddialog = false;
+                } else {
+                    this.isused = true;
+                }
             },
             handleRefund(index) {
                 this.refunddialog = true;
