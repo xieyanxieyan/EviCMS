@@ -35,23 +35,20 @@
                     <el-input v-model="formIn.Memory" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="时间：">
-                    <el-col :span="10">
                         <el-date-picker
-                            v-model="formIn.data1"
-                            type="datetime"
+                            v-model="formIn.time_begin"
+                            type="date"
                             size="small"
                             placeholder="选择开始日期时间">
                         </el-date-picker>
-                    </el-col>
-                    <el-col :span="3">至</el-col>
-                    <el-col :span="10">
+                </el-form-item>
+                   <el-form-item label="至">
                         <el-date-picker
-                            v-model="formIn.data2"
-                            type="datetime"
+                            v-model="formIn.time_end"
+                            type="date"
                             size="small"
                             placeholder="选择结束日期时间">
                         </el-date-picker>
-                    </el-col>
                 </el-form-item>
                 <el-form-item>
                     <el-button size="small">搜索</el-button>
@@ -107,7 +104,7 @@
 </template>
 <script>
     import {certifyList} from '../../api/operation';
-    import {contains} from '../../assets/public';
+    import {contains, translateTime} from '../../assets/public';
     export default {
         created() {
             this.certList();
@@ -136,7 +133,7 @@
                 this.certList();
             },
             certList() {
-                certifyList(this.formIn.username, this.formIn.cert_num, this.formIn.time_begin, this.formIn.time_end, this.perPage, this.currentPage).then(res => {
+                certifyList(this.formIn.username, this.formIn.cert_num, translateTime(this.formIn.time_begin), translateTime(this.formIn.time_end), this.perPage, this.currentPage).then(res => {
                     this.hisData = res.data.data.data;
                     this.total = res.data.data.total;
                     console.log(res);
@@ -180,7 +177,7 @@
         .tab-wrapper {
             display: inline-block;
             vertical-align: -28px;
-            width: 350px;
+            width: 340px;
             /*margin-left: 20px;*/
             .el-tabs__item {
                 padding: 0 5px;
@@ -188,7 +185,7 @@
             }
 
         }
-
+        .el-date-editor.el-input{width:inherit}
         .el-tabs__header {
             border-bottom: 0;
         }

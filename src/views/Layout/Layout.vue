@@ -30,7 +30,7 @@
         }
     };
 </script>
-<style>
+<style  lang="scss">
     .main {
         margin-left: 200px;
         min-width: 900px;

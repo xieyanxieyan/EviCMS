@@ -8,21 +8,24 @@
                         <el-form-item label="用户名称：">
                             <el-input v-model="form.phone" size="small"></el-input>
                         </el-form-item>
-                        <el-form-item label="注册时间:">
-                            <template>
-                                <div>
-                                    <el-date-picker
-                                        size="small"
-                                        v-model="form.value"
-                                        type="daterange"
-                                        align="right"
-                                        unlink-panels
-                                        range-separator="至"
-                                        start-placeholder="开始日期"
-                                        end-placeholder="结束日期">
-                                    </el-date-picker>
-                                </div>
-                            </template>
+                        <el-form-item label="统计时间:">
+                            <el-date-picker
+                                size="small"
+                                v-model="form.begin_time"
+                                type="date"
+                                placeholder="选择开始时间"
+                                :picker-options="form.pickerOptions0">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="至">
+                            <el-date-picker
+                                size="small"
+                                v-model="form.end_time"
+                                type="date"
+                                placeholder="选择结束时间"
+                                :picker-options="form.pickerOptions0">
+                            </el-date-picker>
+                            </el-col>
                         </el-form-item>
                         <el-form-item>
                             <el-button type="primary" @click="serachList">搜索</el-button>
@@ -128,16 +131,13 @@
         },
         methods: {
             getList() {
-                getUserList(this.form.phone, this.form.begin_time, this.form.end_time, this.perpage, this.currentPage).then(res => {
+                getUserList(this.form.phone, translateTime(this.form.begin_time), translateTime(this.form.end_time), this.perpage, this.currentPage).then(res => {
                     this.userList = res.data.data;
                     this.total = this.userList.total;
                 });
             },
             serachList() {
                 this.getList();
-                this.time = this.form.value.toString().split(',');
-                this.begin_time = translateTime(this.time[0]);
-                this.end_time = translateTime(this.time[1]);
             },
 //            将时间转换成YYYY-MM-DD格式
 //            translateTime(time) {
@@ -154,11 +154,10 @@
 //            冻结用户
             frozen(index) {
                 userFreeze(this.userList.data[index].user_id, this.userList.data[index].status).then(res => {
-                    if (res.error === 0) {
-                        alert('操作成功');
+                    if (res.data.error === 0) {
+                        this.getList();
                     }
                 });
-                this.getList();
             },
             handleCurrentChange() {
                 this.getList();
