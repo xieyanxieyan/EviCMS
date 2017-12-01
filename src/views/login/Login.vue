@@ -25,7 +25,7 @@
 
                     </el-input>
                 </el-form-item>
-                <el-form-item >
+                <el-form-item prop="verify_code">
                     <el-col :span="16">
                         <div class="grid-content bg-purple ">
                             <el-input
@@ -39,7 +39,7 @@
                     </el-col>
                     <el-col :span="6">
                         <div class="grid-content bg-purple">
-                            <el-button type="primary" class="get-code">获取验证码</el-button>
+                            <el-button type="primary" class="get-code" @click="sendCode" :disabled="time > 0">{{text}}</el-button>
                         </div>
                     </el-col>
                 </el-form-item>
@@ -55,9 +55,22 @@
     </div>
 </template>
 <script>
+    import {getRandomNum} from '../../common/js/index';
+    import {sendCode} from '../../api/User';
     export default {
         name: 'login',
         data() {
+            // 验证图形验证码输入是否正确
+//            const validateGraph = (rule, value, callback) => {
+//                if (value === '') {
+//                    callback(new Error('请输入图形验证码'));
+//                } else if (value.length !== 4) {
+//                    callback(new Error('验证码为四位数字'));
+//                } else {
+//                    callback();
+//                }
+//            };
+            // 验证用户名是否正确
             const checkname = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('用户名不能为空'));
@@ -65,6 +78,7 @@
                     callback();
                 }
             };
+            // 验证密码是否正确
             const validatepass = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('密码不能为空'));
@@ -84,23 +98,75 @@
 //            };
             return {
                 loginLoading: false,
+                key: '',
+                time: 0,
+                startTime: 60,
                 form: {
                     username: '',
                     password: '',
+                    graph_code: '',
                     verify_code: ''
                 },
                 loginError: {
                     username: '',
-                    password: ''
+                    password: '',
+                    graph_code: ''
                 },
                 rules: {
                     username: [{validator: checkname, trigger: 'blur'}],
                     password: [{validator: validatepass, trigger: 'blur'}]
-//                    verify_code: [{validator: checkcode, trigger: 'blur'}]
                 }
             };
         },
+        computed: {
+            text () {
+                return this.time > 0 ? `重新发送(${this.time})` : '获取验证码';
+            }
+        },
+        created () {
+            this.key = getRandomNum();
+        },
         methods: {
+            // 获取验证码
+            sendCode() {
+                this.$refs.form.validateField('username', error => {
+                    if (!error) {
+                        sendCode(this.form.username)
+                            .then(res => {
+                                // 错误代码
+                                const errno = res.data.error;
+                                if (errno === 0) {
+                                    this.start(); // 开始60秒倒计时
+                                } else {
+                                    this.$message({
+                                        message: res.data.data,
+                                        type: 'warning',
+                                        showClose: true
+                                    });
+                                    this.signupForm.graph_code = '';
+                                    this.refresh();
+                                }
+                            });
+                    } else {
+                        return false;
+                    }
+                });
+            },
+            // 刷新验证码
+            refresh () {
+                this.key = getRandomNum();
+                this.$refs.verifyCode.src = '/graphics/code/get?ignore=1&key=' + this.key;
+            },
+            start () {
+                this.time = this.startTime;
+                this.timer();
+            },
+            timer() {
+                if (this.time > 0) {
+                    this.time--;
+                    setTimeout(this.timer, 1000);
+                }
+            },
             login() {
                     this.$refs['form'].validate((valid) => {
                         if (valid) {

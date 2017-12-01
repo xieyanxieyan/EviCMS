@@ -29,7 +29,7 @@ const user = {
         // 登录
         adminLogin({commit}, user_Info) {
             return new Promise((resolve, reject) => {
-                adminLogin(user_Info.username, user_Info.password, user_Info.code).then(res => {
+                adminLogin(user_Info.username, user_Info.password, user_Info.verify_code).then(res => {
                     if (res.data.error === 0) {
                         // 对返回的结果进行存储到cookies
                         const data = res.data.data;
@@ -47,12 +47,8 @@ const user = {
                         localStorage.setItem('permission', JSON.stringify(data.permissions));
                         localStorage.setItem('menus', JSON.stringify(data.menus));
                         resolve(0);
-                    } else if (res.data.error === 100001) {
-                        resolve(100001);
-                    } else if (res.data.error === 100002) {
-                        resolve(100002);
-                    } else if (res.data.error === 100003) {
-                        resolve(100003);
+                    } else {
+                        resolve(res.data.error, res.data.data);
                     }
                 }).catch(error => {
                     reject(error);

@@ -136,10 +136,10 @@
                 this.certList();
             },
             certList() {
-                certifyList(this.formIn.username, this.formIn.cert_num, this.formIn.time_begin, this.formIn.time_end, this.status, this.perPage, this.currentPage).then(res => {
+                certifyList(this.formIn.username, this.formIn.cert_num, this.formIn.time_begin, this.formIn.time_end, this.perPage, this.currentPage).then(res => {
                     this.hisData = res.data.data.data;
                     this.total = res.data.data.total;
-                    console.log(this.hisData);
+                    console.log(res);
                 });
             },
             handleCurrentChange() {

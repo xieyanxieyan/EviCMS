@@ -153,3 +153,14 @@ export function admin_web(user_id) {
         params
     });
 }
+// 获取验证码
+export function sendCode(username) {
+const params = {
+    username
+};
+return fetch({
+   method: 'get',
+   url: 'admin/code',
+    params
+});
+}
