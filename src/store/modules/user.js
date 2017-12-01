@@ -48,7 +48,7 @@ const user = {
                         localStorage.setItem('menus', JSON.stringify(data.menus));
                         resolve(0);
                     } else {
-                        resolve(res.data.error, res.data.data);
+                        resolve(res.data.error);
                     }
                 }).catch(error => {
                     reject(error);

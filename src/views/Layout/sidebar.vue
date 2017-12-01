@@ -122,7 +122,11 @@
         left: 0;
         width: 200px;
         background: #324157;
+    .el-submenu .el-menu-item{
+        padding-right:0;
+    }
     a {
+        display: block;
         text-decoration: none;
         text-align: left;
         color: #fff;
