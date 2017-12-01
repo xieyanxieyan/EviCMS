@@ -16,62 +16,62 @@
                 </el-form-item>
                 <el-form-item label="登录密码:">
 
-                    <el-input v-model="form.password"></el-input>
+                    <el-input v-model="form.password" type="password"></el-input>
                 </el-form-item>
                 <el-form-item label="手机号:"
-                              :maxlength="11">
+            :maxlength="11">
                     <el-input v-model="form.phone"></el-input>
-                </el-form-item>
-                <el-form-item label="管理员角色:">
+                    </el-form-item>
+                    <el-form-item label="管理员角色:">
                     <el-col :span="12">
-                        <el-select v-model="id" placeholder="请选择">
-                            <el-option
-                                v-for="item in form.options"
-                                :key="item.id"
-                                :label="item.name"
-                                autocomplete="off"
-                                :value="item.id">
-                            </el-option>
-                        </el-select>
+                    <el-select v-model="id" placeholder="请选择">
+                    <el-option
+                v-for="item in form.options"
+                    :key="item.id"
+            :label="item.name"
+                autocomplete="off"
+            :value="item.id">
+                    </el-option>
+                    </el-select>
                     </el-col>
                     <el-col :span="6">&nbsp;</el-col>
-                    <el-col :span="4">
-                        <el-button type="warning" style="margin-left:-20px;" @click="AdminSubmit">提交</el-button>
+                <el-col :span="4">
+                    <el-button type="warning" style="margin-left:-20px;" @click="AdminSubmit">提交</el-button>
                     </el-col>
-                </el-form-item>
-            </el-form>
-        </div>
-    </div>
-</template>
-<script>
-    import {addAdmin, getRole, editAdmin} from '../../../api/setuser';
-    export default {
-        created() {
-            this._getOptions();
-        },
-        data() {
-            return {
-                labelPosition: 'left',
-                id: '',
-                form: {
-                    account: '',
-                    name: '',
-                    password: '',
-                    phone: '',
-                    options: []
-                }
-            };
-        },
-        computed: {
-           cert_id() {
-               return this.$route.params.userId;
-           }
-        },
-        methods: {
+                    </el-form-item>
+                    </el-form>
+                    </div>
+                    </div>
+                    </template>
+                    <script>
+                import {addAdmin, getRole, editAdmin} from '../../../api/setuser';
+                export default {
+                    created() {
+                        this._getOptions();
+                    },
+                    data() {
+                        return {
+                            labelPosition: 'left',
+                            id: '',
+                            form: {
+                                account: '',
+                                name: '',
+                                password: '',
+                                phone: '',
+                                options: []
+                            }
+                        };
+                    },
+                    computed: {
+                        cert_id() {
+                            return this.$route.params.userId;
+                        }
+                    },
+                    methods: {
 //            添加管理员
-            addAdminSubmit() {
-                let form = this.form;
-                addAdmin(form.account, form.name, form.password, form.phone, this.id).then(res => {
+                        addAdminSubmit() {
+                            let form = this.form;
+                            addAdmin(form.account, form.name, form.password, form.phone, this.id).then(res => {
                     if (res.data.error === 0) {
                         this.$message({
                             type: 'warning',

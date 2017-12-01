@@ -122,14 +122,13 @@
         left: 0;
         width: 200px;
         background: #324157;
-
     a {
         text-decoration: none;
         text-align: left;
         color: #fff;
     }
 
-     .el-submenu__title {
+     .el-menu--dark .el-menu-item, .el-menu--dark .el-submenu__title {
         color: #fff;
     }
 

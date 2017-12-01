@@ -196,6 +196,12 @@
                                             showClose: true
                                         });
                                         break;
+                                    case 100009:
+                                        this.$message({
+                                            message: '输入的验证码有误',
+                                            type: 'error',
+                                            showClose: true
+                                        });
                                 }
                             }).catch(err => {
                                 this.$message.error(err);
