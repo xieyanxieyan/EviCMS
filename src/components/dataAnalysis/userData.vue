@@ -162,6 +162,7 @@
                 userTime(translateTime(this.searchForm.value1), translateTime(this.searchForm.value2), parseInt(this.searchForm.value)).then(res => {
                    if (res.data.error === 0) {
                    this.statisticalData = res.data.data;
+                   console.log(this.statisticalData);
                   this.ArrayList(this.statisticalData, this.chartData.rows);
                    }
                 });

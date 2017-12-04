@@ -3,7 +3,7 @@
     <div class="addadmin-wrapper">
         <div>
             <div class="top">
-                <span>管理员管理--添加管理员</span>
+                <span>管理员管理--{{title}}</span>
             </div>
         </div>
         <div class="container">
@@ -19,59 +19,62 @@
                     <el-input v-model="form.password" type="password"></el-input>
                 </el-form-item>
                 <el-form-item label="手机号:"
-            :maxlength="11">
+                              :maxlength="11">
                     <el-input v-model="form.phone"></el-input>
-                    </el-form-item>
-                    <el-form-item label="管理员角色:">
+                </el-form-item>
+                <el-form-item label="管理员角色:">
                     <el-col :span="12">
-                    <el-select v-model="id" placeholder="请选择">
-                    <el-option
-                v-for="item in form.options"
-                    :key="item.id"
-            :label="item.name"
-                autocomplete="off"
-            :value="item.id">
-                    </el-option>
-                    </el-select>
+                        <el-select v-model="id" placeholder="请选择">
+                            <el-option
+                                v-for="item in form.options"
+                                :key="item.id"
+                                :label="item.name"
+                                autocomplete="off"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
                     </el-col>
                     <el-col :span="6">&nbsp;</el-col>
-                <el-col :span="4">
-                    <el-button type="warning" style="margin-left:-20px;" @click="AdminSubmit">提交</el-button>
+                    <el-col :span="4">
+                        <el-button type="warning" style="margin-left:-20px;" @click="AdminSubmit">提交</el-button>
                     </el-col>
-                    </el-form-item>
-                    </el-form>
-                    </div>
-                    </div>
-                    </template>
-                    <script>
-                import {addAdmin, getRole, editAdmin} from '../../../api/setuser';
-                export default {
-                    created() {
-                        this._getOptions();
-                    },
-                    data() {
-                        return {
-                            labelPosition: 'left',
-                            id: '',
-                            form: {
-                                account: '',
-                                name: '',
-                                password: '',
-                                phone: '',
-                                options: []
-                            }
-                        };
-                    },
-                    computed: {
-                        cert_id() {
-                            return this.$route.params.userId;
-                        }
-                    },
-                    methods: {
+                </el-form-item>
+            </el-form>
+        </div>
+    </div>
+</template>
+<script>
+    import {addAdmin, getRole, adminDetail, editAdmin} from '../../../api/setuser';
+
+    export default {
+        created() {
+            this._getOptions();
+            this.adminDetail();
+        },
+        data() {
+            return {
+                labelPosition: 'left',
+                title: '添加管理员',
+                id: '',
+                form: {
+                    account: '',
+                    name: '',
+                    password: '',
+                    phone: '',
+                    options: []
+                }
+            };
+        },
+        computed: {
+            cert_id() {
+                return parseInt(this.$route.params.userId);
+            }
+        },
+        methods: {
 //            添加管理员
-                        addAdminSubmit() {
-                            let form = this.form;
-                            addAdmin(form.account, form.name, form.password, form.phone, this.id).then(res => {
+            addAdminSubmit() {
+                let form = this.form;
+                addAdmin(form.account, form.name, form.password, form.phone, this.id).then(res => {
                     if (res.data.error === 0) {
                         this.$message({
                             type: 'warning',
@@ -79,7 +82,8 @@
                             showClose: true,
                             duration: 2000
                         });
-                   this.clear();
+                        this.clear();
+                        this.$router.go(-1);
                     } else {
                         this.$message({
                             type: 'warning',
@@ -97,16 +101,35 @@
                 this.form.password = '';
                 this.form.phone = '';
             },
-//            获取角色信息*
+          // 获取角色信息*
             _getOptions() {
                 getRole().then(res => {
                     res = res.data;
                     this.form.options = res.data;
                 });
             },
-//            编辑管理员
+            //        管理员详情
+            adminDetail() {
+                if (this.cert_id !== 0) {
+                    this.title = '编辑管理员';
+                    adminDetail(this.cert_id).then(res => {
+                       if (res.data.error === 0) {
+                           console.log(res);
+                           res = res.data.data;
+                           this.form.account = res.username;
+                           this.form.name = res.name;
+                           this.form.phone = res.phone;
+                           this.id = res.role_id;
+                       }
+                    });
+                } else {
+                   this.title = '添加管理员';
+                   this.clear();
+                }
+            },
+
+            // 编辑管理员
             editAdminSubmit() {
-                console.log(this.cert_id);
                 editAdmin(this.cert_id, this.form.account, this.form.name, this.form.password, this.form.phone, this.id).then(res => {
                     if (res.data.error === 0) {
                         this.$message({
@@ -116,6 +139,7 @@
                             duration: 2000
                         });
                         this.clear();
+                        this.$router.go(-1);
                     } else {
                         this.$message({
                             type: 'warning',
@@ -138,6 +162,7 @@
 </script>
 <style lang="scss" scoped>
     @import '../../../scss/mixin.scss';
+
     .addadmin-wrapper {
         padding: 0 15px;
 
@@ -153,7 +178,7 @@
         padding: 15px 0;
 
     span {
-       @include span;
+    @include span;
     }
 
     }

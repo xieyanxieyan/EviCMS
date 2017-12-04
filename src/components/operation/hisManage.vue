@@ -1,7 +1,6 @@
 <template>
     <div id="HisManage">
-        <div class="histop"><span>出证管理</span></div>
-        <div><span>快速筛选:</span>
+        <div class="histop"><span>出证管理</span><span class="quickSelect">快速筛选:</span>
             <div class="tab-wrapper">
                 <el-tabs v-model="activeName" @tab-click="handleClick">
                     <el-tab-pane label="全部" name="first"></el-tab-pane>
@@ -11,7 +10,8 @@
                     <el-tab-pane label="已发件" name="five"></el-tab-pane>
                     <el-tab-pane label="已完成" name="six"></el-tab-pane>
                 </el-tabs>
-            </div>
+            </div></div>
+        <div>
             <!--<form action="#" :model="formIn">-->
             <!--<div>用户名称：</span>-->
             <!--<input type="text" v-model="formIn.username">-->
@@ -70,19 +70,11 @@
                 <tbody v-bind:class="{hide: hisList}">
                 <tr v-for="(item,index) in hisData">
                     <td>{{item.req_time}}</td>
-                    <td>{{item.phone}}</td>
+                    <td>{{item.user_name}}</td>
                     <td>{{item.cert_no}}</td>
                     <td>{{item.type}}</td>
                     <td>
-                        <template v-if="item.status === 1">
-                            处理中
-                        </template>
-                        <template v-else-if="item.status === 2">
-                            已处理
-                        </template>
-                        <template v-else-if="item.status === 0">
-                            出证失败
-                        </template>
+                       {{item.status}}
                     </td>
                     <td><a href="javascript:void(0);"
                            @click="toHisDetail(index)"
@@ -169,8 +161,12 @@
         .histop {
             padding: 15px 0;
             padding-bottom: 0;
-            span{
+            &>span{
                 @include span;
+            }
+            .quickSelect{
+                border:0;
+                margin-left: 20px;
             }
         }
 
@@ -191,8 +187,8 @@
         }
 
        .el-form {
-            float: right;
             display: inline-block;
+           margin-bottom:10px;
            .el-input__inner{
                width:120px;
            }

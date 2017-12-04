@@ -222,7 +222,6 @@
             },
 //            提交编辑权限
             submitEdit() {
-                this.resetForm();
                 this.$refs['addForm'].validate((valid) => {
                     if (valid) {
                         this.centerDialogVisible = false;
@@ -246,6 +245,7 @@
                         return false;
                     }
                 });
+                this.resetForm();
             },
 //            删除权限
             deleteAdmin(index) {

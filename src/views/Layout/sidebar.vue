@@ -2,17 +2,18 @@
     <div class="sidebar-container">
         <h3>证宝宝管理系统</h3>
         <el-menu default-active="2"
+                 :unique-opened="isOpen"
                  class="el-menu-vertical-demo"
                  @open="handleOpen"
                  @close="handleClose"
                  theme="dark"
                  v-for="(item,key,index) in this.options" :key="item.id">
-            <el-submenu index="">
+            <el-submenu index="index" >
                 <template slot="title">
                     {{item.name}}
                 </template>
                 <el-menu-item-group v-for="(list,index) in item.children" :key="list.id" :label="list">
-                    <el-menu-item index="">
+                    <el-menu-item index="index">
                         <router-link :to='list.link'>{{list.name}}</router-link>
                     </el-menu-item>
                     <!--<el-menu-item index="'index'-'ind'">-->
@@ -93,6 +94,7 @@
         },
         data() {
             return {
+                isOpen: true,
                 index: 0,
                 options: []
             };

@@ -12,7 +12,7 @@
             </el-button>
             <el-form :inline="true" :model="formInline" class="demo-form-inline">
                 <el-form-item label="账号或姓名:">
-                    <el-input v-model="formInline.user" placeholder="审批人" size="small"></el-input>
+                    <el-input v-model="formInline.user" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="统计时间" label-width="100">
                     <el-col :span="10">
@@ -72,7 +72,7 @@
                             <b class="isred">已冻结</b>
                         </template>
                     </td>
-                    <td>客服</td>
+                    <td>{{}}</td>
                     <td><span @click="editMessage(index)" class="bluebutton" v-bind:class="{hide:adminEdit}">编辑</span>
                         <template v-if="item.status === 1">
                                 <span @click="frozen(index)" class="redbutton">
@@ -133,9 +133,11 @@
             _userList() {
                 getAdminList(this.formInline.user, formatDate(this.formInline.time_begin), formatDate(this.formInline.time_end), this.perpage, this.currentPage).then(res => {
                     this.adminMessage = res.data.data.data;
+                    console.log(this.adminMessage);
                    this.total = res.data.data.total;
                 });
             },
+
 //            编辑信息
             editMessage(index) {
                 this.$router.push({name: 'addManage', params: {userId: this.adminMessage[index].admin_id}});
@@ -148,11 +150,6 @@
             frozenStatus(index, status) {
                 frezeAdmin(this.adminMessage[index].admin_id, status).then(res => {
                     if (res.data.error === 0) {
-                        console.log(res);
-//                        this.$message({
-//                            type: 'warning',
-//                            message: '冻结成功'
-//                        });
                         this._userList();
                     }
                 });

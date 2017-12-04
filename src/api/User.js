@@ -1,5 +1,5 @@
 import fetch from '../common/js/fetch.js';
-import CryptoJS from 'crypto-js';
+// import CryptoJS from 'crypto-js';
 //  用户列表
 export function getUserList(phone, reg_time_begin, reg_time_end, perPage, page) {
     const params = {
@@ -19,7 +19,7 @@ export function getUserList(phone, reg_time_begin, reg_time_end, perPage, page) 
 export function addUser(phone, password, amount) {
     const params = {
         phone,
-        password: CryptoJS.MD5(password).toString(),
+        password,
         amount
     };
     return fetch({

@@ -1,8 +1,9 @@
 <!--退款处理-->
 <template>
     <div id="refund">
-        <div class="refundtop"><span>退款处理</span></div>
-        <div class=""><span>快速筛选:</span>
+        <div class="refundtop">
+            <span>退款处理</span>
+            <div class="quikeSelect">快速筛选:</div>
             <div class="tab-wrapper">
                 <el-tabs v-model="activeName" @tab-click="handleClick">
                     <el-tab-pane label="全部" name=''></el-tab-pane>
@@ -10,6 +11,8 @@
                     <el-tab-pane label="已拒绝" name="2"></el-tab-pane>
                 </el-tabs>
             </div>
+        </div>
+        <div class="">
             <el-form class="refundform" :inline="true" v-model="topForm" ref="topForm">
                 <el-form-item label="用户名称：">
                     <el-input v-model="topForm.username" size="small"></el-input>
@@ -18,27 +21,28 @@
                     <el-input v-model="topForm.cert_no" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="统计时间:">
-                        <el-date-picker
-                            size="small"
-                            v-model="topForm.value1"
-                            type="date"
-                            placeholder="选择开始时间"
-                            :picker-options="topForm.pickerOptions0">
-                        </el-date-picker>
+                    <el-date-picker
+                        size="small"
+                        v-model="topForm.value1"
+                        type="date"
+                        placeholder="选择开始时间"
+                        :picker-options="topForm.pickerOptions0">
+                    </el-date-picker>
                 </el-form-item>
                 <el-form-item label="至">
-                        <el-date-picker
-                            size="small"
-                            v-model="topForm.value2"
-                            type="date"
-                            placeholder="选择结束时间"
-                            :picker-options="topForm.pickerOptions0">
-                        </el-date-picker>
+                    <el-date-picker
+                        size="small"
+                        v-model="topForm.value2"
+                        type="date"
+                        placeholder="选择结束时间"
+                        :picker-options="topForm.pickerOptions0">
+                    </el-date-picker>
                     </el-col>
                 </el-form-item>
                 <el-form-item>
                     <el-button
-                        size="small" @click="_showRefundList">搜索</el-button>
+                        size="small" @click="_showRefundList">搜索
+                    </el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -87,7 +91,7 @@
         <div class="pagination" v-bind:class="{hide:refundList}" v-if="total>15">
             <el-pagination
                 layout="prev, pager, next,total"
-                :total= "total"
+                :total="total"
                 :page-size="perPage"
                 :current-page.sync="currentPage"
                 @current-change="handleCurrentChange()"
@@ -106,7 +110,7 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="info" :disabled="isused" @click="sureSubmit(1)">确认退款</el-button>
-                        <el-button type="danger":disabled="isused" @click="sureSubmit(2)">拒绝退款</el-button>
+                        <el-button type="danger" :disabled="isused" @click="sureSubmit(2)">拒绝退款</el-button>
                         <el-button type="primary" @click="close">取消</el-button>
                     </el-form-item>
                 </el-form>
@@ -118,7 +122,7 @@
     import {getRefundList, refundHandle} from '../../api/operation';
     import {translateTime, contains} from '../../assets/public';
     import {admin_web} from '../../api/user';
-//    import {setToken} from '../../common/js/auth';
+    //    import {setToken} from '../../common/js/auth';
     export default {
         created() {
             this._showRefundList();
@@ -217,60 +221,69 @@
 <style lang="scss" type="text/scss">
     @import '../../style/common.scss';
     @import '../../scss/mixin.scss';
+
     #refund {
         padding: 0 15px;
-    .pagination{
-        margin:15px 0;
-        text-align: center;
-    .el-pagination{
-        display:inline-block;
-    }
-    }
-    .refundtop {
-        padding: 15px 0;
-    span {
-       @include span;
-    }
-
-    }
-    .el-tabs__header{
-        margin: 0 0 10px;
-    }
-    td span {
-        cursor: pointer;
-        border: 1px solid;
-        padding: 3px;
-        color:#20a0ff;
-    }
-
-    .tab-wrapper {
-        display: inline-block;
-        vertical-align: -28px;
-        width: 260px;
-        margin-left: 20px;
-
-    }
-
-    .el-tabs__header {
-        border-bottom: 0;
-    }
-
-    .refundform {
-        float: right;
-        margin-top:-48px;
-        display: inline-block;
-        .el-form-item__content{
-            width:115px;
+        .pagination {
+            margin: 15px 0;
+            text-align: center;
+            .el-pagination {
+                display: inline-block;
+            }
         }
-    .el-date-editor.el-input{
-        width:120px;
-    }
-    .el-form-item{
-        margin-bottom:0;
-        &:last-child{
-            width:45px;
+        .tab-wrapper>div{
+            display: inline-block;
         }
-    }
-    }
+        .refundtop {
+            padding: 15px 0;
+            padding-bottom: 0;
+            &>span {
+                @include span;
+            }
+            .quikeSelect{
+                display:inline-block;
+                height:42px;
+                line-height: 42px;
+                margin-left:20px;
+            }
+
+        }
+        .el-tabs__header {
+            margin: 0 0 10px;
+        }
+        td span {
+            cursor: pointer;
+            border: 1px solid;
+            padding: 3px;
+            color: #20a0ff;
+        }
+
+        .tab-wrapper {
+            display: inline-block;
+            vertical-align: -28px;
+            margin-left: 20px;
+
+        }
+
+        .el-tabs__header {
+            border-bottom: 0;
+        }
+
+        .refundform {
+            margin-bottom:10px;
+            display: inline-block;
+            .el-form-item__content {
+                width: 115px;
+            }
+            .el-date-editor.el-input {
+                width: 120px;
+            }
+            .el-form-item {
+                margin-bottom: 0;
+                &:last-child {
+                    width: 45px;
+                }
+            }
+        }
     }
 </style>

@@ -171,7 +171,16 @@ export function frezeAdmin(admin_id, status) {
         params
     });
 }
-
+export function adminDetail(admin_id) {
+    const params = {
+        admin_id
+    };
+    return fetch({
+        method: 'get',
+        url: 'admin/detail',
+        params
+    });
+}
 // 权限列表
 export function permissionList(type) {
     const params = {

@@ -134,13 +134,13 @@
                 if (this.activeName === '4') {
                     trailManage(translateTime(this.timeFrom.value1), translateTime(this.timeFrom.value2), parseInt(this.activeName), this.perPage, this.page).then(res => {
                         this.TrialData = res.data.data.data;
-                        console.log(res.data.data, this.activeName);
+                        console.log(res.data, this.activeName);
                     });
                 } else {
                     trailManage(translateTime(this.timeFrom.value1), translateTime(this.timeFrom.value2), parseInt(this.activeName), this.perPage, this.page).then(res => {
                        if (res.data.error === 0) {
                            this.TrialData = res.data.data;
-                           console.log(this.TrialData);
+                           console.log(res);
                        }
                     });
                 }
@@ -172,7 +172,7 @@
     }
     .TrialManagetop {
         padding: 15px 0;
-
+        padding-bottom:0;
     span {
       @include span;
     }

@@ -224,6 +224,7 @@
             },
 //            表单提交
             Submit() {
+                this.form.duetime = this.form.duetime.toString();
                 this.$refs['form'].validate((valid) => {
                     if (valid) {
                         if (this.operation === '添加公测员') {
@@ -319,6 +320,9 @@
             display: none;
         }
         .top {
+            margin: 0;
+            padding: 15px 0;
+            margin-bottom:20px;
             .el-form {
                 margin: 0;
                 float: right;
@@ -358,10 +362,6 @@
             .el-pagination {
                 display: inline-block;
             }
-        }
-        .top {
-            margin: 0;
-            padding: 15px 0;
         }
         .el-dialog {
             width: 500px;

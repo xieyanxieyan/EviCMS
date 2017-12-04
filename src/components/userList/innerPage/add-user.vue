@@ -20,7 +20,7 @@
                     </el-col>
                 </el-form-item>
                 <el-form-item label="初始密码:" prop="region">
-                    <el-input v-model="form.region"></el-input>
+                    <el-input type="password" v-model="form.region"></el-input>
                 </el-form-item>
                 <el-form-item label="赠送余额（元）:">
 
