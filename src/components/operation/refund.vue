@@ -63,25 +63,30 @@
                 <tbody>
                 <tr v-for="(item,index) in tableItem">
                     <td>{{item.time}}</td>
-                    <td>{{item.username}}</td>
+                    <td>{{item.user.cell_phone}}</td>
                     <td>{{item.consumption.cert_no}}</td>
                     <td>{{item.append_info}}</td>
-                    <td>{{item.consumption.type}}</td>
-                    <td>{{item.consumption.cash_fee}}</td>
+                    <td>{{item.consumption.op_code}}</td>
+                    <td>{{item.cash_pay}}</td>
                     <td>
                         <template v-if="item.status==0">
                             未处理
                         </template>
-                        <template v-else-if="item.status == 1">
-                            已同意
+                        <template v-else-if="item.status == 1" >
+                           <span class="redtext"> 已同意</span>
                         </template>
                         <template v-else-if="item.status === 2">
-                            已拒绝
+                           <span class="bluetext"> 已拒绝</span>
                         </template>
                     </td>
                     <td>
-                        <span @click="admin_web(index)">用户界面</span>
-                        <span @click="handleRefund(index)" v-bind:class="{hide:refundDeal}">处理</span>
+                        <el-button type="primary"  class="addStyle" size="small" plain @click="admin_web(index)">用户界面</el-button>
+                        <template v-if="item.status==0">
+                            <el-button  type="primary"  class="addStyle" size="small" plain @click="handleRefund(index)" v-bind:class="{hide:refundDeal}">处理</el-button>
+                        </template>
+                        <template v-else>
+                            <el-button  size="small" disabled v-bind:class="{hide:refundDeal}">处理</el-button>
+                        </template>
                     </td>
                 </tr>
                 </tbody>
@@ -168,31 +173,29 @@
                     if (res.data.error === 0) {
                         this.tableItem = res.data.data.data;
                         this.total = res.data.data.total;
-                        console.log(this.tableItem);
+                       // console.log(this.tableItem);
                     }
                 });
             },
             // 登入web系统
             admin_web(index) {
+                let w = window.open();
                 admin_web(this.tableItem[index].user_id).then(res => {
                     if (res.data.error === 0) {
-//                        console.log(res.data.data.data.auth_token, 's');
-//                        setToken(res.data.data.data.auth_token);
-                        window.location.href = 'http://www.51zbb.net?auth-token=' + res.data.data.data.auth_token;
+                        setTimeout(function() {
+                            w.location = 'http://zbb.fa123.com/#/login/admin/' + res.data.data;
+                        }, 1000);
                     }
                 });
+                return false;
             },
             // 退款处理
             sureSubmit(num) {
                 if (this.repectReason) {
                     this.isused = false;
                     refundHandle(this.tableItem[this.activeId].request_id, this.repectReason, num).then(res => {
-                        if (res.error === 0) {
-                            this.$message({
-                                message: '处理成功',
-                                type: 'error',
-                                showClose: true
-                            });
+                        if (res.data.error === 0) {
+                            this._showRefundList();
                         } else {
                             this.$message({
                                 message: res.data.data,
@@ -200,10 +203,16 @@
                                 showClose: true
                             });
                         }
+                        this.repectReason = '';
                     });
                     this.refunddialog = false;
                 } else {
                     this.isused = true;
+                    this.$message({
+                        message: '理由不能为空',
+                        type: 'warning',
+                        showClose: true
+                    });
                 }
             },
             handleRefund(index) {
@@ -231,6 +240,12 @@
                 display: inline-block;
             }
         }
+        .redtext{
+            color:#67C23A; border:0
+        }
+        .bluetext{
+            color:#FA5555; border:0
+        }
         .tab-wrapper>div{
             display: inline-block;
         }
@@ -251,12 +266,12 @@
         .el-tabs__header {
             margin: 0 0 10px;
         }
-        td span {
-            cursor: pointer;
-            border: 1px solid;
-            padding: 3px;
-            color: #20a0ff;
-        }
+        /*td span {*/
+            /*cursor: pointer;*/
+            /*border: 1px solid;*/
+            /*padding: 3px;*/
+            /*color: #20a0ff;*/
+        /*}*/
 
         .tab-wrapper {
             display: inline-block;

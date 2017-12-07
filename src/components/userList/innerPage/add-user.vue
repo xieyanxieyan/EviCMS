@@ -23,7 +23,6 @@
                     <el-input type="password" v-model="form.region"></el-input>
                 </el-form-item>
                 <el-form-item label="赠送余额（元）:">
-
                     <el-input v-model="form.type"></el-input>
                 </el-form-item>
                 <el-form-item>
@@ -78,10 +77,11 @@
             addUser() {
                 this.$refs['form'].validate((valid) => {
                     if (valid) {
-                        addUser(this.form.name, this.form.region, this.form.type || 0).then(res => {
+                        let num = parseFloat(this.form.type);
+                        addUser(this.form.name, this.form.region, num.toFixed(2) || 0.00).then(res => {
                             if (res.data.error === 0) {
                                 this.$message({
-                                    type: 'warning',
+                                    type: 'success',
                                     message: '添加用户成功',
                                     showClose: true,
                                     duration: 2000

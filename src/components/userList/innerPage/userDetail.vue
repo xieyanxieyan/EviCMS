@@ -111,10 +111,15 @@
             save() {
                 this.$refs['form'].validate((valid) => {
                     if (valid) {
-                        editUser(this.$route.params.detailId, this.form.name, this.form.region || 0, this.form.type, this.form.reason).then(res => {
+                        let num = parseFloat(this.form.type);
+                        editUser(this.$route.params.detailId, this.form.name, this.form.region || 0, num.toFixed(2), this.form.reason).then(res => {
 //                    console.log(res);
                             if (res.data.error === 0) {
-                                alert('成功');
+                               this.$message({
+                                   message: '保存成功',
+                                   type: 'success',
+                                   showClose: true
+                               });
                                 this.form.name = '';
                                 this.form.region = '';
                                 this.form.type = '';

@@ -130,7 +130,9 @@
             text-align:center;
         }
     }
-
+table{
+    table-layout: fixed;
+}
     .el-input__inner {
         display:inline-block;
         width:inherit;

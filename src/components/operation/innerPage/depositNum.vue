@@ -9,7 +9,8 @@
         </div>
         <div class="depositForm">
             <div>
-                <el-form :label-position="labelPosition" label-width="100px" :model="formLabelAlign" ref="formLabelAlign">
+                <el-form :label-position="labelPosition" label-width="100px" :model="formLabelAlign"
+                         ref="formLabelAlign">
                     <el-form-item label="姓名：">
                         <el-input v-model="formLabelAlign.name"
                                   prop="name"
@@ -48,10 +49,11 @@
     </div>
 </template>
 <script>
-    import {certifyUpdate} from '../../../api/operation';
+    import {certifyUpdate, getCertifyDetail} from '../../../api/operation';
+
     export default {
         props: ['cert'],
-        data () {
+        data() {
             return {
                 isused: true,
                 labelPosition: 'left',
@@ -63,7 +65,23 @@
                 }
             };
         },
+        created() {
+            this.detail();
+        },
         methods: {
+            // 显示信息详情
+            detail() {
+                getCertifyDetail(this.$route.params.detailId).then(res => {
+                    if (res.data.error === 0) {
+                        this.detail = res.data.data;
+                        this.isused = false;
+                        this.formLabelAlign.name = this.detail.user_name;
+                        this.formLabelAlign.phone = this.detail.phone;
+                        this.formLabelAlign.address = this.detail.rec_addr;
+                        this.isused = true;
+                    }
+                });
+            },
             certupdateSubmit(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -72,7 +90,19 @@
                             this.isused = false;
                         } else {
                             certifyUpdate(this.cert.apply_id, this.formLabelAlign.name, this.formLabelAlign.phone, this.formLabelAlign.address, this.exp_num, this.exp_company, 1).then(res => {
-                                console.log(res);
+                                if (res.data.error === 0) {
+                                    this.$message({
+                                        message: '保存成功',
+                                        showClose: true,
+                                        type: 'success'
+                                    });
+                                } else {
+                                    this.$message({
+                                        message: res.data.data,
+                                        showClose: true,
+                                        type: 'success'
+                                    });
+                                }
                             });
                         }
                     } else {

@@ -72,7 +72,7 @@
                             <b class="isred">已冻结</b>
                         </template>
                     </td>
-                    <td>{{}}</td>
+                    <td>{{item.role_detail.name}}</td>
                     <td><span @click="editMessage(index)" class="bluebutton" v-bind:class="{hide:adminEdit}">编辑</span>
                         <template v-if="item.status === 1">
                                 <span @click="frozen(index)" class="redbutton">

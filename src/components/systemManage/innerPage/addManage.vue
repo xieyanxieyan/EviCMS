@@ -15,8 +15,7 @@
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
                 <el-form-item label="登录密码:">
-
-                    <el-input v-model="form.password" type="password"></el-input>
+                    <el-input v-model="form.password" :placeholder="pass" type="password"></el-input>
                 </el-form-item>
                 <el-form-item label="手机号:"
                               :maxlength="11">
@@ -55,6 +54,7 @@
             return {
                 labelPosition: 'left',
                 title: '添加管理员',
+                pass: '',
                 id: '',
                 form: {
                     account: '',
@@ -87,7 +87,7 @@
                     } else {
                         this.$message({
                             type: 'warning',
-                            message: '添加管理员失败了',
+                            message: res.data.data,
                             showClose: true,
                             duration: 2000
                         });
@@ -112,6 +112,7 @@
             adminDetail() {
                 if (this.cert_id !== 0) {
                     this.title = '编辑管理员';
+                    this.pass = '密码不修改不填';
                     adminDetail(this.cert_id).then(res => {
                        if (res.data.error === 0) {
                            console.log(res);
@@ -120,10 +121,17 @@
                            this.form.name = res.name;
                            this.form.phone = res.phone;
                            this.id = res.role_id;
+                       } else {
+                           this.$message({
+                               message: res.data.data,
+                               type: 'error',
+                               showClose: true
+                           });
                        }
                     });
                 } else {
                    this.title = '添加管理员';
+                    this.pass = '';
                    this.clear();
                 }
             },
@@ -133,7 +141,7 @@
                 editAdmin(this.cert_id, this.form.account, this.form.name, this.form.password, this.form.phone, this.id).then(res => {
                     if (res.data.error === 0) {
                         this.$message({
-                            type: 'warning',
+                            type: 'success',
                             message: '编辑管理员成功',
                             showClose: true,
                             duration: 2000
@@ -142,10 +150,9 @@
                         this.$router.go(-1);
                     } else {
                         this.$message({
-                            type: 'warning',
-                            message: '编辑管理员失败了',
-                            showClose: true,
-                            duration: 2000
+                            message: res.data.data,
+                            type: 'error',
+                            showClose: true
                         });
                     }
                 });

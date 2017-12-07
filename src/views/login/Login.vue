@@ -11,7 +11,7 @@
                               type="text"
                               v-model="form.username"
                               autoComplete="off"
-                              :maxlength="11"
+                              :maxlength="25"
                               placeholder="用户名">
                     </el-input>
                 </el-form-item>
@@ -172,11 +172,11 @@
                         if (valid) {
                             this.loginError.username = '';
                             this.loginError.password = '';
-                            this.loginLoading = true;
                             this.$store.dispatch('adminLogin', this.form).then((res) => {
                                 this.loginLoading = false;
                                 switch (res) {
                                     case 0:
+                                        this.loginLoading = true;
                                         this.$router.push({path: '/'});
                                         break;
                                     case 100001:

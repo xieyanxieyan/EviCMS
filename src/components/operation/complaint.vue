@@ -5,9 +5,9 @@
         </div>
         <div class="suggestion">
             <div class="complaintTop">
-                <span><strong>用户</strong>：<small v-if="detail[0].username">{{detail[0].username}}</small></span>
+                <span><strong>用户</strong>：<small v-if="user.user">{{user.user.cell_phone}}</small></span>
                 <span style="margin:0 20px;color:#eee">|</span>
-                <span><strong>时间：</strong>&nbsp;<small>{{detail[0].request_time}}</small></span>
+                <span><strong>时间：</strong>&nbsp;<small>{{user.request_time}}</small></span>
                 <el-button @click="login_web">进入用户界面</el-button>
             </div>
             <div>
@@ -18,7 +18,7 @@
                     <el-form-item>
                         <el-row>
                             <el-col :span="12">
-                                <el-input type="textarea" size="small" resize="none" :readonly="isread"
+                                <el-input type="textarea" size="medium" resize="none" :readonly="isread"
                                           :value="content">
                                 </el-input>
                             </el-col>
@@ -72,6 +72,7 @@
                 detail: [],
                 content: '',
                 replay: '',
+                user: '', // 用户信息
                 imgs: [],
                 poc: 0,
                 picVisible: false,
@@ -81,22 +82,24 @@
         methods: {
 //            投诉详情内容
             feedbackDetail() {
-//                console.log(this.$route.params.report_id);
                 feedbackdetail(this.$route.params.report_id).then(res => {
                     if (res.data.error === 0) {
-//                        console.log(res.data.data);
-                        this.user_id = res.data.data[0].user_id;
-                        let imgs;
+                        this.user_id = res.data.data.user_id;
+                        this.user = res.data.data;
+                        let imgs = res.data.data.imgs === '' ? [] : JSON.parse(res.data.data.imgs);
+                        console.log(imgs);
+                        this.imgs = imgs;
                         this.detail = res.data.data || [];
-                        this.content = res.data.data[0].content;
-                        if (res.data.data.imgs) {
-                            imgs = res.data.data.imgs[0].split('[')[1].split(']')[0].split(',');
-                        }
-//                       console.log(imgs);
-                        for (let img in imgs) {
-                            this.imgs.push(imgs[img].split('\\').join('').split('"').join(''));
-                        }
-//                        console.log(this.imgs);
+                        this.content = res.data.data.content;
+//                        for (let img in imgs) {
+//                            this.imgs.push(img.split('"').join());
+//                        }
+                    } else {
+                        this.$message({
+                            message: res.data.data,
+                            type: 'error',
+                            showClose: true
+                        });
                     }
                 });
             },
@@ -107,7 +110,7 @@
                        if (res.data.error === 0) {
                            this.$message({
                                message: '操作成功',
-                               type: 'error',
+                               type: 'success',
                                showClose: true
                            });
                        } else {
@@ -120,6 +123,11 @@
                     });
                 } else {
                     this.rep = true;
+                    this.$message({
+                        message: '回复内容不能为空',
+                        type: 'warning',
+                        showClose: true
+                    });
                 }
             },
             showpicture(index) {
@@ -132,9 +140,12 @@
             },
             // 进入管理员模式该用户的用户界面
             login_web() {
+                let w = window.open();
                 admin_web(this.user_id).then(res => {
                     if (res.data.error === 0) {
-                        window.location.href = 'http://www.51zbb.net?auth-token=' + res.data.data.data.auth_token;
+                        setTimeout(function() {
+                            w.location = 'http://zbb.fa123.com/#/login/admin/' + res.data.data;
+                        }, 1000);
                     } else {
                         this.$message({
                         message: res.data.data,
@@ -142,6 +153,7 @@
                         });
                     }
                 });
+                return false;
             },
          //  权限控制函数
             permissionControl() {
@@ -198,6 +210,8 @@
                     margin-left: 10px;
                     .el-col-6 {
                         margin: 0 10px;
+                        max-height: 90px;
+                        overflow: hidden;
                         img {
                             display: inline-block;
                             width: 100%;

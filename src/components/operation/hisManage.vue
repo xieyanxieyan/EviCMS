@@ -3,12 +3,12 @@
         <div class="histop"><span>出证管理</span><span class="quickSelect">快速筛选:</span>
             <div class="tab-wrapper">
                 <el-tabs v-model="activeName" @tab-click="handleClick">
-                    <el-tab-pane label="全部" name="first"></el-tab-pane>
-                    <el-tab-pane label="待处理（99）" name="second"></el-tab-pane>
-                    <el-tab-pane label="待打印" name="third"></el-tab-pane>
-                    <el-tab-pane label="待发件" name="fourth"></el-tab-pane>
-                    <el-tab-pane label="已发件" name="five"></el-tab-pane>
-                    <el-tab-pane label="已完成" name="six"></el-tab-pane>
+                    <el-tab-pane label="全部" name=""></el-tab-pane>
+                    <el-tab-pane label="待处理（99）" name="2"></el-tab-pane>
+                    <el-tab-pane label="待打印" name="3"></el-tab-pane>
+                    <el-tab-pane label="待发件" name="4"></el-tab-pane>
+                    <el-tab-pane label="已发件" name="5"></el-tab-pane>
+                    <el-tab-pane label="已完成" name="6"></el-tab-pane>
                 </el-tabs>
             </div></div>
         <div>
@@ -70,7 +70,7 @@
                 <tbody v-bind:class="{hide: hisList}">
                 <tr v-for="(item,index) in hisData">
                     <td>{{item.req_time}}</td>
-                    <td>{{item.user_name}}</td>
+                    <td>{{item.phone}}</td>
                     <td>{{item.cert_no}}</td>
                     <td>{{item.type}}</td>
                     <td>
@@ -105,7 +105,7 @@
         data() {
             return {
                 currentTabIndex: 0,
-                activeName: 'first',
+                activeName: '1',
                 currentPage: 1,
                 total: 0,
                 perPage: 15, // 每页显示多少条
@@ -125,10 +125,10 @@
                 this.certList();
             },
             certList() {
-                certifyList(this.formIn.username, this.formIn.cert_num, translateTime(this.formIn.time_begin), translateTime(this.formIn.time_end), this.perPage, this.currentPage).then(res => {
+                let status = parseInt(this.activeName);
+                certifyList(this.formIn.username || undefined, this.formIn.cert_num || undefined, translateTime(this.formIn.time_begin), translateTime(this.formIn.time_end), status, this.perPage, this.currentPage).then(res => {
                     this.hisData = res.data.data.data;
                     this.total = res.data.data.total;
-                    console.log(res);
                 });
             },
             handleCurrentChange() {

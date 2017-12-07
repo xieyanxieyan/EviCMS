@@ -29,21 +29,28 @@
                     <tbody v-bind:class = "{hide:compList}">
                     <tr v-for="(item,index) in compManage">
                         <td>{{item.request_time}}</td>
-                        <td>{{item.username}}</td>
+                        <td>{{item.user.cell_phone}}</td>
                         <td class="content">{{item.content}}</td>
                         <td>
 
                             <template v-if="item.status === 1">
-                                <span class="bluetext">处理中</span>
+                                <span class="redtext">未处理</span>
                             </template>
                             <template v-else-if="item.status === 2">
                                 <span class="greentext">已处理</span>
                             </template>
                             <template v-else>
-                                <span class="redtext">未处理</span>
+                                <span class="bluetext">处理中</span>
                             </template>
                         </td>
-                        <td><a href="javascript:void(0);" class="{hide:deal}" style="border:1px solid #20A0FF;padding:3px 15px;" @click="tofeedbackDetail(index)">处理</a></td>
+                        <td>
+                            <template v-if="item.status == 2">
+                                <el-button size="small"  :class="{hide:deal}" disabled >处理</el-button>
+                            </template>
+                            <template v-else>
+                                <el-button size="small" class="addStyle" :class="{hide:deal}" @click="tofeedbackDetail(index)">处理</el-button>
+                            </template>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -99,6 +106,7 @@
                        this.compManage = res.data.data.data;
                      this.total = res.data.data.total;
 //                     console.log(res.data.data.data);
+                      // console.log(this.compManage);
                    }
                 });
             },
@@ -131,6 +139,12 @@
            overflow:hidden;
            text-overflow:ellipsis;
            white-space:nowrap;
+       }
+       .addStyle{
+           border:1px solid #409EFF;
+           span{
+               color:#409EFF;
+           }
        }
        td{
            border-bottom:1px solid #eee;

@@ -6,7 +6,8 @@ const user = {
         status: '',
         auth_token: getToken(),
         menus: [],
-        permission: []
+        permission: [],
+        admin_id: ''
     },
     mutations: {
         SET_AUTH_TOKEN: (state, auth_token) => {
@@ -19,7 +20,7 @@ const user = {
             state.permission = permission;
         },
         SET_ADMIN: (state, admin) => {
-            state.admin = admin;
+            state.admin_id = admin;
         },
         SET_LOGIN_EXPIRE: (state, login_expire) => {
             state.login_expire = login_expire;
@@ -43,6 +44,7 @@ const user = {
                         // arr.push(data.menus);
                         // arr.push(data.permissions);
                         // arr.push(data.name);
+                        localStorage.setItem('admin_id', data.admin_id);
                         localStorage.setItem('name', data.name);
                         localStorage.setItem('permission', JSON.stringify(data.permissions));
                         localStorage.setItem('menus', JSON.stringify(data.menus));

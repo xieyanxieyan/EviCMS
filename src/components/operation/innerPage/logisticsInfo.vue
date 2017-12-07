@@ -7,7 +7,12 @@
             <div class="datos">
                 <el-form :label-position="labelPosition" :rules="rules" ref="formLabelAlign" label-width="90px" :model="formLabelAlign">
                     <el-form-item label="投递时间:" prop="time">
-                        <el-input v-model="formLabelAlign.time"></el-input>
+                            <el-date-picker
+                                v-model="formLabelAlign.time"
+                                type="datetime"
+                                placeholder="选择日期时间">
+                            </el-date-picker>
+                        <!--<el-input v-model="formLabelAlign.time"></el-input>-->
                     </el-form-item>
                     <el-form-item label="快递公司:" prop="company">
                         <el-input v-model="formLabelAlign.company"></el-input>
@@ -63,7 +68,19 @@ export default{
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     certifyUpdate(this.cert.apply_id, this.formLabelAlign.name, this.formLabelAlign.phone, this.formLabelAlign.address, this.formLabelAlign.number, this.formLabelAlign.company, 2).then(res => {
-                        console.log(res);
+                       if (res.data.error === 0) {
+                           this.$message({
+                               message: '保存成功',
+                               type: 'success',
+                               showClose: true
+                           });
+                       } else {
+                           this.$message({
+                               message: res.data.data,
+                               type: 'error',
+                               showClose: true
+                           });
+                       }
                     });
                 } else {
                     console.log('error submit!!');
@@ -93,12 +110,16 @@ export default{
 .el-form {
     margin: 40px auto;
 }
+.el-date-editor.el-input{
+    width:170px;
+}
 .datos{
     display:inline-block;
     width:260px;
     border-right:1px solid #eee;
     padding:0 20px 0 0;
 }
+
 .Article-steps{
     display:inline-block;
     width:200px;

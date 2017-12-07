@@ -8,25 +8,25 @@
             <span>
                 <i></i>
                 <strong>用户：</strong>
-                <small>(+86)13412345678</small>
+                <small>{{user.cell_phone}}</small>
             </span>
                 <span>
                      <i></i>
                 <strong>用户序号：</strong>
-                <small>{{userId}}</small>
+                <small>{{user.user_id}}</small>
             </span>
                 <span>
                      <i></i>
                 <strong>存证编号：</strong>
-                <small>20170605-122030-123456</small>
+                <small>{{certapply.cert_no}}</small>
             </span>
-                <el-button type="success" style="float:right">预览</el-button>
+                <el-button type="success" @click="preview" style="float:right">预览</el-button>
             </div>
             <div class="gressBar">
-                <el-steps :space="200" :active="1">
-                    <el-step title="用户申请" description="2017-6-6 17:30:20"></el-step>
-                    <el-step title="联系确认" description="2017-6-6 17:30:20"></el-step>
-                    <el-step title="出庭作证完成" description="2017-6-6 17:30:20"></el-step>
+                <el-steps :space="200" :active="status">
+                    <el-step title="用户申请" :description="request_time"></el-step>
+                    <el-step title="联系确认" :description="confirm_time"></el-step>
+                    <el-step title="出庭作证完成" :description="finish_time"></el-step>
                 </el-steps>
             </div>
         </div>
@@ -35,7 +35,7 @@
                 <i></i>
                 <span>沟通记录</span>
                 <span style="float:right">
-                    <button @click="addVisible=true">+</button>
+                    <button :class="{hide: isAdd}" @click="addVisible=true">+</button>
                 </span>
             </div>
             <div style="padding:20px 0;">
@@ -48,8 +48,8 @@
                     </thead>
                     <tbody>
                     <tr v-for="(item,index) in communicationRecord">
-                        <td>{{item.communicationTime}}</td>
-                        <td @click="opendetailLog"><a href="javascript:void(0);">{{item.content}}</a></td>
+                        <td>{{item.add_time}}</td>
+                        <td @click="opendetailLog(index)"><a href="javascript:void(0);">{{item.content}}</a></td>
                     </tr>
                     </tbody>
                 </table>
@@ -64,37 +64,63 @@
                 <el-form :inline="true" :label-position="labelPosition" :model="formInline" class="demo-form-inline"
                          label-width="100px">
                     <el-form-item label="姓名：">
-                        <el-input v-model="formInline.username"></el-input>
+                        <el-input v-model="formInline.username" :disabled="isdisabled"></el-input>
                     </el-form-item>
                     <el-form-item label="支付日期：">
-                        <el-input v-model="formInline.datatime"></el-input>
+                        <el-date-picker
+                            v-model="formInline.datatime"
+                            type="date"
+                            :disabled="isdisabled"
+                            placeholder="选择日期">
+                        </el-date-picker>
+                        <!--<el-input v-model="formInline.datatime" :disabled="isdisabled"></el-input>-->
                     </el-form-item>
                     <el-form-item label="地点：">
-                        <el-input v-model="formInline.address"></el-input>
+                        <el-input v-model="formInline.address" :disabled="isdisabled"></el-input>
                     </el-form-item>
                     <el-form-item label="支付金额：">
-                        <el-input v-model="formInline.money"></el-input>
+                        <el-input v-model="formInline.money" :disabled="isdisabled"></el-input>
                     </el-form-item>
                     <el-form-item label="出庭人员:">
-                        <el-input v-model="formInline.trailPerson"></el-input>
+                        <el-input v-model="formInline.trailPerson" :disabled="isdisabled"></el-input>
                     </el-form-item>
                     <el-form-item label="支付方式：">
-                        <el-input v-model="formInline.method"></el-input>
+                        <template>
+                            <el-select v-model="formInline.method" :disabled="isdisabled" placeholder="请选择">
+                                <el-option
+                                    v-for="item in formInline.options"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </template>
+                        <!--<el-input v-model="formInline.method"  :disabled="isdisabled"></el-input>-->
                     </el-form-item>
                     <el-form-item label="交通方式：">
-                        <el-input v-model="formInline.transportation"></el-input>
+                        <template>
+                            <el-select v-model="formInline.transportation" :disabled="isdisabled" placeholder="请选择">
+                                <el-option
+                                    v-for="item in formInline.options2"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </template>
+                        <!--<el-input v-model="formInline.transportation" :disabled="isdisabled"></el-input>-->
                     </el-form-item>
                     <el-form-item label="交易备注:">
-                        <el-input v-model="formInline.tradingNote"></el-input>
+                        <el-input v-model="formInline.tradingNote" :disabled="isdisabled"></el-input>
                     </el-form-item>
                     <el-form-item label="住宿情况:">
-                        <el-input v-model="formInline.commodity"></el-input>
+                        <el-input v-model="formInline.commodity" :disabled="isdisabled"></el-input>
                     </el-form-item>
                 </el-form>
                 <div class="submit">
-                    <el-button type="info">保存</el-button>
-                    <el-button type="warning">交易确认</el-button>
-                    <el-button type="success">出庭完成</el-button>
+                    <el-button type="info" :class="{hidden: vision}" @click="onSubmit()">{{operation}}</el-button>
+                    <el-button type="warning" :class="{hidden: vision}" @click="buttonSubmit(2)">交易确认</el-button>
+                    <el-button type="success" :class="{hidden: hide}" @click="buttonSubmit(3)">出庭完成</el-button>
                 </div>
             </div>
         </div>
@@ -109,7 +135,7 @@
                 v-model="addcontent"
                 auto-complete="off"
             ></el-input>
-            <el-button type="primary" @click="addVisible = false">确 定</el-button>
+            <el-button type="primary" @click="communityContent">确 定</el-button>
             <el-button @click="addVisible = false">取 消</el-button>
             </span>
         </el-dialog>
@@ -123,7 +149,8 @@
                 type="textarea"
                 v-model="detailcontent"
                 auto-complete="off"
-                :rows= 6
+                readonly
+                :rows=6
                 resize="none"
             ></el-input>
             <el-button type="primary" @click="detailVisible = false">关闭</el-button>
@@ -131,7 +158,8 @@
     </div>
 </template>
 <script>
-    import {courtDetail} from '../../../api/operation';
+    import {courtDetail, courtUpdate, courtCommunicate} from '../../../api/operation';
+    import {translateTime} from '../../../assets/public';
 
     export default {
         created() {
@@ -140,10 +168,20 @@
         data() {
             return {
                 labelPosition: 'left',
-                userId: '',
+                user: '',
+                hide: true, // 判断最后一个按钮显示还是隐藏
+                vision: false, // 判断前两个按钮显示还是隐藏
+                isAdd: false,
+                status: 1,
+                operation: '编辑', // 操作，保存还是编辑
+                isdisabled: true, // 表单是否可编辑
+                certapply: '',
                 addVisible: false,
                 detailVisible: false,
                 addcontent: '',
+                request_time: '', // 申请时间
+                confirm_time: '', // 联系确认时间
+                finish_time: '', // 完成时间
                 detailcontent: '',
                 formInline: {
                     username: '',
@@ -154,41 +192,157 @@
                     method: '',
                     transportation: '',
                     tradingNote: '',
-                    commodity: ''
+                    commodity: '',
+                    url: '',
+                    options: [{
+                        value: 1,
+                        label: '支付宝'
+                    }, {
+                        value: 2,
+                        label: '微信'
+                    }, {
+                        value: 3,
+                        label: '银行转账'
+                    }, {
+                        value: 4,
+                        label: '现金结算'
+                    }, {
+                        value: 5,
+                        label: '其他'
+                    }],
+                    options2: [{
+                        value: 1,
+                        label: '高铁'
+                    }, {
+                        value: 2,
+                        label: '汽车'
+                    }, {
+                        value: 3,
+                        label: '飞机'
+                    }, {
+                        value: 4,
+                        label: '轮渡'
+                    }, {
+                        value: 5,
+                        label: '其他'
+                    }]
                 },
-                communicationRecord: [
-                    {
-                        communicationTime: '2017-07-10 12:00：00',
-                        content: '沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容'
-                    },
-                    {
-                        communicationTime: '2017-07-10 12:00：00',
-                        content: '沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容'
-                    },
-                    {
-                        communicationTime: '2017-07-10 12:00：00',
-                        content: '沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容'
-                    },
-                    {
-                        communicationTime: '2017-07-10 12:00：00',
-                        content: '沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容沟通内容'
-                    }
-                ]
+                communicationRecord: []
             };
         },
         methods: {
+            // 沟通内容
+            communityContent() {
+                courtCommunicate(this.$route.params.courtId, this.addcontent).then(res => {
+                    if (res.data.error === 0) {
+                        this.$message({
+                            message: '添加成功',
+                            type: 'success',
+                            showClose: true
+                        });
+                       this._detailMessage();
+                    } else {
+                        this.$message({
+                            message: res.data.data,
+                            type: 'error',
+                            showClose: true
+                        });
+                    }
+                    this.addVisible = false;
+                });
+            },
             onSubmit() {
-                console.log('submit!');
+                if (this.isdisabled) {
+                    this.operation = '保存';
+                    this.isdisabled = false;
+                } else {
+                    this.buttonSubmit(1); // 保存信息
+                }
+            },
+            // 三个提交按钮
+            buttonSubmit(num) {
+                let number = num;
+                courtUpdate(this.$route.params.courtId, num, this.formInline.username, translateTime(this.formInline.datatime), this.formInline.address, this.formInline.money, this.formInline.trailPerson, this.formInline.method, this.formInline.transportation, this.formInline.tradingNote, this.formInline.commodity)
+                    .then(res => {
+                        if (res.data.error === 0) {
+                            this.$message({
+                                message: '保存成功',
+                                type: 'success',
+                                showClose: true
+                            });
+                            if (number === 2) {
+                                this.hide = false;
+                            }
+                            if (number === 3) {
+                                this.hide = true; // 判断最后一个按钮显示还是隐藏
+                                this.vision = true; // 判断前两个按钮显示还是隐藏
+                                this.isAdd = true; // 加号隐藏
+                            } else {
+                                this.isdisabled = false;
+                                this.operation = '编辑';
+                                this.isdisabled = true;
+                            }
+                            this._detailMessage();
+                        } else {
+                            this.$message({
+                                message: res.data.data,
+                                type: 'error',
+                                showClose: true
+                            });
+                        }
+                    });
             },
             _detailMessage() {
                 courtDetail(this.$route.params.courtId).then(res => {
                     if (res.data.error === 0) {
-                        this.userId = res.data.data.user_id;
+                        let result = res.data.data;
+                        let court_trade = result.court_trade;
+                        let file = result.certfile;
+                        this.user = result.user;
+                        this.certapply = result.certapply;
+                        let status = parseInt(result.status);
+                        this.request_time = result.request_time;
+                        this.confirm_time = result.confirm_time;
+                        this.finish_time = result.finish_time;
+                        this.communicationRecord = result.court_communication;
+                        if (court_trade) {
+                            this.formInline.username = court_trade.username;
+                            this.formInline.datatime = court_trade.trade_time;
+                            this.formInline.address = court_trade.address;
+                            this.formInline.money = court_trade.trade_money;
+                            this.formInline.trailPerson = court_trade.court_user;
+                            this.formInline.method = court_trade.trade_type;
+                            this.formInline.transportation = court_trade.transport;
+                            this.formInline.tradingNote = court_trade.remark;
+                            this.formInline.commodity = court_trade.lodging;
+                        }
+                        this.url = file.source_file_url;
+                        if (status === 0 || status === 4) {
+                            this.status = 1;
+                        } else if (status === 1) {
+                            this.status = 2;
+                            this.hide = false;
+                            this.vision = true;
+                        } else if (status === 2) {
+                            this.status = 3;
+                            this.hide = true; // 判断最后一个按钮显示还是隐藏
+                            this.vision = true; // 判断前两个按钮显示还是隐藏
+                            this.isAdd = true; // 加号隐藏
+                        }
                     }
                 });
             },
-            opendetailLog() {
+            opendetailLog(index) {
                 this.detailVisible = true;
+                this.detailcontent = this.communicationRecord[index].content;
+            },
+            // 预览
+            preview() {
+                console.log(this.url);
+                if (this.url) {
+                    window.open(this.url);
+                }
+                return false;
             }
         }
     };
@@ -199,7 +353,9 @@
 
     #detailCourt {
         padding: 0 15px;
-
+        .hidden {
+            display: none;
+        }
         .detailCourtTop {
             padding: 15px 0;
 
@@ -257,14 +413,14 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
-                &:last-child{
-                  a{
-                      color:#333;
-                      padding:2px 0;
-                      &:hover{
-                          text-decoration: underline;
-                      }
-                  }
+                &:last-child {
+                    a {
+                        color: #333;
+                        padding: 2px 0;
+                        &:hover {
+                            text-decoration: underline;
+                        }
+                    }
                 }
             }
 
@@ -314,8 +470,11 @@
             margin: 0 auto;
             justify-content: space-between;
         }
-        .el-dialog .el-textarea{
-            margin-bottom:15px;
+        .el-dialog .el-textarea {
+            margin-bottom: 15px;
+        }
+        .el-select {
+            width: 194px;
         }
     }
 </style>

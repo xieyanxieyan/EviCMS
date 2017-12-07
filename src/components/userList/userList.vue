@@ -102,12 +102,18 @@
 <script>
     import {getUserList, userFreeze, admin_web} from '../../api/User';
     import {translateTime, contains} from '../../assets/public';
-    import {setToken} from '../../common/js/auth';
+//    import {setToken} from '../../common/js/auth';
 //    import {contains} from '../../assets/public';
     export default {
         created() {
             this.getList();
             this.controlPermission();
+            console.log(this.$store.state);
+        },
+        computed: {
+            admin_id() {
+                return this.$store.state.admin_id;
+            }
         },
         data() {
             return {
@@ -164,12 +170,24 @@
             },
             // 登入web系统
             admin_web(index) {
+                let w = window.open();
                 admin_web(this.userList.data[index].user_id).then(res => {
                     if (res.data.error === 0) {
-                        setToken(res.data.data.data.auth_token);
-                        window.location.href = 'http://www.51zbb.net?auth-token=' + res.data.data.data.auth_token;
+                        console.log(res);
+                        // setToken(res.data.data.data.auth_token);
+                        setTimeout(function() {
+                            w.location = 'http://zbb.fa123.com/#/login/admin/' + res.data.data;
+                        }, 1000);
+                        // window.location.href = 'http://zbb.fa123.com/#/login/admin/' + res.data.data;
+                    } else {
+                        this.$message({
+                            message: res.data.info,
+                            type: 'error',
+                            showClose: true
+                        });
                     }
                 });
+                return false;
             },
             // 控制权限函数
             controlPermission() {

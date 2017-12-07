@@ -41,9 +41,9 @@
         methods: {
             getDetail() {
                 getCertifyDetail(this.$route.params.detailId).then(res => {
-                    console.log('paperdetail', res);
                     if (res.data.error === 0) {
                         this.detail = res.data.data;
+                        console.log(this.detail);
                     }
                 });
             }

@@ -2,18 +2,16 @@
     <div class="sidebar-container">
         <h3>证宝宝管理系统</h3>
         <el-menu default-active="2"
-                 :unique-opened="isOpen"
                  class="el-menu-vertical-demo"
-                 @open="handleOpen"
-                 @close="handleClose"
                  theme="dark"
-                 v-for="(item,key,index) in this.options" :key="item.id">
-            <el-submenu index="index" >
+                 :unique-opened = 'open'
+        >
+            <el-submenu v-for="(item,key,index) in this.options" :key="item.id" :index="key+''">
                 <template slot="title">
-                    {{item.name}}
+                    <span>{{item.name}}</span>
                 </template>
-                <el-menu-item-group v-for="(list,index) in item.children" :key="list.id" :label="list">
-                    <el-menu-item index="index">
+                <el-menu-item-group>
+                    <el-menu-item index="index" v-for="(list,index) in item.children" :key="list.id" >
                         <router-link :to='list.link'>{{list.name}}</router-link>
                     </el-menu-item>
                     <!--<el-menu-item index="'index'-'ind'">-->
@@ -90,23 +88,17 @@
 <script>
     export default {
         created() {
+            this.open = !!this.open;
             this.getOptions();
         },
         data() {
             return {
-                isOpen: true,
                 index: 0,
-                options: []
+                options: [],
+                open: true
             };
         },
         methods: {
-            handleOpen(key, keyPath) {
-//                console.log(key, keyPath);
-//                console.log(this.$store.state.user.menus);
-            },
-            handleClose(key, keyPath) {
-//                console.log(key, keyPath);
-            },
             getOptions() {
                 let storage = window.localStorage ? localStorage.getItem('menus') : [];
                 storage = storage ? JSON.parse(storage) : [];
@@ -124,9 +116,11 @@
         left: 0;
         width: 200px;
         background: #324157;
-    .el-submenu .el-menu-item{
-        padding-right:0;
+
+    .el-submenu .el-menu-item {
+        padding-right: 0;
     }
+
     a {
         display: block;
         text-decoration: none;
@@ -134,7 +128,7 @@
         color: #fff;
     }
 
-     .el-menu--dark .el-menu-item, .el-menu--dark .el-submenu__title {
+    .el-menu--dark .el-menu-item, .el-menu--dark .el-submenu__title {
         color: #fff;
     }
 
@@ -146,8 +140,9 @@
         height: 50px;
         line-height: 50px;
     }
-    .el-menu-item-group__title{
-        padding-top:0;
+
+    .el-menu-item-group__title {
+        padding-top: 0;
     }
 
     }

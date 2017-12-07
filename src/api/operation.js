@@ -84,12 +84,13 @@ export function getCertifyDetail(apply_id) {
 }
 
 // 出证列表
-export function certifyList(phone, cert_num, time_begin, time_end, perPage, page) {
+export function certifyList(phone, cert_num, time_begin, time_end, status, perPage, page) {
     const params = {
         phone,
         cert_num,
         time_begin,
         time_end,
+        status,
         perPage,
         page
     };
@@ -143,5 +144,36 @@ export function courtDetail(apply_id) {
     });
 }
 
-// 出证预览
-// export function
+// 出庭编辑
+export function courtUpdate(court_id, op_code, username, trade_time, address, trade_money, court_user, trade_type, transport, remark, lodging) {
+const params = {
+    court_id,
+    op_code,
+    username,
+    trade_time,
+    address,
+    trade_money,
+    court_user,
+    trade_type,
+    transport,
+    remark,
+    lodging
+};
+return fetch({
+    method: 'post',
+    url: 'operation/court/update',
+    params
+});
+}
+// 出庭沟通
+export function courtCommunicate(court_id, content) {
+const params = {
+    court_id,
+    content
+};
+return fetch({
+    method: 'post',
+    url: 'operation/court/communicate',
+    params
+});
+}

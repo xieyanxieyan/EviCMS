@@ -1,11 +1,11 @@
-<template>
+<template xmlns:v-bind="http://www.w3.org/1999/xhtml">
     <div id="TrialManage">
         <div class="TrialManagetop"><span>出庭管理</span></div>
         <div><span>快速筛选:</span>
             <div class="tab-wrapper">
                 <el-tabs v-model="activeName" @tab-click="handleClick">
-                    <el-tab-pane label="全部" name='4'></el-tab-pane>
-                    <el-tab-pane label="待处理（99）" name='0'></el-tab-pane>
+                    <el-tab-pane label="全部" name='-1'></el-tab-pane>
+                    <el-tab-pane label="待处理" name='0'></el-tab-pane>
                     <el-tab-pane label="已确认" name='1'></el-tab-pane>
                     <el-tab-pane label="已出庭" name='2'></el-tab-pane>
                 </el-tabs>
@@ -74,10 +74,34 @@
                 <tbody v-bind:class="{hide:trailList}">
                 <tr v-for="(item,index) in TrialData">
                     <td>{{item.request_time}}</td>
-                    <td>{{item.username}}</td>
-                    <td>{{item.cert_id}}</td>
-                    <td>{{item.status}}</td>
-                    <td><a href="javascript:void(0);" @click="todetailCourt(index)" style="border:1px solid;color:#6F98FF">查看审核</a></td>
+                    <td><span  v-if="item.user">{{item.user.cell_phone}}</span></td>
+                    <td><span  v-if="item.certapply">{{item.certapply.cert_no}}</span></td>
+                    <td>
+                        <!--{{item.status}}-->
+                        <template v-if="item.status == 0">
+                            <span>待审核</span>
+                        </template>
+                        <template v-else-if="item.status== 1">
+                            <span>已联系确认</span>
+                        </template>
+                        <template v-else-if="item.status==2">
+                            <span>已出庭</span>
+                        </template>
+                        <template v-else-if="item.status===3">
+                            <span>交易完成</span>
+                        </template>
+                        <template v-else-if="item.status === -1">
+                            <span>用户取消</span>
+                        </template>
+                    </td>
+                    <td>
+                        <template v-if="item.status !== -1">
+                            <el-button @click="todetailCourt(index)" style="color: #409EFF; border: 1px solid;" size="small">查看审核</el-button>
+                        </template>
+                        <template v-else>
+                            <el-button size="small" disabled>查看审核</el-button>
+                        </template>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -109,7 +133,7 @@
                 total: 0,
                 currentPage: 1,
                 perPage: 15, // 每页显示的条数
-                activeName: '4',
+                activeName: '-1',
                 timeFrom: {
                     value1: '',
                     value2: ''
@@ -131,16 +155,17 @@
                 this.showtrailList();
             },
             showtrailList() {
-                if (this.activeName === '4') {
-                    trailManage(translateTime(this.timeFrom.value1), translateTime(this.timeFrom.value2), parseInt(this.activeName), this.perPage, this.page).then(res => {
+                if (this.activeName === '-1') {
+                    trailManage(translateTime(this.timeFrom.value1), translateTime(this.timeFrom.value2), undefined, this.perPage, this.currentPage).then(res => {
                         this.TrialData = res.data.data.data;
-                        console.log(res.data, this.activeName);
+                        this.total = res.data.data.total;
+                        console.log(this.TrialData, this.activeName);
                     });
                 } else {
-                    trailManage(translateTime(this.timeFrom.value1), translateTime(this.timeFrom.value2), parseInt(this.activeName), this.perPage, this.page).then(res => {
+                    trailManage(translateTime(this.timeFrom.value1), translateTime(this.timeFrom.value2), parseInt(this.activeName), this.perPage, this.currentPage).then(res => {
                        if (res.data.error === 0) {
-                           this.TrialData = res.data.data;
-                           console.log(res);
+                           this.TrialData = res.data.data.data;
+                           this.total = res.data.data.total;
                        }
                     });
                 }
@@ -149,7 +174,9 @@
                 this.showtrailList();
             },
             todetailCourt(index) {
-                this.$router.push({name: 'detailCourt', params: {courtId: this.TrialData[index].apply_id}});
+                if (this.TrialData[index].status !== -1) {
+                    this.$router.push({name: 'detailCourt', params: {courtId: this.TrialData[index].apply_id}});
+                }
             },
             // 权限控制函数
             controlPermission() {
@@ -177,6 +204,9 @@
       @include span;
     }
 
+    }
+    table{
+        table-layout: fixed;
     }
     .tab-wrapper {
         display: inline-block;

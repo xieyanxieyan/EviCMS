@@ -8,7 +8,7 @@
             </div>
         </div>
         <div class="adminpermissioncontent" v-bind:class="{hide: list}">
-            <div><strong>超级管理员</strong></div>
+            <div><strong>{{title}}</strong></div>
             <div class="selectItem">
                 <div v-for="(item, key, index) in permissionList">
                     <template>
@@ -29,15 +29,17 @@
     </div>
 </template>
 <script>
-    import {permissionList, ownpermission, rolesAssignment} from '../../../api/setuser';
+    import {permissionList, ownpermission, rolesAssignment, getRole} from '../../../api/setuser';
     import {contains} from '../../../assets/public';
     export default {
         created() {
+            this.getRole();
             this.getPermissionList(); // 获取页面上的列表
             this.permissionControl();
         },
         data() {
             return {
+                title: '超级管理员',
                 save: false, // 是否有保存权限
                 list: false, // 是否有显示列表权限
                 checkAll: [], // 选中所有项
@@ -51,6 +53,20 @@
             };
         },
         methods: {
+//            获取角色列表
+            getRole() {
+                getRole().then((res) => {
+//                    console.log(res);
+                    if (res.data.error === 0) {
+                      res = res.data.data;
+                      for (let i = 0; i < res.length; i++) {
+                          if (res[i].id === this.$route.params.adminPer_id) {
+                              this.title = res[i].name;
+                          }
+                      }
+                    }
+                });
+            },
             // 回到上一级
             routerBack() {
                 this.$router.go(-1);
@@ -70,7 +86,6 @@
 //            分配权限
             privileges() {
                 let string = [];
-                console.log(this.checkUsers, 'aiyayaya');
                 for (let i of this.checkUsers) {
                     string.push(i.id);
                 }
@@ -103,26 +118,21 @@
                                 this.isIndeterminate.push({isIndeterminate: true});
                                 this.checkAll.push({checkAll: false});
                             }
-//                       console.log(this.isIndeterminate);
-//                       console.log(this.checkAll);
                         }
                     }).then(() => {
                         ownpermission(this.$route.params.adminPer_id).then(res => {
                             if (res.data.error === 0) {
 //                               let index = -1;
-                                console.log(this.prevelege);
+
                                 for (let ii in this.prevelege) {
                                     for (let iii of this.prevelege[ii]) {
                                         for (let item of res.data.data) {
-//                                           console.log(item, 'item');
                                             if (item.permission_id === iii.id) {
-                                                console.log(item.permission_id, '相同');
                                                 this.checkUsers.push(iii);
                                             }
                                         }
                                     }
                                 }
-                                console.log(this.checkUsers, 'checkeduser');
                             } else {
                                 this.$message({
                                     message: res.data.data,
