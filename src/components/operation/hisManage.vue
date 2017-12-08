@@ -3,8 +3,8 @@
         <div class="histop"><span>出证管理</span><span class="quickSelect">快速筛选:</span>
             <div class="tab-wrapper">
                 <el-tabs v-model="activeName" @tab-click="handleClick">
-                    <el-tab-pane label="全部" name=""></el-tab-pane>
-                    <el-tab-pane label="待处理（99）" name="2"></el-tab-pane>
+                    <el-tab-pane label="全部" name="0"></el-tab-pane>
+                    <el-tab-pane label="待处理" name="2"></el-tab-pane>
                     <el-tab-pane label="待打印" name="3"></el-tab-pane>
                     <el-tab-pane label="待发件" name="4"></el-tab-pane>
                     <el-tab-pane label="已发件" name="5"></el-tab-pane>
@@ -70,15 +70,32 @@
                 <tbody v-bind:class="{hide: hisList}">
                 <tr v-for="(item,index) in hisData">
                     <td>{{item.req_time}}</td>
-                    <td>{{item.phone}}</td>
-                    <td>{{item.cert_no}}</td>
-                    <td>{{item.type}}</td>
+                    <td>{{item.user.cell_phone}}</td>
+                    <td>{{item.cert_id}}</td>
+                    <td>{{item.with_paper}}</td>
                     <td>
-                       {{item.status}}
+                        <!--<template v-if="item.status === 1">-->
+                            <!--处理中-->
+                        <!--</template>-->
+                        <!--<template v-else-if="item.status === 2">-->
+                            <!--完成-->
+                        <!--</template>-->
+                        <!--<template v-else-if="item.status === 0">-->
+                            <!--出证失败-->
+                        <!--</template>-->
+                       <!--<template v-else>-->
+                           <!--出证成功-->
+                       <!--</template>-->
+                        {{item.status}}
                     </td>
-                    <td><a href="javascript:void(0);"
-                           @click="toHisDetail(index)"
-                           style="color:#20a0ff;padding:0 5px;border:1px solid">出证详情</a></td>
+                    <td>
+                        <template v-if="item.with_paper === '纸质版'">
+                            <el-button size="small" @click="toHisDetail(index)" style="color:#409EFF; border:1px solid;">出证详情</el-button>
+                        </template>
+                        <template v-else>
+                            <el-button size="small" disabled>出证详情</el-button>
+                        </template>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -105,7 +122,7 @@
         data() {
             return {
                 currentTabIndex: 0,
-                activeName: '1',
+                activeName: '0',
                 currentPage: 1,
                 total: 0,
                 perPage: 15, // 每页显示多少条
@@ -124,11 +141,13 @@
             handleClick: function () {
                 this.certList();
             },
+            // 获取列表
             certList() {
-                let status = parseInt(this.activeName);
+                let status = this.activeName === '0' ? undefined : parseInt(this.activeName);
                 certifyList(this.formIn.username || undefined, this.formIn.cert_num || undefined, translateTime(this.formIn.time_begin), translateTime(this.formIn.time_end), status, this.perPage, this.currentPage).then(res => {
                     this.hisData = res.data.data.data;
                     this.total = res.data.data.total;
+                    console.log(this.hisData);
                 });
             },
             handleCurrentChange() {

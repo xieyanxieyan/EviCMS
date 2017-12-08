@@ -4,7 +4,7 @@
             <strong>存证编号：</strong>
             <small>{{cert.cert_no}}</small>
             <strong style="float:right">
-                出证次数：k次
+                出证次数：{{cert.cert_num}}次
             </strong>
         </div>
         <div class="depositForm">
@@ -21,15 +21,14 @@
                     <el-form-item label="收件人手机：">
                         <el-input v-model="formLabelAlign.phone"
                                   prop="phone"
-                                  placeholder="12312345678"
                                   :disabled="isused"
+                                  :maxlength="11"
                                   auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="收件地址：" style="margin-bottom:0;">
                         <el-input v-model="formLabelAlign.address"
                                   prop="address"
                                   :disabled="isused"
-                                  placeholder="北京市朝阳区xx路xx号"
                                   auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item style="text-align: right;">
@@ -37,9 +36,14 @@
                         <el-button type="text" @click="cancel('formLabelAlign')">取消</el-button>
                     </el-form-item>
                     <el-form-item>
-                        <el-button style="margin-left:-100px;" type="info">预览证书</el-button>
-                        <el-button type="warning">打印证书</el-button>
-                        <el-button type="success">已盖章</el-button>
+                        <el-button size="small" style="margin-left:-100px;" type="danger" @click="preview"
+                                   :class="{hide: ishidePreview}">预览证书
+                        </el-button>
+                        <el-button size="small" type="warning" @click="print" :class="{hide: isHidePrint}">打印证书
+                        </el-button>
+                        <el-button size="small" type="success" @click="stamp" :class="{hide:isHideStamp}">已盖章
+                        </el-button>
+                        <el-button size="small" type="info" :class="{hide:isTrail}" @click="printed">已打印</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -56,8 +60,15 @@
         data() {
             return {
                 isused: true,
+                ishidePreview: false, // 是否显示预览证书按钮
+                isHidePrint: false, // 是否显示打印证书按钮
+                isHideStamp: false, // 是否显示已盖章按钮
+                isTrail: false, // 是否显示已出证按钮
                 labelPosition: 'left',
                 updatemessage: '信息更改',
+                pdf_url: '', // 预览证书链接
+                pdf_raw_url: '', // 打印证书链接
+                status: '', // 状态
                 formLabelAlign: {
                     name: '',
                     phone: '',
@@ -69,6 +80,20 @@
             this.detail();
         },
         methods: {
+            // 预览证书
+            preview() {
+                window.open(this.pdf_url);
+                return false;
+            },
+            // 打印证书
+            print() {
+                window.open(this.pdf_raw_url);
+                return false;
+            },
+            // 盖章
+            stamp() {
+                this.toDo(1);
+            },
             // 显示信息详情
             detail() {
                 getCertifyDetail(this.$route.params.detailId).then(res => {
@@ -78,6 +103,24 @@
                         this.formLabelAlign.name = this.detail.user_name;
                         this.formLabelAlign.phone = this.detail.phone;
                         this.formLabelAlign.address = this.detail.rec_addr;
+                        this.pdf_url = this.detail.pdf_url;
+                        this.pdf_raw_url = this.detail.pdf_raw_url;
+                        this.status = this.detail.status;
+                        console.log(this.status);
+                        if (this.status === 2) {
+                            this.ishidePreview = false; // 是否隐藏预览证书按钮
+                            this.isHidePrint = false; // 是否隐藏打印证书按钮
+                            this.isHideStamp = false; // 是否隐藏已盖章按钮
+                            this.isTrail = true; // 是否隐藏已出证按钮
+                        } else if (this.status === 3) {
+                            this.ishidePreview = false; // 是否隐藏预览证书按钮
+                            this.isHidePrint = false; // 是否隐藏打印证书按钮
+                            this.isHideStamp = true; // 是否隐藏已盖章按钮
+                            this.isTrail = false; // 是否隐藏已出证按钮
+                        } else if (this.status === 4) {
+                            this.isHidePrint = true; // 是否隐藏打印证书按钮
+                            this.isTrail = true;
+                        }
                         this.isused = true;
                     }
                 });
@@ -89,21 +132,7 @@
                             this.updatemessage = '保存';
                             this.isused = false;
                         } else {
-                            certifyUpdate(this.cert.apply_id, this.formLabelAlign.name, this.formLabelAlign.phone, this.formLabelAlign.address, this.exp_num, this.exp_company, 1).then(res => {
-                                if (res.data.error === 0) {
-                                    this.$message({
-                                        message: '保存成功',
-                                        showClose: true,
-                                        type: 'success'
-                                    });
-                                } else {
-                                    this.$message({
-                                        message: res.data.data,
-                                        showClose: true,
-                                        type: 'success'
-                                    });
-                                }
-                            });
+                            this.toDo(5);
                         }
                     } else {
                         alert('error submit');
@@ -111,9 +140,49 @@
                     }
                 });
             },
-            cancel(formName) {
+            // 操作
+            toDo(num) {
+                certifyUpdate(this.cert.apply_id, num, this.formLabelAlign.phone, this.formLabelAlign.address, this.formLabelAlign.name).then(res => {
+                    if (res.data.error === 0) {
+                        this.$message({
+                            message: '保存成功',
+                            showClose: true,
+                            type: 'success'
+                        });
+                        this.cancel();
+                    } else {
+                        this.$message({
+                            message: res.data.data,
+                            showClose: true,
+                            type: 'success'
+                        });
+                    }
+                    this.detail();
+                });
+            },
+            cancel() {
                 this.isused = true;
                 this.updatemessage = '信息更改';
+            },
+            // 点击已打印按钮
+            printed() {
+                certifyUpdate(this.cert.apply_id, 2).then(res => {
+                    if (res.data.error === 0) {
+                        this.$message({
+                            message: '保存成功',
+                            showClose: true,
+                            type: 'success'
+                        });
+                        this.cancel();
+                    } else {
+                        this.$message({
+                            message: res.data.data,
+                            showClose: true,
+                            type: 'success'
+                        });
+                    }
+                    this.detail();
+                });
             }
         }
     };
@@ -125,6 +194,10 @@
         padding: 20px;
         background: #fff;
         width: 49%;
+
+    .hide {
+        display: none;
+    }
 
     .depositeTop {
         padding-bottom: 15px;

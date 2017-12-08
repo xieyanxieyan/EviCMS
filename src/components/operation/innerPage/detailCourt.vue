@@ -35,7 +35,7 @@
                 <i></i>
                 <span>沟通记录</span>
                 <span style="float:right">
-                    <button :class="{hide: isAdd}" @click="addVisible=true">+</button>
+                    <button :class="{hide: isAdd}" @click="addcom">+</button>
                 </span>
             </div>
             <div style="padding:20px 0;">
@@ -231,6 +231,10 @@
             };
         },
         methods: {
+            addcom() {
+                this.addVisible = true;
+                this.addcontent = '';
+            },
             // 沟通内容
             communityContent() {
                 courtCommunicate(this.$route.params.courtId, this.addcontent).then(res => {
@@ -262,35 +266,68 @@
             // 三个提交按钮
             buttonSubmit(num) {
                 let number = num;
-                courtUpdate(this.$route.params.courtId, num, this.formInline.username, translateTime(this.formInline.datatime), this.formInline.address, this.formInline.money, this.formInline.trailPerson, this.formInline.method, this.formInline.transportation, this.formInline.tradingNote, this.formInline.commodity)
-                    .then(res => {
-                        if (res.data.error === 0) {
-                            this.$message({
-                                message: '保存成功',
-                                type: 'success',
-                                showClose: true
-                            });
-                            if (number === 2) {
-                                this.hide = false;
-                            }
-                            if (number === 3) {
-                                this.hide = true; // 判断最后一个按钮显示还是隐藏
-                                this.vision = true; // 判断前两个按钮显示还是隐藏
-                                this.isAdd = true; // 加号隐藏
+                if (num !== 1) {
+                    courtUpdate(this.$route.params.courtId, num)
+                        .then(res => {
+                            if (res.data.error === 0) {
+                                this.$message({
+                                    message: '保存成功',
+                                    type: 'success',
+                                    showClose: true
+                                });
+                                if (number === 2) {
+                                    this.hide = false;
+                                }
+                                if (number === 3) {
+                                    this.hide = true; // 判断最后一个按钮显示还是隐藏
+                                    this.vision = true; // 判断前两个按钮显示还是隐藏
+                                    this.isAdd = true; // 加号隐藏
+                                } else {
+                                    this.isdisabled = false;
+                                    this.operation = '编辑';
+                                    this.isdisabled = true;
+                                }
+                                this._detailMessage();
                             } else {
-                                this.isdisabled = false;
-                                this.operation = '编辑';
-                                this.isdisabled = true;
+                                this.$message({
+                                    message: res.data.data,
+                                    type: 'error',
+                                    showClose: true
+                                });
                             }
-                            this._detailMessage();
-                        } else {
-                            this.$message({
-                                message: res.data.data,
-                                type: 'error',
-                                showClose: true
-                            });
-                        }
-                    });
+                        });
+                } else {
+                    let money = this.formInline.money.toFixed(2);
+                    courtUpdate(this.$route.params.courtId, num, this.formInline.username, translateTime(this.formInline.datatime), this.formInline.address, money, this.formInline.trailPerson, this.formInline.method, this.formInline.transportation, this.formInline.tradingNote, this.formInline.commodity)
+                        .then(res => {
+                            if (res.data.error === 0) {
+                                this.$message({
+                                    message: '保存成功',
+                                    type: 'success',
+                                    showClose: true
+                                });
+                                if (number === 2) {
+                                    this.hide = false;
+                                }
+                                if (number === 3) {
+                                    this.hide = true; // 判断最后一个按钮显示还是隐藏
+                                    this.vision = true; // 判断前两个按钮显示还是隐藏
+                                    this.isAdd = true; // 加号隐藏
+                                } else {
+                                    this.isdisabled = false;
+                                    this.operation = '编辑';
+                                    this.isdisabled = true;
+                                }
+                                this._detailMessage();
+                            } else {
+                                this.$message({
+                                    message: res.data.data,
+                                    type: 'error',
+                                    showClose: true
+                                });
+                            }
+                        });
+                }
             },
             _detailMessage() {
                 courtDetail(this.$route.params.courtId).then(res => {
@@ -309,7 +346,7 @@
                             this.formInline.username = court_trade.username;
                             this.formInline.datatime = court_trade.trade_time;
                             this.formInline.address = court_trade.address;
-                            this.formInline.money = court_trade.trade_money;
+                            this.formInline.money = (court_trade.trade_money / 100).toFixed(2);
                             this.formInline.trailPerson = court_trade.court_user;
                             this.formInline.method = court_trade.trade_type;
                             this.formInline.transportation = court_trade.transport;

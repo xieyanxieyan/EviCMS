@@ -9,12 +9,12 @@
                     <small>(+86)13412345678</small>
                 </strong>
             </div>
-            <div>
-                <el-steps :space="200" :active="1">
-                    <el-step title="用户申请" description="2017-6-6 17:30:20"></el-step>
-                    <el-step title="出证盖章" description="2017-6-6 17:30:20"></el-step>
-                    <el-step title="快递发出" description="2017-6-6 17:30:20"></el-step>
-                    <el-step title="客户签收" description="2017-6-6 17:30:20"></el-step>
+            <div style="text-align: center">
+                <el-steps :space="200" :active="status">
+                    <el-step title="用户申请" :description="req_time"></el-step>
+                    <el-step title="出证盖章" :description="confirm_time"></el-step>
+                    <el-step title="快递发出" :description="exp_time"></el-step>
+                    <el-step title="客户签收"  :description="finish_time"></el-step>
                 </el-steps>
             </div>
         </div>
@@ -35,7 +35,14 @@
         },
         data() {
             return {
-                detail: {}
+                detail: {},
+                status: 1,
+                req_time: '', // 用户申请时间
+                exp_records: '', // 快递时间和地址
+                confirm_time: '', // 出证盖章时间
+                exp_time: '', // 快递发出时间
+                finish_time: '', // 客户签收时间
+                cert_num: ''
             };
         },
         methods: {
@@ -43,7 +50,22 @@
                 getCertifyDetail(this.$route.params.detailId).then(res => {
                     if (res.data.error === 0) {
                         this.detail = res.data.data;
-                        console.log(this.detail);
+                        let detail = res.data.data;
+                        console.log(detail);
+                        this.req_time = detail.req_time;
+                        this.confirm_time = detail.confirm_time;
+                        this.exp_time = detail.exp_time;
+                        this.finish_time = detail.finish_time;
+                        console.log(detail.status);
+                        if (detail.status === 2) {
+                            this.status = 1;
+                        } else if (detail.status === 3 || detail.status === 4) {
+                            this.status = 2;
+                        } else if (detail.status === 5) {
+                            this.status = 3;
+                        } else if (detail.status === 6) {
+                            this.status = 4;
+                        }
                     }
                 });
             }

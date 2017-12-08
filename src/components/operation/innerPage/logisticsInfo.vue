@@ -5,131 +5,236 @@
         </div>
         <div class="logisticInfoForm">
             <div class="datos">
-                <el-form :label-position="labelPosition" :rules="rules" ref="formLabelAlign" label-width="90px" :model="formLabelAlign">
+                <el-form :label-position="labelPosition" :rules="rules" ref="formLabelAlign" label-width="90px"
+                         :model="formLabelAlign">
                     <el-form-item label="投递时间:" prop="time">
-                            <el-date-picker
-                                v-model="formLabelAlign.time"
-                                type="datetime"
-                                placeholder="选择日期时间">
-                            </el-date-picker>
+                        <el-date-picker
+                            :disabled="isused"
+                            v-model="formLabelAlign.time"
+                            type="datetime"
+                            placeholder="选择日期时间">
+                        </el-date-picker>
                         <!--<el-input v-model="formLabelAlign.time"></el-input>-->
                     </el-form-item>
                     <el-form-item label="快递公司:" prop="company">
-                        <el-input v-model="formLabelAlign.company"></el-input>
+                        <el-select v-model="formLabelAlign.company" :disabled="isused" placeholder="请选择">
+                            <el-option
+                                v-for="item in formLabelAlign.options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                        <!--<el-input v-model="formLabelAlign.company"></el-input>-->
                     </el-form-item>
                     <el-form-item label="快递单号:" prop="number" style="margin-bottom:58px;">
-                        <el-input v-model="formLabelAlign.number"></el-input>
+                        <el-input v-model="formLabelAlign.number" :disabled="isused"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="info"  @click="saveSubmit('formLabelAlign')">保存</el-button>
+                        <el-button type="info" size="small" :class="{hide: hassaved}" @click="saveSubmit('formLabelAlign')" :disabled="caniuse">
+                            {{opera}}
+                        </el-button>
+                        <el-button type="success" size="small" @click="accept" :class="{hide: iaccept}">已签收</el-button>
                     </el-form-item>
                 </el-form>
             </div>
             <div class="Article-steps">
-                <el-steps :space="100" direction="vertical" :active="1">
-                    <el-step title="2017-06-01 10:00:00" description="（北京市）快件已到达北京市转运中心"></el-step>
-                    <el-step title="2017-06-01 10:00:00"  description="（北京市）快件已从北京市朝阳区X部发出，准备发往xx市"></el-step>
-                    <el-step title="2017-06-01 10:00:00"  description="（北京市）XX快递，朝阳区X部收件员已揽件"></el-step>
+                <el-steps :space="100" direction="vertical" :active="1" >
+                    <el-step v-for="item in exp_records" :title="item.time" :description="item.context"></el-step>
                 </el-steps>
             </div>
         </div>
     </div>
 </template>
 <script>
-    import {certifyUpdate} from '../../../api/operation';
-export default{
-    props: {
-        cert: ''
-    },
-    data() {
-        return {
-            labelPosition: 'left',
-            formLabelAlign: {
-                time: '',
-                company: '',
-                number: ''
+    import {certifyUpdate, getCertifyDetail, certifyExpresslist} from '../../../api/operation';
+    import {formatDate} from '../../../assets/public';
+
+    export default {
+        props: {
+            cert: ''
+        },
+        data() {
+            return {
+                isused: false, // 右边的信息是否可编辑
+                labelPosition: 'left',
+                opera: '编辑', // 控制是编辑还是保存操作
+                caniuse: false, // 是否可以编辑快递信息
+                exp_records: [], // 快递信息
+                iaccept: true, // 是否显示签收按钮
+                hassaved: false, // 是否显示保存按钮
+                formLabelAlign: {
+                    time: '',
+                    company: '',
+                    number: '',
+                    options: []
 //                isdisabled: true
-            },
-            rules: {
-                time: [
-                    {required: true, message: '请选择投递时间', trigger: 'change'}
-                ],
-                company: [
-                    {required: true, message: '请选择快递公司', trigger: 'change'}
-                ],
-                number: [
-                    {required: true, message: '请输入快递单号', trigger: 'blur'}
-                ]
-            }
-        };
-    },
-    methods: {
-        saveSubmit(formName) {
-            this.$refs[formName].validate((valid) => {
-                if (valid) {
-                    certifyUpdate(this.cert.apply_id, this.formLabelAlign.name, this.formLabelAlign.phone, this.formLabelAlign.address, this.formLabelAlign.number, this.formLabelAlign.company, 2).then(res => {
-                       if (res.data.error === 0) {
-                           this.$message({
-                               message: '保存成功',
-                               type: 'success',
-                               showClose: true
-                           });
-                       } else {
-                           this.$message({
-                               message: res.data.data,
-                               type: 'error',
-                               showClose: true
-                           });
-                       }
-                    });
-                } else {
-                    console.log('error submit!!');
-                    return false;
+                },
+                rules: {
+                    time: [
+                        {required: true, type: 'date', message: '请选择投递时间', trigger: 'change'}
+                    ],
+                    company: [
+                        {required: true, type: 'number', message: '请选择快递公司', trigger: 'change'}
+                    ],
+                    number: [
+                        {required: true, message: '请输入快递单号', trigger: 'blur'}
+                    ]
                 }
-            });
+            };
+        },
+        created() {
+            this.detail();
+            this.getMessage();
+        },
+        methods: {
+            saveSubmit(formName) {
+                if (this.opera === '编辑') {
+                    this.opera = '保存';
+                    this.isused = false;
+                } else {
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            this.formLabelAlign.time = formatDate(this.formLabelAlign.time.toString());
+                            this.formLabelAlign.number = parseInt(this.formLabelAlign.number);
+                            // console.log(this.formLabelAlign.time);
+                            certifyUpdate(this.cert.apply_id, 3, undefined, undefined, this.formLabelAlign.time, this.formLabelAlign.company, undefined, this.formLabelAlign.number).then(res => {
+                                if (res.data.error === 0) {
+                                    this.$message({
+                                        message: '保存成功',
+                                        type: 'success',
+                                        showClose: true
+                                    });
+                                    this.hassaved = true;
+                                } else {
+                                    this.$message({
+                                        message: res.data.data,
+                                        type: 'error',
+                                        showClose: true
+                                    });
+                                }
+                            });
+                        } else {
+                            console.log('error submit!!');
+                            return false;
+                        }
+                    });
+                }
+            },
+            // 获取快递公司信息
+            getMessage() {
+                certifyExpresslist().then(res => {
+                    if (res.data.error === 0) {
+                        for (let item of res.data.data) {
+                            this.formLabelAlign.options.push({'value': item.code_id, 'label': item.name});
+                        }
+                    }
+                });
+            },
+            // 显示信息详情
+            detail() {
+                getCertifyDetail(this.$route.params.detailId).then(res => {
+                    if (res.data.error === 0) {
+                        this.detail = res.data.data;
+                        this.isused = false;
+//                        this.formLabelAlign.name = this.detail.user_name;
+//                        this.formLabelAlign.phone = this.detail.phone;
+//                        this.formLabelAlign.address = this.detail.rec_addr;
+//                        this.pdf_url = this.detail.pdf_url;
+//                        this.pdf_raw_url = this.detail.pdf_raw_url;
+                        this.exp_records = this.detail.exp_records || [];
+                        this.status = this.detail.status;
+                        if (this.status === 2) {
+                            this.caniuse = true; // 是否隐藏预览证书按钮
+                        } else if (this.status === 3) {
+                            this.caniuse = true;
+                        } else if (this.status === 4) {
+                            this.caniuse = false;
+                        } else if (this.status === 5) {
+                            this.iaccept = false;
+                            this.hassaved = true;
+                        } else if (this.status === 6) {
+                            this.iaccept = true;
+                            this.hassaved = true;
+                        }
+                        this.isused = true;
+                    }
+                });
+            },
+            // 已签收
+            accept() {
+                certifyUpdate(this.cert.apply_id, 3).then(res => {
+                    if (res.data.error === 0) {
+                        this.$message({
+                            message: '签收成功',
+                            type: 'success',
+                            showClose: true
+                        });
+                        this.detail();
+                    } else {
+                        this.$message({
+                            message: res.data.data,
+                            type: 'error',
+                            showClose: true
+                        });
+                    }
+                });
+            }
         }
-    }
-};
+    };
 </script>
 <style lang="scss">
-#logisticInfo{
-    float:right;
-    padding:20px;
-    box-sizing: border-box;
-    display:inline-block;
-    margin-left: 15px;
-    width:49%;
-    background: #fff;
-    .logisticInfo{
+    #logisticInfo {
+        float: right;
+        padding: 20px;
+        box-sizing: border-box;
+        display: inline-block;
+        margin-left: 15px;
+        width: 49%;
+        background: #fff;
+    .hide{
+        display:none;
+    }
+    .logisticInfo {
         padding-bottom: 15px;
         border-bottom: 1px solid #eee;
     }
-    .logisticInfoForm{
+
+    .logisticInfoForm {
         min-height: calc(100vh - 450px);
     }
-.el-form {
-    margin: 40px auto;
-}
-.el-date-editor.el-input{
-    width:170px;
-}
-.datos{
-    display:inline-block;
-    width:260px;
-    border-right:1px solid #eee;
-    padding:0 20px 0 0;
-}
 
-.Article-steps{
-    display:inline-block;
-    width:200px;
-    .el-step__description{
-        margin-left:10px;
+    .el-form {
+        margin: 40px auto;
     }
-    .el-step__title{
-        margin-left:10px;
+
+    .el-date-editor.el-input {
+        width: 170px;
     }
-}
-padding-bottom:0;
-}
+
+    .datos {
+        display: inline-block;
+        width: 260px;
+        border-right: 1px solid #eee;
+        padding: 0 20px 0 0;
+    }
+
+    .Article-steps {
+        display: inline-block;
+        width: 200px;
+
+    .el-step__description {
+        margin-left: 10px;
+    }
+
+    .el-step__title {
+        margin-left: 10px;
+    }
+
+    }
+    padding-bottom:
+
+    0
+    ;
+    }
 </style>

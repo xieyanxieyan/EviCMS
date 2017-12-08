@@ -101,15 +101,16 @@ export function certifyList(phone, cert_num, time_begin, time_end, status, perPa
     });
 }
 // 出证编辑
-export function certifyUpdate(apply_id, username, phone, address, exp_num, exp_company, form_sign) {
+export function certifyUpdate(apply_id, op_code, phone, rec_addr, exp_time, code_id, user_name, exp_order_no) {
     const params = {
         apply_id,
-        username,
+        op_code,
         phone,
-        address,
-        exp_num,
-        exp_company,
-        form_sign
+        rec_addr,
+        exp_time,
+        code_id,
+        user_name,
+        exp_order_no
     };
     return fetch({
         method: 'post',
@@ -176,4 +177,11 @@ return fetch({
     url: 'operation/court/communicate',
     params
 });
+}
+// 获得快递公司列表
+export function certifyExpresslist() {
+    return fetch({
+        method: 'get',
+        url: 'operation/certify/expresslist'
+    });
 }
