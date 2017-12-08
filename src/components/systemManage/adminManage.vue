@@ -12,7 +12,7 @@
             </el-button>
             <el-form :inline="true" :model="formInline" class="demo-form-inline">
                 <el-form-item label="账号或姓名:">
-                    <el-input v-model="formInline.user" size="small"></el-input>
+                    <el-input v-model="formInline.user" size="small" @keyup.enter.native="_userList"></el-input>
                 </el-form-item>
                 <el-form-item label="统计时间" label-width="100">
                     <el-col :span="10">

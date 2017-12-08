@@ -25,7 +25,8 @@
                     </tr>
                     </tbody>
                 </table>
-                <el-button type="primary" @click="addUser" v-bind:class="{hide:roleAdd}"style="float:right">添加角色</el-button>
+                <el-button type="primary" @click="addUser" v-bind:class="{hide:roleAdd}"style="float:left">添加角色</el-button>
+                <el-button type="primary" @click="goBack" style="float:right">返回</el-button>
             </div>
         </div>
         <!--添加角色-->
@@ -222,6 +223,9 @@
                 this.roleDele = !contains('admin_roles_delete'); // 是否有角色删除
                 this.roleList = !contains('admin_roles_list'); // 是否显示角色列表
                 this.roleAdd = !contains('admin_roles_add'); // 是否有添加角色权限
+            },
+            goBack() {
+                this.$router.go(-1);
             }
         }
     };

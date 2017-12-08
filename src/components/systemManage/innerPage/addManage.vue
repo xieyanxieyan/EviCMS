@@ -38,6 +38,9 @@
                         <el-button type="warning" style="margin-left:-20px;" @click="AdminSubmit">提交</el-button>
                     </el-col>
                 </el-form-item>
+                <el-col :span="4">
+                        <el-button type="primary" style="margin-left:-20px;" @click="goBack">返回</el-button>
+                </el-col>
             </el-form>
         </div>
     </div>
@@ -163,6 +166,9 @@
                 } else {
                     this.editAdminSubmit();
                 }
+            },
+            goBack() {
+                this.$router.go(-1);
             }
         }
     };

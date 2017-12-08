@@ -6,7 +6,7 @@
         <div class="filter">
             <el-form :inline="true" :model="formInline">
                 <el-form-item label="管理员">
-                    <el-input v-model="formInline.user"></el-input>
+                    <el-input v-model="formInline.user" @keyup.enter.native="_adminList"></el-input>
                 </el-form-item>
                 <el-form-item label="统计时间">
                     <el-col :span="8">

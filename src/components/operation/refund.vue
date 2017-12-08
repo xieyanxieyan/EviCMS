@@ -15,10 +15,10 @@
         <div class="">
             <el-form class="refundform" :inline="true" v-model="topForm" ref="topForm">
                 <el-form-item label="用户名称：">
-                    <el-input v-model="topForm.username" size="small"></el-input>
+                    <el-input v-model="topForm.username" size="small" @keyup.enter.native="_showRefundList"></el-input>
                 </el-form-item>
                 <el-form-item label="存证号：">
-                    <el-input v-model="topForm.cert_no" size="small"></el-input>
+                    <el-input v-model="topForm.cert_no" size="small" @keyup.enter.native="_showRefundList"></el-input>
                 </el-form-item>
                 <el-form-item label="统计时间:">
                     <el-date-picker
@@ -114,8 +114,8 @@
                         <el-input v-model="repectReason"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="info" :disabled="isused" @click="sureSubmit(1)">确认退款</el-button>
-                        <el-button type="danger" :disabled="isused" @click="sureSubmit(2)">拒绝退款</el-button>
+                        <el-button type="info"  @click="sureSubmits()">确认退款</el-button>
+                        <el-button type="danger"  @click="sureSubmit(2)">拒绝退款</el-button>
                         <el-button type="primary" @click="close">取消</el-button>
                     </el-form-item>
                 </el-form>
@@ -190,6 +190,22 @@
                 return false;
             },
             // 退款处理
+            sureSubmits() {
+                this.isused = false;
+                    refundHandle(this.tableItem[this.activeId].request_id, this.repectReason, 1).then(res => {
+                        if (res.data.error === 0) {
+                            this._showRefundList();
+                        } else {
+                            this.$message({
+                                message: res.data.data,
+                                type: 'error',
+                                showClose: true
+                            });
+                        }
+                        this.repectReason = '';
+                    });
+                    this.refunddialog = false;
+            },
             sureSubmit(num) {
                 if (this.repectReason) {
                     this.isused = false;

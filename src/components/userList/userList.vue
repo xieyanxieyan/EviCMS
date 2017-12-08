@@ -6,7 +6,7 @@
                 <div class="top-area">
                     <el-form :inline="true" :model="form">
                         <el-form-item label="用户名称：">
-                            <el-input v-model="form.phone" size="small"></el-input>
+                            <el-input v-model="form.phone" size="small" @keyup.enter.native="serachList"></el-input>
                         </el-form-item>
                         <el-form-item label="统计时间:">
                             <el-date-picker

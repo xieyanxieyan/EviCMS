@@ -4,7 +4,7 @@
             <span style="border-left:2px solid #324157;padding-left:15px;">公测员管理</span>
             <el-form :inline="true" :model="formInline" class="demo-form-inline">
                 <el-form-item label="手机号或名称:">
-                    <el-input v-model="formInline.user" size="small"></el-input>
+                    <el-input v-model="formInline.user" size="small" @keyup.enter.native="add"></el-input>
                 </el-form-item>
                 <el-form-item label="状态" label-width="100">
                     <el-select v-model="formInline.region" size="small" style="width:100px;">
