@@ -78,10 +78,6 @@
 </script>
 <style lang="scss" type="text/scss">
     @import '../../../scss/mixin';
-
-    import {
-    }
-
     #paperDetail {
         padding: 0 15px;
         .paperDetail {

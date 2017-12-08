@@ -31,7 +31,8 @@
                         <el-input v-model="formLabelAlign.number" :disabled="isused"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="info" size="small" :class="{hide: hassaved}" @click="saveSubmit('formLabelAlign')" :disabled="caniuse">
+                        <el-button type="info" size="small" :class="{hide: hassaved}"
+                                   @click="saveSubmit('formLabelAlign')" :disabled="caniuse">
                             {{opera}}
                         </el-button>
                         <el-button type="success" size="small" @click="accept" :class="{hide: iaccept}">已签收</el-button>
@@ -39,7 +40,7 @@
                 </el-form>
             </div>
             <div class="Article-steps">
-                <el-steps :space="100" direction="vertical" :active="1" >
+                <el-steps :space="100" direction="vertical" :active="1">
                     <el-step v-for="item in exp_records" :title="item.time" :description="item.context"></el-step>
                 </el-steps>
             </div>
@@ -63,6 +64,7 @@
                 exp_records: [], // 快递信息
                 iaccept: true, // 是否显示签收按钮
                 hassaved: false, // 是否显示保存按钮
+                status: '',
                 formLabelAlign: {
                     time: '',
                     company: '',
@@ -84,7 +86,7 @@
             };
         },
         created() {
-            this.detail();
+            this.deta();
             this.getMessage();
         },
         methods: {
@@ -105,7 +107,9 @@
                                         type: 'success',
                                         showClose: true
                                     });
+                                    this.$refs[formName].resetFields();
                                     this.hassaved = true;
+                                    this.deta();
                                 } else {
                                     this.$message({
                                         message: res.data.data,
@@ -132,7 +136,7 @@
                 });
             },
             // 显示信息详情
-            detail() {
+            deta() {
                 getCertifyDetail(this.$route.params.detailId).then(res => {
                     if (res.data.error === 0) {
                         this.detail = res.data.data;
@@ -170,7 +174,7 @@
                             type: 'success',
                             showClose: true
                         });
-                        this.detail();
+                        this.deta();
                     } else {
                         this.$message({
                             message: res.data.data,
@@ -192,9 +196,11 @@
         margin-left: 15px;
         width: 49%;
         background: #fff;
-    .hide{
-        display:none;
+
+    .hide {
+        display: none;
     }
+
     .logisticInfo {
         padding-bottom: 15px;
         border-bottom: 1px solid #eee;
@@ -232,9 +238,5 @@
     }
 
     }
-    padding-bottom:
-
-    0
-    ;
     }
 </style>

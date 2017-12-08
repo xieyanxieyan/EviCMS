@@ -32,7 +32,9 @@
                                   auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item style="text-align: right;">
-                        <el-button type="text" @click="certupdateSubmit('formLabelAlign')">{{updatemessage}}</el-button>
+                        <el-button type="text" :disabled="saveButton" @click="certupdateSubmit('formLabelAlign')">
+                            {{updatemessage}}
+                        </el-button>
                         <el-button type="text" @click="cancel('formLabelAlign')">取消</el-button>
                     </el-form-item>
                     <el-form-item>
@@ -64,6 +66,7 @@
                 isHidePrint: false, // 是否显示打印证书按钮
                 isHideStamp: false, // 是否显示已盖章按钮
                 isTrail: false, // 是否显示已出证按钮
+                saveButton: false, // 是否可用保存按钮
                 labelPosition: 'left',
                 updatemessage: '信息更改',
                 pdf_url: '', // 预览证书链接
@@ -77,7 +80,7 @@
             };
         },
         created() {
-            this.detail();
+            this.det();
         },
         methods: {
             // 预览证书
@@ -95,7 +98,7 @@
                 this.toDo(1);
             },
             // 显示信息详情
-            detail() {
+            det() {
                 getCertifyDetail(this.$route.params.detailId).then(res => {
                     if (res.data.error === 0) {
                         this.detail = res.data.data;
@@ -106,7 +109,6 @@
                         this.pdf_url = this.detail.pdf_url;
                         this.pdf_raw_url = this.detail.pdf_raw_url;
                         this.status = this.detail.status;
-                        console.log(this.status);
                         if (this.status === 2) {
                             this.ishidePreview = false; // 是否隐藏预览证书按钮
                             this.isHidePrint = false; // 是否隐藏打印证书按钮
@@ -118,8 +120,20 @@
                             this.isHideStamp = true; // 是否隐藏已盖章按钮
                             this.isTrail = false; // 是否隐藏已出证按钮
                         } else if (this.status === 4) {
-                            this.isHidePrint = true; // 是否隐藏打印证书按钮
+                            this.isHidePrint = false; // 是否隐藏打印证书按钮
                             this.isTrail = true;
+                            this.isHideStamp = true; // 是否隐藏已盖章按钮
+                            this.saveButton = true;
+                        } else if (this.status === 5) {
+                            this.isHideStamp = true; // 是否隐藏已盖章按钮
+                            this.isTrail = true; // 是否隐藏已出证按钮
+                            this.saveButton = true;
+                        } else if (this.status === 6) {
+                            this.ishidePreview = false; // 是否隐藏预览证书按钮
+                            this.isHidePrint = false; // 是否隐藏打印证书按钮
+                            this.isHideStamp = true; // 是否隐藏已盖章按钮
+                            this.isTrail = true; // 是否隐藏已出证按钮
+                            this.saveButton = true;
                         }
                         this.isused = true;
                     }
@@ -150,6 +164,7 @@
                             type: 'success'
                         });
                         this.cancel();
+                        this.det();
                     } else {
                         this.$message({
                             message: res.data.data,
@@ -157,7 +172,6 @@
                             type: 'success'
                         });
                     }
-                    this.detail();
                 });
             },
             cancel() {
@@ -174,6 +188,7 @@
                             type: 'success'
                         });
                         this.cancel();
+                        this.det();
                     } else {
                         this.$message({
                             message: res.data.data,
@@ -181,7 +196,6 @@
                             type: 'success'
                         });
                     }
-                    this.detail();
                 });
             }
         }
