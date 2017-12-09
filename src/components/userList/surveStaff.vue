@@ -35,7 +35,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="(item, index) in manageDate">
-                    <td>{{item.user.cell_phone}}</td>
+                    <td>+86 {{item.user.cell_phone}}</td>
                     <td>{{item.id}}</td>
                     <td>{{item.recommend_user}}</td>
                     <td>{{item.expire_time}}</td>
