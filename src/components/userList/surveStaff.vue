@@ -4,7 +4,7 @@
             <span style="border-left:2px solid #324157;padding-left:15px;">公测员管理</span>
             <el-form :inline="true" :model="formInline" class="demo-form-inline">
                 <el-form-item label="手机号或名称:">
-                    <el-input v-model="formInline.user" size="small"></el-input>
+                    <el-input v-model="formInline.user" size="small" @keyup.enter.native="_surveStaffList"></el-input>
                 </el-form-item>
                 <el-form-item label="状态" label-width="100">
                     <el-select v-model="formInline.region" size="small" style="width:100px;">
@@ -14,7 +14,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button style="background:#999999;color:#fff">搜索</el-button>
+                    <el-button style="background:#999999;color:#fff" @click="_surveStaffList">搜索</el-button>
                     <span>|</span>
                     <el-button type="primary" @click="add()" v-bind:class="{hide:addButton}">添加</el-button>
                 </el-form-item>
@@ -35,7 +35,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="(item, index) in manageDate">
-                    <td>{{item.user.cell_phone}}</td>
+                    <td>+86 {{item.user.cell_phone}}</td>
                     <td>{{item.id}}</td>
                     <td>{{item.recommend_user}}</td>
                     <td>{{item.expire_time}}</td>

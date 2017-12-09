@@ -142,10 +142,11 @@
             _userMessage() {
                 userDetail(this.$route.params.detailId).then(res => {
                     let detail = res.data.data;
+                    console.log(detail);
                     this.userdetails = detail || [];
                     this.isUsed = false;
                     this.form.name = detail.user.cell_phone;
-                    this.form.type = detail.gift_cash;
+                    this.form.type = (detail.gift_cash / 100).toFixed(2);
                     this.isUsed = true;
                 });
             },

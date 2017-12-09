@@ -74,7 +74,7 @@
                 <tbody v-bind:class="{hide:trailList}">
                 <tr v-for="(item,index) in TrialData">
                     <td>{{item.request_time}}</td>
-                    <td><span  v-if="item.user">{{item.user.cell_phone}}</span></td>
+                    <td><span  v-if="item.user">+86 {{item.user.cell_phone}}</span></td>
                     <td><span  v-if="item.certapply">{{item.certapply.cert_no}}</span></td>
                     <td>
                         <!--{{item.status}}-->

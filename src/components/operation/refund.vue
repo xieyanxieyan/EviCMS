@@ -15,10 +15,10 @@
         <div class="">
             <el-form class="refundform" :inline="true" v-model="topForm" ref="topForm">
                 <el-form-item label="用户名称：">
-                    <el-input v-model="topForm.username" size="small"></el-input>
+                    <el-input v-model="topForm.username" size="small" @keyup.enter.native="_showRefundList"></el-input>
                 </el-form-item>
                 <el-form-item label="存证号：">
-                    <el-input v-model="topForm.cert_no" size="small"></el-input>
+                    <el-input v-model="topForm.cert_no" size="small" @keyup.enter.native="_showRefundList"></el-input>
                 </el-form-item>
                 <el-form-item label="统计时间:">
                     <el-date-picker
@@ -63,7 +63,7 @@
                 <tbody>
                 <tr v-for="(item,index) in tableItem">
                     <td>{{item.time}}</td>
-                    <td>{{item.user.cell_phone}}</td>
+                    <td>+86 {{item.user.cell_phone}}</td>
                     <td>{{item.consumption.cert_no}}</td>
                     <td class="content">{{item.append_info}}</td>
                     <td>{{item.consumption.op_code}}</td>
@@ -114,8 +114,8 @@
                         <el-input v-model="repectReason"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="info" :disabled="isused" @click="sureSubmit(1)">确认退款</el-button>
-                        <el-button type="danger" :disabled="isused" @click="sureSubmit(2)">拒绝退款</el-button>
+                        <el-button type="info"  @click="sureSubmits()">确认退款</el-button>
+                        <el-button type="danger"  @click="sureSubmit(2)">拒绝退款</el-button>
                         <el-button type="primary" @click="close">取消</el-button>
                     </el-form-item>
                 </el-form>
@@ -171,7 +171,12 @@
             _showRefundList() {
                 getRefundList(this.topForm.username, this.topForm.cert_no, translateTime(this.topForm.value1), translateTime(this.topForm.value2), parseInt(this.activeName) || '', this.perPage, this.currentPage).then(res => {
                     if (res.data.error === 0) {
-                        this.tableItem = res.data.data.data;
+                        let tableItems = res.data.data.data;
+                        tableItems.forEach(function(item, index) {
+                            tableItems[index].cash_pay = (item.cash_pay / 100).toFixed(2);
+                        });
+                        console.log(tableItems);
+                        this.tableItem = tableItems;
                         this.total = res.data.data.total;
                        // console.log(this.tableItem);
                     }
@@ -190,6 +195,22 @@
                 return false;
             },
             // 退款处理
+            sureSubmits() {
+                this.isused = false;
+                    refundHandle(this.tableItem[this.activeId].request_id, this.repectReason, 1).then(res => {
+                        if (res.data.error === 0) {
+                            this._showRefundList();
+                        } else {
+                            this.$message({
+                                message: res.data.data,
+                                type: 'error',
+                                showClose: true
+                            });
+                        }
+                        this.repectReason = '';
+                    });
+                    this.refunddialog = false;
+            },
             sureSubmit(num) {
                 if (this.repectReason) {
                     this.isused = false;

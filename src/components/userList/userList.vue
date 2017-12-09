@@ -6,7 +6,7 @@
                 <div class="top-area">
                     <el-form :inline="true" :model="form">
                         <el-form-item label="用户名称：">
-                            <el-input v-model="form.phone" size="small"></el-input>
+                            <el-input v-model="form.phone" size="small" @keyup.enter.native="serachList"></el-input>
                         </el-form-item>
                         <el-form-item label="统计时间:">
                             <el-date-picker
@@ -52,7 +52,7 @@
                     <tbody>
                     <tr v-for="(item,index) in userList.data" v-bind:class="{hide:showList}">
                         <td>{{item.user_id}}</td>
-                        <td>{{item.cell_phone}}</td>
+                        <td>+86 {{item.cell_phone}}</td>
                         <td>{{item.reg_time}}</td>
                         <td>
                             <template v-if="item.status === 0">
