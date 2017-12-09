@@ -52,9 +52,7 @@
     import {formatDate} from '../../../assets/public';
 
     export default {
-        props: {
-            cert: ''
-        },
+        props: ['cert'],
         data() {
             return {
                 isused: false, // 右边的信息是否可编辑
@@ -167,7 +165,7 @@
             },
             // 已签收
             accept() {
-                certifyUpdate(this.cert.apply_id, 3).then(res => {
+                certifyUpdate(this.cert.apply_id, 4).then(res => {
                     if (res.data.error === 0) {
                         this.$message({
                             message: '签收成功',

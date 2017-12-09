@@ -55,7 +55,7 @@
     </div>
 </template>
 <script>
-    import {certifyUpdate, getCertifyDetail} from '../../../api/operation';
+    import {certifyUpdate} from '../../../api/operation';
 
     export default {
         props: ['cert'],
@@ -69,19 +69,55 @@
                 saveButton: false, // 是否可用保存按钮
                 labelPosition: 'left',
                 updatemessage: '信息更改',
-                pdf_url: '', // 预览证书链接
-                pdf_raw_url: '', // 打印证书链接
-                status: '', // 状态
+                pdf_url: this.cert.pdf_url, // 预览证书链接
+                pdf_raw_url: this.cert.pdf_raw_url, // 打印证书链接
+                status: this.cert.status, // 状态
                 formLabelAlign: {
-                    name: '',
-                    phone: '',
-                    address: ''
+                    name: this.cert.user_name,
+                    phone: this.cert.phone,
+                    address: this.cert.rec_addr
                 }
             };
         },
-        created() {
-            this.det();
-        },
+//        mounted() {
+//            this.$nextTick(function () {
+//
+//            })
+//        },
+//        created() {
+//            this.det();
+//        },
+//        computed: {
+//            status: function () {
+//                if (this.status === 2) {
+//                    this.ishidePreview = false; // 是否隐藏预览证书按钮
+//                    this.isHidePrint = false; // 是否隐藏打印证书按钮
+//                    this.isHideStamp = false; // 是否隐藏已盖章按钮
+//                    this.isTrail = true; // 是否隐藏已出证按钮
+//                } else if (this.status === 3) {
+//                    this.ishidePreview = false; // 是否隐藏预览证书按钮
+//                    this.isHidePrint = false; // 是否隐藏打印证书按钮
+//                    this.isHideStamp = true; // 是否隐藏已盖章按钮
+//                    this.isTrail = false; // 是否隐藏已出证按钮
+//                } else if (this.status === 4) {
+//                    this.isHidePrint = false; // 是否隐藏打印证书按钮
+//                    this.isTrail = true;
+//                    this.isHideStamp = true; // 是否隐藏已盖章按钮
+//                    this.saveButton = true;
+//                } else if (this.status === 5) {
+//                    this.isHideStamp = true; // 是否隐藏已盖章按钮
+//                    this.isTrail = true; // 是否隐藏已出证按钮
+//                    this.saveButton = true;
+//                } else if (this.status === 6) {
+//                    this.ishidePreview = false; // 是否隐藏预览证书按钮
+//                    this.isHidePrint = false; // 是否隐藏打印证书按钮
+//                    this.isHideStamp = true; // 是否隐藏已盖章按钮
+//                    this.isTrail = true; // 是否隐藏已出证按钮
+//                    this.saveButton = true;
+//                }
+//                this.isused = true;
+//            }
+//        },
         methods: {
             // 预览证书
             preview() {
@@ -98,47 +134,47 @@
                 this.toDo(1);
             },
             // 显示信息详情
-            det() {
-                getCertifyDetail(this.$route.params.detailId).then(res => {
-                    if (res.data.error === 0) {
-                        this.detail = res.data.data;
-                        this.isused = false;
-                        this.formLabelAlign.name = this.detail.user_name;
-                        this.formLabelAlign.phone = this.detail.phone;
-                        this.formLabelAlign.address = this.detail.rec_addr;
-                        this.pdf_url = this.detail.pdf_url;
-                        this.pdf_raw_url = this.detail.pdf_raw_url;
-                        this.status = this.detail.status;
-                        if (this.status === 2) {
-                            this.ishidePreview = false; // 是否隐藏预览证书按钮
-                            this.isHidePrint = false; // 是否隐藏打印证书按钮
-                            this.isHideStamp = false; // 是否隐藏已盖章按钮
-                            this.isTrail = true; // 是否隐藏已出证按钮
-                        } else if (this.status === 3) {
-                            this.ishidePreview = false; // 是否隐藏预览证书按钮
-                            this.isHidePrint = false; // 是否隐藏打印证书按钮
-                            this.isHideStamp = true; // 是否隐藏已盖章按钮
-                            this.isTrail = false; // 是否隐藏已出证按钮
-                        } else if (this.status === 4) {
-                            this.isHidePrint = false; // 是否隐藏打印证书按钮
-                            this.isTrail = true;
-                            this.isHideStamp = true; // 是否隐藏已盖章按钮
-                            this.saveButton = true;
-                        } else if (this.status === 5) {
-                            this.isHideStamp = true; // 是否隐藏已盖章按钮
-                            this.isTrail = true; // 是否隐藏已出证按钮
-                            this.saveButton = true;
-                        } else if (this.status === 6) {
-                            this.ishidePreview = false; // 是否隐藏预览证书按钮
-                            this.isHidePrint = false; // 是否隐藏打印证书按钮
-                            this.isHideStamp = true; // 是否隐藏已盖章按钮
-                            this.isTrail = true; // 是否隐藏已出证按钮
-                            this.saveButton = true;
-                        }
-                        this.isused = true;
-                    }
-                });
-            },
+//            det() {
+//                getCertifyDetail(this.$route.params.detailId).then(res => {
+//                    if (res.data.error === 0) {
+//                        this.detail = res.data.data;
+//                        this.isused = false;
+//                        this.formLabelAlign.name = this.detail.user_name;
+//                        this.formLabelAlign.phone = this.detail.phone;
+//                        this.formLabelAlign.address = this.detail.rec_addr;
+//                        this.pdf_url = this.detail.pdf_url;
+//                        this.pdf_raw_url = this.detail.pdf_raw_url;
+//                        this.status = this.detail.status;
+//                        if (this.status === 2) {
+//                            this.ishidePreview = false; // 是否隐藏预览证书按钮
+//                            this.isHidePrint = false; // 是否隐藏打印证书按钮
+//                            this.isHideStamp = false; // 是否隐藏已盖章按钮
+//                            this.isTrail = true; // 是否隐藏已出证按钮
+//                        } else if (this.status === 3) {
+//                            this.ishidePreview = false; // 是否隐藏预览证书按钮
+//                            this.isHidePrint = false; // 是否隐藏打印证书按钮
+//                            this.isHideStamp = true; // 是否隐藏已盖章按钮
+//                            this.isTrail = false; // 是否隐藏已出证按钮
+//                        } else if (this.status === 4) {
+//                            this.isHidePrint = false; // 是否隐藏打印证书按钮
+//                            this.isTrail = true;
+//                            this.isHideStamp = true; // 是否隐藏已盖章按钮
+//                            this.saveButton = true;
+//                        } else if (this.status === 5) {
+//                            this.isHideStamp = true; // 是否隐藏已盖章按钮
+//                            this.isTrail = true; // 是否隐藏已出证按钮
+ //                            this.saveButton = true;
+//                        } else if (this.status === 6) {
+//                            this.ishidePreview = false; // 是否隐藏预览证书按钮
+//                            this.isHidePrint = false; // 是否隐藏打印证书按钮
+//                            this.isHideStamp = true; // 是否隐藏已盖章按钮
+//                           this.isTrail = true; // 是否隐藏已出证按钮
+//                            this.saveButton = true;
+//                        }
+//                        this.isused = true;
+//                    }
+//                });
+//            },
             certupdateSubmit(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -188,7 +224,6 @@
                             type: 'success'
                         });
                         this.cancel();
-                        this.det();
                     } else {
                         this.$message({
                             message: res.data.data,

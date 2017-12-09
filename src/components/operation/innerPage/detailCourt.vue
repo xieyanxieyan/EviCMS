@@ -132,6 +132,7 @@
         >
             <el-input
                 type="textarea"
+                :maxlength="230"
                 v-model="addcontent"
                 auto-complete="off"
             ></el-input>
@@ -297,7 +298,7 @@
                             }
                         });
                 } else {
-                    let money = this.formInline.money.toFixed(2);
+                    let money = parseInt(this.formInline.money).toFixed(2) || 0.00;
                     courtUpdate(this.$route.params.courtId, num, this.formInline.username, translateTime(this.formInline.datatime), this.formInline.address, money, this.formInline.trailPerson, this.formInline.method, this.formInline.transportation, this.formInline.tradingNote, this.formInline.commodity)
                         .then(res => {
                             if (res.data.error === 0) {

@@ -65,7 +65,7 @@
                     <td>{{item.time}}</td>
                     <td>{{item.user.cell_phone}}</td>
                     <td>{{item.consumption.cert_no}}</td>
-                    <td>{{item.append_info}}</td>
+                    <td class="content">{{item.append_info}}</td>
                     <td>{{item.consumption.op_code}}</td>
                     <td>{{item.cash_pay}}</td>
                     <td>
@@ -239,6 +239,11 @@
             .el-pagination {
                 display: inline-block;
             }
+        }
+        .content{
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
         }
         .redtext{
             color:#67C23A; border:0
