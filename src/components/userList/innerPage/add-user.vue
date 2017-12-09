@@ -12,7 +12,7 @@
                     <el-col :span="8">
                         <el-select v-model="form.phone" placeholder="(+86)">
                             <el-option label="(+86)" value="(+86)" selected style="width:100%">(+86)</el-option>
-                            <el-option label="(+85)" value="(+85)" style="width:100%">(+85)</el-option>
+                            <!-- <el-option label="(+85)" value="(+85)" style="width:100%">(+85)</el-option> -->
                         </el-select>
                     </el-col>
                     <el-col :span="16">
