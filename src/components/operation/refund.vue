@@ -114,7 +114,7 @@
                         <el-input v-model="repectReason"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="info"  @click="sureSubmits()">确认退款</el-button>
+                        <el-button type="info"  @click="sureSubmits(1)">确认退款</el-button>
                         <el-button type="danger"  @click="sureSubmit(2)">拒绝退款</el-button>
                         <el-button type="primary" @click="close">取消</el-button>
                     </el-form-item>
@@ -212,10 +212,45 @@
                     this.refunddialog = false;
             },
             sureSubmit(num) {
-                if (this.repectReason) {
+                if (num === 1) {
+                    this.isused = false;
+                    if (this.repectReason) {
+                        this.isused = false;
+                        refundHandle(this.tableItem[this.activeId].request_id, this.repectReason, num).then(res => {
+                            if (res.data.error === 0) {
+                                this.$message({
+                                    message: '退款成功',
+                                    type: 'success',
+                                    showClose: true
+                                });
+                                this._showRefundList();
+                            } else {
+                                this.$message({
+                                    message: res.data.data,
+                                    type: 'error',
+                                    showClose: true
+                                });
+                            }
+                            this.repectReason = '';
+                        });
+                        this.refunddialog = false;
+                    } else {
+                        this.isused = true;
+                        this.$message({
+                            message: '理由不能为空',
+                            type: 'warning',
+                            showClose: true
+                        });
+                    }
+                } else {
                     this.isused = false;
                     refundHandle(this.tableItem[this.activeId].request_id, this.repectReason, num).then(res => {
                         if (res.data.error === 0) {
+                            this.$message({
+                                message: '操作成功',
+                                type: 'success',
+                                showClose: true
+                            });
                             this._showRefundList();
                         } else {
                             this.$message({
@@ -227,13 +262,6 @@
                         this.repectReason = '';
                     });
                     this.refunddialog = false;
-                } else {
-                    this.isused = true;
-                    this.$message({
-                        message: '理由不能为空',
-                        type: 'warning',
-                        showClose: true
-                    });
                 }
             },
             handleRefund(index) {

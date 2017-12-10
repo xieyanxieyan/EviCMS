@@ -16,10 +16,11 @@ export function getUserList(phone, reg_time_begin, reg_time_end, perPage, page) 
     });
 }
 // 添加用户
-export function addUser(phone, password, amount) {
+export function addUser(phone, password, area_code, amount) {
     const params = {
         phone,
         password,
+        area_code,
         amount
     };
     return fetch({
@@ -29,11 +30,12 @@ export function addUser(phone, password, amount) {
     });
 }
 // 编辑用户
-export function editUser(user_id, phone, password, amount, reason) {
+export function editUser(user_id, phone, password, area_code, amount, reason) {
     const params = {
         user_id,
         phone,
        password,
+        area_code,
         amount,
         reason
     };
@@ -82,11 +84,11 @@ export function getBetaList(phone, reg_time_begin, reg_time_end, perPage, page) 
     });
 }
 // 公测用户添加
-export function addetaUser(phone, password, amount, expire_time, recommend_user) {
+export function addetaUser(phone, amount, area_code, expire_time, recommend_user) {
   const params = {
       phone,
-      password,
       amount,
+      area_code,
       expire_time,
       recommend_user
   };
@@ -108,11 +110,11 @@ export function betaDetail(user_id) {
   });
 }
 // 公测用户编辑
-export function betaUpdate(phone, password, amount, expire_time, recommend_user, user_id) {
+export function betaUpdate(phone, amount, area_code, expire_time, recommend_user, user_id) {
 const params = {
     phone,
-    password,
     amount,
+    area_code,
     expire_time,
     recommend_user,
     user_id

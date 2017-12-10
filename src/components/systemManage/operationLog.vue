@@ -8,6 +8,9 @@
                 <el-form-item label="管理员">
                     <el-input v-model="formInline.user" @keyup.enter.native="_adminList"></el-input>
                 </el-form-item>
+                <el-form-item label="类别">
+                    <el-input v-model="formInline.type" @keyup.enter.native="_adminList"></el-input>
+                </el-form-item>
                 <el-form-item label="统计时间">
                     <el-col :span="8">
                         <el-date-picker
@@ -16,7 +19,7 @@
                             placeholder="选择开始日期时间">
                         </el-date-picker>
                         <!--<el-input type="text" placeholder="2017-09-04 01:43:13" v-model="formInline.time_begin"></el-input>-->
-                    </el-col >
+                    </el-col>
                     <el-col :span="4">至</el-col>
                     <el-col :span="8">
                         <el-date-picker
@@ -39,17 +42,17 @@
                     <th>ID</th>
                     <th>管理员</th>
                     <th>时间</th>
-                    <th>操作</th>
-                    <th>原因</th>
+                    <th>操作类别</th>
+                    <th>内容</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr v-for="(item,index) in operationData" :key="item.id">
                     <td>{{item.admin_id}}</td>
-                    <td>{{item.username}}</td>
+                    <td><span v-if="item.admin"> {{item.admin.name}} </span></td>
                     <td>{{item.add_time}}</td>
-                    <td>{{item.status}}</td>
-                    <td>{{item.log_content}}</td>
+                    <td>{{item.log_type}}</td>
+                    <td class="content">{{item.log_content}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -70,11 +73,12 @@
 <script>
     import {getAdminLog} from '../../api/setuser';
     import {formatDate, contains} from '../../assets/public';
+
     export default {
         created() {
             this._adminList();
         },
-        data () {
+        data() {
             return {
                 total: 0, // 总条数
                 currentPage: 1, // 当前页码
@@ -84,8 +88,9 @@
                         return time.getTime() > Date.now();
                     }
                 },
-                    formInline: {
+                formInline: {
                     user: '',
+                    type: '',
                     region: '',
                     time_begin: '',
                     time_end: ''
@@ -95,12 +100,12 @@
         },
         methods: {
             _adminList() {
-                getAdminLog(this.formInline.user, formatDate(this.formInline.time_begin), formatDate(this.formInline.time_end), this.perPage, this.currentPage).then(res => {
-                   if (res.data.error === 0) {
-                      this.operationData = res.data.data.data;
-                      this.total = res.data.data.total;
-                     // console.log(this.operationData, 'admin_logs_list');
-                   }
+                getAdminLog(this.formInline.user, this.formInline.type, formatDate(this.formInline.time_begin), formatDate(this.formInline.time_end), this.perPage, this.currentPage).then(res => {
+                    if (res.data.error === 0) {
+                        this.operationData = res.data.data.data;
+                        this.total = res.data.data.total;
+                         console.log(this.operationData, 'admin_logs_list');
+                    }
                 });
             },
             // 分页
@@ -115,44 +120,49 @@
     };
 </script>
 <style lang="scss" type="text/scss">
-@import '../../style/common.scss';
-@import '../../scss/mixin.scss';
-    #operationLog{
-        padding:0 15px;
+    @import '../../style/common.scss';
+    @import '../../scss/mixin.scss';
 
-.el-form {
-    margin: 0;
-    float: right;
+    #operationLog {
+        padding: 0 15px;
 
-    .el-form-item {
-        margin-bottom: 0px;
-        .el-col-4{
-            text-align:center;
-        }
-    }
-table{
-    table-layout: fixed;
-}
-    .el-input__inner {
-        display:inline-block;
-        width:inherit;
-        height:30px;
-    }
-}
+        .el-form {
+            margin: 0;
+            float: right;
 
-.operationLogTop{
-    display: inline-block;
-            padding:15px 0;
-            span {
-               @include span;
+            .el-form-item {
+                margin-bottom: 0px;
+                .el-col-4 {
+                    text-align: center;
+                }
+            }
+            .el-input__inner {
+                display: inline-block;
+                width: inherit;
+                height: 30px;
             }
         }
-        .filter{
-            margin-bottom:10px;
-           float:right;
-            margin-top:10px;
+        table {
+            table-layout: fixed;
         }
-        .pagination{
+        .content{
+            white-space:nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .operationLogTop {
+            display: inline-block;
+            padding: 15px 0;
+            span {
+                @include span;
+            }
+        }
+        .filter {
+            margin-bottom: 10px;
+            float: right;
+            margin-top: 10px;
+        }
+        .pagination {
             text-align: center;
         }
     }

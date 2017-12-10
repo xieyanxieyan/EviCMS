@@ -11,8 +11,8 @@
                 <el-form-item label="手机号：" prop="name" >
                     <el-col :span="8">
                         <el-select v-model="form.phone" placeholder="(+86)">
-                            <el-option label="(+86)" value="(+86)" selected style="width:100%">(+86)</el-option>
-                            <!-- <el-option label="(+85)" value="(+85)" style="width:100%">(+85)</el-option> -->
+                            <el-option label="(+86)" value="(+86)"  style="width:100%">(+86)</el-option>
+                             <!--<el-option label="(+85)" value="(+85)" style="width:100%">(+85)</el-option> -->
                         </el-select>
                     </el-col>
                     <el-col :span="16">
@@ -60,7 +60,7 @@
                     name: '',
                     region: '',
                     type: '',
-                    phone: ''
+                    phone: '+86'
                 },
                 rules: {
                     name: [
@@ -78,7 +78,8 @@
                 this.$refs['form'].validate((valid) => {
                     if (valid) {
                         let num = parseFloat(this.form.type);
-                        addUser(this.form.name, this.form.region, num.toFixed(2) || 0.00).then(res => {
+                        let phone = parseInt(this.form.phone);
+                        addUser(this.form.name, this.form.region, phone, num.toFixed(2) || 0.00).then(res => {
                             if (res.data.error === 0) {
                                 this.$message({
                                     type: 'success',

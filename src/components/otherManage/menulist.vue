@@ -30,7 +30,7 @@
                     </td>
                     <td>
                         <el-button v-bind:class="{hide: showEdit}" size="small" type="primary" @click="editList(index)">编辑</el-button>
-                        <el-button v-bind:class="{hide: showDel}"size="small" @click="deleteList">删除</el-button>
+                        <el-button v-bind:class="{hide: showDel}"size="small" @click="deleteList(index)">删除</el-button>
                         <el-button v-bind:class="{hide: showGive}" size="small" type="success" @click="toNextPage(index)">分配权限</el-button>
                     </td>
                 </tr>
@@ -66,6 +66,7 @@
                         :value="value"
                         :show-all-levels="false"
                         :change-on-select="true"
+                        :props="props"
                         @change="handleChange">
                     </el-cascader>
                 </el-form-item>
@@ -107,14 +108,19 @@
                 total: 0, // 一共有多少条
                 currentPage: 1, // 当前显示多少页
                 options: [{label: '顶级菜单', value: 0, children: []}],
-                value: [],
-                visible2: false,
-                defaultProps: {
-                    children: 'children',
+                props: {
                     label: 'label',
                     value: 'value',
-                    menu_id: 'menu_id'
+                    children: 'children'
                 },
+                value: [],
+                visible2: false,
+//                defaultProps: {
+//                    children: 'children',
+//                    label: 'label',
+//                    value: 'value',
+//                    menu_id: 'menu_id'
+//                },
                 currentIndex: '',
                 operation: '',
                 centerDialogVisible: false,
@@ -149,13 +155,13 @@
                 this.centerDialogVisible = true;
             },
             // 删除菜单
-            deleteList() {
-                    this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'warning'
-                    }).then(() => {
-                        deleteMenus(this.list[this.currentIndex].menu_id).then(res => {
+            deleteList(index) {
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                        deleteMenus(this.list[index].menu_id).then(res => {
                             if (res.data.error === 0) {
                                 this.$message({
                                     message: '删除成功',
@@ -173,7 +179,8 @@
                                 });
                             }
                         });
-                    }).catch(() => {
+                    }).catch((err) => {
+                    console.log(err);
                         this.$message({
                             type: 'info',
                             message: '已取消删除'
@@ -190,12 +197,18 @@
                         this.addMenu.username = res.data.data.name;
                         this.addMenu.link = res.data.data.link;
                         this.addMenu.status = res.data.data.status === 1 ? '显示' : '隐藏';
-//                        this.parseTreeJson(this.options, res.data.data.pid);
+                        // this.parseTreeJson(this.options, res.data.data.pid);
 //                        for (let item of this.list) {
 //                            if (res.data.data.pid === item.menu_id) {
-//
+//                                this.addMenu.fatherMenu.push(item.menu_id);
 //                            }
 //                        }
+                    } else {
+                        this.$message({
+                            message: res.data.data,
+                            type: 'error',
+                            showClose: true
+                        });
                     }
                 });
             },
@@ -252,6 +265,10 @@
                     delete treeNodes[i].type;
                     delete treeNodes[i].link;
                     delete treeNodes[i].status;
+//                    if (id === treeNodes[i].menu_id) {
+//                        console.log(id);
+//                        this.addMenu.fatherMenu = treeNodes[i].name;
+//                    }
                     if (childs && childs.length > 0) {
                         this.parseTreeJson(childs);
                     } else {
@@ -306,8 +323,7 @@
             },
             handleChange(value) {
                 console.log(value, '值');
-                this.addMenu.fatherMenu = value;
-                console.log(this.value);
+                console.log(this.props);
             },
             // 控制菜单列表权限
             permissionControl() {

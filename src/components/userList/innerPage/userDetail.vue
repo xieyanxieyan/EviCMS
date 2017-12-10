@@ -32,7 +32,7 @@
                         <el-col :span="8">
                             <el-select v-model="form.phone" placeholder="(+86)" :disabled="isUsed">
                                 <el-option label="(+86)" value="(+86)" selected style="width:100%">(+86)</el-option>
-                                <el-option label="(+85)" value="(+85)" style="width:100%">(+85)</el-option>
+                                <!--<el-option label="(+85)" value="(+85)" style="width:100%">(+85)</el-option>-->
                             </el-select>
                         </el-col>
                         <el-col :span="16">
@@ -93,7 +93,7 @@
                     name: '',
                     region: '',
                     type: '',
-                    phone: '',
+                    phone: '+86',
                     reason: ''
                 },
                 userdetails: {}
@@ -112,7 +112,8 @@
                 this.$refs['form'].validate((valid) => {
                     if (valid) {
                         let num = parseFloat(this.form.type);
-                        editUser(this.$route.params.detailId, this.form.name, this.form.region || 0, num.toFixed(2), this.form.reason).then(res => {
+                        let phone = parseInt(this.form.phone);
+                        editUser(this.$route.params.detailId, this.form.name, this.form.region || 0, phone, num.toFixed(2), this.form.reason).then(res => {
 //                    console.log(res);
                             if (res.data.error === 0) {
                                this.$message({

@@ -238,23 +238,31 @@
             },
             // 沟通内容
             communityContent() {
-                courtCommunicate(this.$route.params.courtId, this.addcontent).then(res => {
-                    if (res.data.error === 0) {
-                        this.$message({
-                            message: '添加成功',
-                            type: 'success',
-                            showClose: true
-                        });
-                       this._detailMessage();
-                    } else {
-                        this.$message({
-                            message: res.data.data,
-                            type: 'error',
-                            showClose: true
-                        });
-                    }
-                    this.addVisible = false;
-                });
+                if (this.addcontent.length <= 240) {
+                    courtCommunicate(this.$route.params.courtId, this.addcontent).then(res => {
+                        if (res.data.error === 0) {
+                            this.$message({
+                                message: '添加成功',
+                                type: 'success',
+                                showClose: true
+                            });
+                            this._detailMessage();
+                        } else {
+                            this.$message({
+                                message: res.data.data,
+                                type: 'error',
+                                showClose: true
+                            });
+                        }
+                        this.addVisible = false;
+                    });
+                } else {
+                    this.$message({
+                        message: '沟通内容不能超过240字',
+                        type: 'warning',
+                        showClose: true
+                    });
+                }
             },
             onSubmit() {
                 if (this.isdisabled) {

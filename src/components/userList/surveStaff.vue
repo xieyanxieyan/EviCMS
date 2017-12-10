@@ -35,12 +35,12 @@
                 </thead>
                 <tbody>
                 <tr v-for="(item, index) in manageDate">
-                    <td>+86 {{item.user.cell_phone}}</td>
+                    <td> <span v-if="item.user">+86 {{item.user.cell_phone}}</span></td>
                     <td>{{item.id}}</td>
                     <td>{{item.recommend_user}}</td>
                     <td>{{item.expire_time}}</td>
                     <td>{{item.complimentary}}</td>
-                    <td>{{item.user.status}}</td>
+                    <td><span v-if="item.user">{{item.user.status}}</span></td>
                     <td><span style="margin-right:20px;border:1px solid #437DFF;color:#437DFF;"
                               v-bind:class="{hide: editButton}"
                               @click="edit(index)">编辑</span>
@@ -71,14 +71,14 @@
                 <el-form-item label="推荐人名称：" prop="surveerReferral">
                     <el-input v-model="form.surveerReferral"></el-input>
                 </el-form-item>
-                <el-form-item label="密码：" prop="password">
-                    <el-input v-model="form.password"></el-input>
-                </el-form-item>
+                <!--<el-form-item label="密码：" prop="password">-->
+                    <!--<el-input v-model="form.password"></el-input>-->
+                <!--</el-form-item>-->
                 <el-form-item label="手机号：" prop="phoneNum">
                     <el-col :span="6">
                         <el-select v-model="form.region">
-                            <el-option label="(+86)" checked value="(+86)"></el-option>
-                            <el-option label="(+85)" value="(+85)"></el-option>
+                            <el-option label="(+86)" value="86"></el-option>
+                            <el-option label="(+85)" value="85"></el-option>
                         </el-select>
                     </el-col>
                     <!--<el-col :span="2"> </el-col>-->
@@ -168,9 +168,10 @@
                     surveerName: '',
                     surveerReferral: '',
                     phoneNum: '',
+                    region: '86',
                     vacancies: '',
-                    duetime: '',
-                    password: ''
+                    duetime: ''
+//                    password: ''
                 },
                 currentIndex: 0,
                 manageDate: []
@@ -220,6 +221,7 @@
                 getBetaList(this.formInline.user, '', '', this.size, this.currentPage).then(res => {
                     this.manageDate = res.data.data.data || [];
                     this.total = res.data.data.total;
+                    console.log(this.manageDate);
                 });
             },
 //            表单提交
@@ -240,7 +242,8 @@
             },
 //            公测用户添加
             addSubmit() {
-                addetaUser(this.form.phoneNum, this.form.password, this.form.vacancies, translateTime(this.form.duetime), this.form.surveerReferral).then(res => {
+                let phone_code = parseInt(this.form.region);
+                addetaUser(this.form.phoneNum, this.form.vacancies, phone_code, translateTime(this.form.duetime), this.form.surveerReferral).then(res => {
                     console.log(res);
                     if (res.data.error === 0) {
                         this.isVisible = false;
@@ -270,7 +273,6 @@
                         this.form.surveerName = data.user[0].user.id;
                         this.form.surveerReferral = data.user[0].recommend_user;
                         this.form.phoneNum = data.user[0].user.cell_phone;
-                        this.form.password = data.user[0].user.pwd;
                         this.form.vacancies = data.gift_cash.toString();
                         this.form.duetime = data.user[0].expire_time.toString();
                     } else {
@@ -285,8 +287,9 @@
 //            公测员编辑
             updateSubmit() {
                 let time = this.form.duetime;
+                let phone_code = parseInt(this.form.region);
                 let timestamp2 = translateTime(Date.parse(new Date(time)));
-                betaUpdate(parseInt(this.form.phoneNum), this.form.password, parseInt(this.form.vacancies), timestamp2, this.form.surveerReferral, this.form.id).then(res => {
+                betaUpdate(parseInt(this.form.phoneNum), parseInt(this.form.vacancies), phone_code, timestamp2, this.form.surveerReferral, this.form.id).then(res => {
                     console.log(res);
                     if (res.data.error === 0) {
                         this.$message({

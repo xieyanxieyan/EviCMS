@@ -166,7 +166,6 @@
                     console.log(err);
                 });
             },
-            // 删除弹框弹出来时将index值更改
             addAdmin() {
                 this.centerDialogVisible = true;
                 this.operation = '添加权限';
@@ -213,6 +212,12 @@
                                     showClose: true
                                 });
                                 this.resetForm();
+                            } else {
+                                this.$message({
+                                    message: res.data.data,
+                                    type: 'error',
+                                    showClose: true
+                                });
                             }
                         });
                     } else {
@@ -235,6 +240,12 @@
                                     });
                                     this.__list();
                                     this.resetForm();
+                                } else {
+                                    this.message({
+                                        message: res.data.data,
+                                        type: 'error',
+                                        sowClose: true
+                                    });
                                 }
                                 resolve();
                             }).catch(error => {
@@ -257,7 +268,17 @@
                     deletePermission(this.list[index].id).then(res => {
                         if (res.data.error === 0) {
 //                            this.visible2 = false;
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功'
+                            });
                             this.__list();
+                        } else {
+                            this.$message({
+                                messaeg: res.data.data,
+                                type: 'error',
+                                showClose: true
+                            });
                         }
                     });
                 }).catch(() => {

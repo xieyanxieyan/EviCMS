@@ -6,11 +6,12 @@
                 <div class="top-area">
                     <el-form :inline="true" :model="form">
                         <el-form-item label="用户名称：">
-                            <el-input v-model="form.phone" size="small" @keyup.enter.native="serachList"></el-input>
+                            <el-input v-model="form.phone" size="small" @keyup.enter.native="getList"></el-input>
                         </el-form-item>
                         <el-form-item label="统计时间:">
                             <el-date-picker
                                 size="small"
+                                @keyup.enter.native="getList"
                                 v-model="form.begin_time"
                                 type="date"
                                 placeholder="选择开始时间"
@@ -20,6 +21,7 @@
                         <el-form-item label="至">
                             <el-date-picker
                                 size="small"
+                                @keyup.enter.native="getList"
                                 v-model="form.end_time"
                                 type="date"
                                 placeholder="选择结束时间"
@@ -28,7 +30,7 @@
                             </el-col>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="serachList">搜索</el-button>
+                            <el-button type="primary" @click.native.prevent="getList">搜索</el-button>
                             <span class="grayline">|</span>
                             <el-button v-bind:class="{hide:addUser}">
                                 <router-link to="/addUser"> 添加用户</router-link>
@@ -45,15 +47,17 @@
                         <th>用户序号</th>
                         <th>用户名称</th>
                         <th>注册时间</th>
+                        <th>存证数</th>
                         <th>状态</th>
                         <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="(item,index) in userList.data" v-bind:class="{hide:showList}">
+                    <tr v-for="(item,index) in userList" v-bind:class="{hide:showList}">
                         <td>{{item.user_id}}</td>
                         <td>+86 {{item.cell_phone}}</td>
                         <td>{{item.reg_time}}</td>
+                        <td>{{item.cert_count}}</td>
                         <td>
                             <template v-if="item.status === 0">
                                 <span>正常</span>
@@ -83,7 +87,7 @@
                     </tbody>
                 </table>
                 <!--分页-->
-                <div class="pagination" v-if="total>15">
+                <div class="pagination" v-if="total>15"  v-bind:class="{hide:showList}">
                     <el-pagination
                         layout="prev, pager, next,total"
                         :total="total"
@@ -138,28 +142,21 @@
         methods: {
             getList() {
                 getUserList(this.form.phone, translateTime(this.form.begin_time), translateTime(this.form.end_time), this.perpage, this.currentPage).then(res => {
-                    this.userList = res.data.data;
-                    this.total = this.userList.total;
+                    this.userList = res.data.data.data;
+                    console.log(this.userList);
+                    this.total = res.data.data.total;
                 });
             },
             serachList() {
                 this.getList();
             },
-//            将时间转换成YYYY-MM-DD格式
-//            translateTime(time) {
-//                let date = new Date(time);
-//                let Y = date.getFullYear() + '-';
-//                let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
-//                let D = date.getDate() + ' ';
-//                return Y + M + D;
-//            },
 //            到用户详情
             touserDetail(index) {
-                this.$router.push({name: 'userDetail', params: {detailId: this.userList.data[index].user_id}});
+                this.$router.push({name: 'userDetail', params: {detailId: this.userList[index].user_id}});
             },
 //            冻结用户
             frozen(index) {
-                userFreeze(this.userList.data[index].user_id, this.userList.data[index].status).then(res => {
+                userFreeze(this.userList[index].user_id, this.userList[index].status).then(res => {
                     if (res.data.error === 0) {
                         this.getList();
                     }
@@ -171,7 +168,7 @@
             // 登入web系统
             admin_web(index) {
                 let w = window.open();
-                admin_web(this.userList.data[index].user_id).then(res => {
+                admin_web(this.userList[index].user_id).then(res => {
                     if (res.data.error === 0) {
                         console.log(res);
                         // setToken(res.data.data.data.auth_token);
@@ -241,7 +238,6 @@
     }
 
     tr td, tr th {
-        width: 19%;
         height: 35px;
         line-height: 35px;
         font-size: 14px;

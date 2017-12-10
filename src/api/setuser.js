@@ -106,9 +106,10 @@ export function getAdminList(username, time_begin, time_end, perPage, page) {
 }
 
 //  获取管理员日志
-export function getAdminLog(username, time_begin, time_end, perPage, page) {
+export function getAdminLog(username, log_type, time_begin, time_end, perPage, page) {
     const params = {
         username,
+        log_type,
         time_begin,
         time_end,
         perPage,

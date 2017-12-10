@@ -14,13 +14,15 @@
                     <el-step title="用户申请" :description="req_time"></el-step>
                     <el-step title="出证盖章" :description="confirm_time"></el-step>
                     <el-step title="快递发出" :description="exp_time"></el-step>
-                    <el-step title="客户签收"  :description="finish_time"></el-step>
+                    <el-step title="客户签收" :description="finish_time"></el-step>
                 </el-steps>
             </div>
         </div>
         <div class="detailContent">
-            <depositNum :cert="detail"></depositNum>
-            <logisticsInfo :cert="detail"></logisticsInfo>
+            <template v-if="detail">
+                <depositNum :cert="detail" v-on:update="getDetail"></depositNum>
+                <logisticsInfo :cert="detail" v-on:update="getDetail"></logisticsInfo>
+            </template>
         </div>
     </div>
 </template>
@@ -35,7 +37,7 @@
         },
         data() {
             return {
-                detail: {},
+                detail: null,
                 status: 1,
                 req_time: '', // 用户申请时间
                 exp_records: '', // 快递时间和地址
@@ -45,6 +47,12 @@
                 cert_num: ''
             };
         },
+//        watch: {
+//            detail() {
+//                console.log(newval);
+//                return newval === val;
+//            }
+//        },
         methods: {
             getDetail() {
                 getCertifyDetail(this.$route.params.detailId).then(res => {
@@ -78,6 +86,7 @@
 </script>
 <style lang="scss" type="text/scss">
     @import '../../../scss/mixin';
+
     #paperDetail {
         padding: 0 15px;
         .paperDetail {

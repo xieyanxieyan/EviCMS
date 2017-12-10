@@ -29,10 +29,10 @@
             <!--</form>-->
             <el-form :inline="true" :model="formIn">
                 <el-form-item label="用户名称:">
-                    <el-input v-model="formIn.userName" size="small"></el-input>
+                    <el-input v-model="formIn.userName"  @keyup.enter.native="certList" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="存证号：">
-                    <el-input v-model="formIn.Memory" size="small"></el-input>
+                    <el-input v-model="formIn.Memory"  @keyup.enter.native="certList" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="时间：">
                         <el-date-picker
@@ -51,7 +51,7 @@
                         </el-date-picker>
                 </el-form-item>
                 <el-form-item>
-                    <el-button size="small">搜索</el-button>
+                    <el-button size="small"  @click.native.prevent="certList">搜索</el-button>
                 </el-form-item>
             </el-form>
         </div>

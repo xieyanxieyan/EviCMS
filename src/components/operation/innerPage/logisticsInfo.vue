@@ -48,7 +48,7 @@
     </div>
 </template>
 <script>
-    import {certifyUpdate, getCertifyDetail, certifyExpresslist} from '../../../api/operation';
+    import {certifyUpdate, certifyExpresslist} from '../../../api/operation';
     import {formatDate} from '../../../assets/public';
 
     export default {
@@ -59,14 +59,14 @@
                 labelPosition: 'left',
                 opera: '编辑', // 控制是编辑还是保存操作
                 caniuse: false, // 是否可以编辑快递信息
-                exp_records: [], // 快递信息
                 iaccept: true, // 是否显示签收按钮
                 hassaved: false, // 是否显示保存按钮
-                status: '',
+                exp_records: this.cert.exp_records,
+                status: this.cert.status,
                 formLabelAlign: {
-                    time: '',
-                    company: '',
-                    number: '',
+                    time: this.cert.exp_time,
+                    company: this.cert.exp_company_name,
+                    number: this.cert.exp_order_no,
                     options: []
 //                isdisabled: true
                 },
@@ -83,11 +83,28 @@
                 }
             };
         },
-        created() {
-            this.deta();
+        mounted() {
             this.getMessage();
+            this.getStatus();
         },
         methods: {
+            getStatus() {
+                this.isused = false;
+                if (this.status === 2) {
+                    this.caniuse = true; // 是否隐藏预览证书按钮
+                } else if (this.status === 3) {
+                    this.caniuse = true;
+                } else if (this.status === 4) {
+                    this.caniuse = false;
+                } else if (this.status === 5) {
+                    this.iaccept = false;
+                    this.hassaved = true;
+                } else if (this.status === 6) {
+                    this.iaccept = true;
+                    this.hassaved = true;
+                }
+                this.isused = true;
+            },
             saveSubmit(formName) {
                 if (this.opera === '编辑') {
                     this.opera = '保存';
@@ -105,9 +122,9 @@
                                         type: 'success',
                                         showClose: true
                                     });
+                                    this.$emit('update');
                                     this.$refs[formName].resetFields();
                                     this.hassaved = true;
-                                    this.deta();
                                 } else {
                                     this.$message({
                                         message: res.data.data,
@@ -123,6 +140,7 @@
                     });
                 }
             },
+
             // 获取快递公司信息
             getMessage() {
                 certifyExpresslist().then(res => {
@@ -134,35 +152,35 @@
                 });
             },
             // 显示信息详情
-            deta() {
-                getCertifyDetail(this.$route.params.detailId).then(res => {
-                    if (res.data.error === 0) {
-                        this.detail = res.data.data;
-                        this.isused = false;
+//            deta() {
+//                getCertifyDetail(this.$route.params.detailId).then(res => {
+//                    if (res.data.error === 0) {
+//                        this.detail = res.data.data;
+//                        this.isused = false;
 //                        this.formLabelAlign.name = this.detail.user_name;
 //                        this.formLabelAlign.phone = this.detail.phone;
 //                        this.formLabelAlign.address = this.detail.rec_addr;
 //                        this.pdf_url = this.detail.pdf_url;
 //                        this.pdf_raw_url = this.detail.pdf_raw_url;
-                        this.exp_records = this.detail.exp_records || [];
-                        this.status = this.detail.status;
-                        if (this.status === 2) {
-                            this.caniuse = true; // 是否隐藏预览证书按钮
-                        } else if (this.status === 3) {
-                            this.caniuse = true;
-                        } else if (this.status === 4) {
-                            this.caniuse = false;
-                        } else if (this.status === 5) {
-                            this.iaccept = false;
-                            this.hassaved = true;
-                        } else if (this.status === 6) {
-                            this.iaccept = true;
-                            this.hassaved = true;
-                        }
-                        this.isused = true;
-                    }
-                });
-            },
+//                        this.exp_records = this.detail.exp_records || [];
+//                        this.status = this.detail.status;
+//                        if (this.status === 2) {
+//                            this.caniuse = true; // 是否隐藏预览证书按钮
+//                        } else if (this.status === 3) {
+//                            this.caniuse = true;
+//                        } else if (this.status === 4) {
+//                            this.caniuse = false;
+//                        } else if (this.status === 5) {
+//                            this.iaccept = false;
+//                            this.hassaved = true;
+//                        } else if (this.status === 6) {
+//                            this.iaccept = true;
+//                            this.hassaved = true;
+//                        }
+//                        this.isused = true;
+//                    }
+//                });
+//            },
             // 已签收
             accept() {
                 certifyUpdate(this.cert.apply_id, 4).then(res => {
@@ -172,7 +190,7 @@
                             type: 'success',
                             showClose: true
                         });
-                        this.deta();
+                        this.$emit('update');
                     } else {
                         this.$message({
                             message: res.data.data,
@@ -182,7 +200,21 @@
                     }
                 });
             }
+        },
+        watch: {
+            status() {
+                this.getStatus();
+            }
         }
+//        watch: {
+//            status: {
+//                handler: function (val, oldVal) {
+//                    console.log(this.status);
+//                    return this.getStatus();
+//                },
+//                immediate: true
+//            }
+//        }
     };
 </script>
 <style lang="scss">
