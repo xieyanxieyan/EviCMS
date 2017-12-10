@@ -208,6 +208,7 @@
         cursor: pointer;
         font-size: 14px;
         padding: 2px 5px;
+        border-radius: 5px;
     }
 
     table tr td > span:nth-child(1) {

@@ -67,19 +67,19 @@
                             </template>
                         </td>
                         <td>
-                            <span @click="touserDetail(index)" v-bind:class="{hide: detail}"><a
-                                href="javascript:void(0);">详情/编辑</a></span>
-                            <span class="inter"><a href="javascript:void(0);" @click="admin_web(index)">用户界面</a></span>
+                            <el-button type="small" @click="touserDetail(index)" v-bind:class="{hide: detail}"><a
+                                href="javascript:void(0);">详情/编辑</a></el-button>
+                            <el-button type="small" class="inter"><a href="javascript:void(0);" @click="admin_web(index)">用户界面</a></el-button>
                             <template v-if="item.status === 0">
-                                <span @click="frozen(index)" class="redbutton"
+                                <el-button type="small" @click="frozen(index)" class="redbutton"
                                       v-bind:class="{hide:frezen}">
                                     <a href="javascript:void(0);">冻结</a>
-                                </span>
+                                </el-button>
                             </template>
                             <template v-else="item.status === 1">
-                                <span @click="frozen(index)" class="greenbutton">
+                                <el-button type="small" @click="frozen(index)" class="greenbutton">
                                     <a href="javascript:void(0);">解冻</a>
-                                </span>
+                                </el-button>
                             </template>
 
                         </td>
@@ -247,19 +247,22 @@
         text-align: center;
         border-bottom: 1px solid #eee;
 
-    .redbutton a {
+    .redbutton{
+    border: 1px solid #ff4949;
+    a {
         color: #ff4949;
-        border: 1px solid;
+    }
     }
 
-    .greenbutton a {
+    .greenbutton {
+        border: 1px solid #4cce6d;
+    a {
         color: #4cce6d;
-        border: 1px solid;
+    }
     }
 
     a {
         color: #20a0ff;
-        border: 1px solid;
     }
 
     .inter {
