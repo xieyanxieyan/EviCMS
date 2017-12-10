@@ -3,13 +3,13 @@
         <div  class="leftMessage">
            <div>待处理：</div>
             <div>
-                <span>投诉建议(99)</span>
+                <span>投诉建议({{taskSum.report}})</span>
                 <span class="line">|</span>
-                <span>退款(99)</span>
+                <span>退款({{taskSum.refund}})</span>
                 <span class="line">|</span>
-                <span>出证(99)</span>
+                <span>出证({{taskSum.cert}})</span>
                 <span class="line">|</span>
-                <span>出庭(99)</span>
+                <span>出庭({{taskSum.court}})</span>
             </div>
         </div>
         <div class="rightMessage">
@@ -20,13 +20,16 @@
     </div>
 </template>
 <script>
+import {task} from '../../api/taskSum';
     export default {
         created() {
             this.getName();
+            this.taskTotle();
         },
         data() {
           return {
-              name: ''
+              name: '',
+              taskSum: {}
           };
         },
         methods: {
@@ -48,6 +51,15 @@
                         });
                         }
                     });
+            },
+            taskTotle() {
+                task().then(res => {
+                    if (res.data.error === 0) {
+                        let data = res.data.data;
+                        this.taskSum = data;
+                        console.log(this.taskSum);
+                    };
+                });
             }
         }
     };
