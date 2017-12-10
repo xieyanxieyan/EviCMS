@@ -43,7 +43,7 @@
                       this.secretDetail.type = res.data.data.type;
                       this.secretDetail.app_key = res.data.data.app_key;
                       this.secretDetail.app_secret = res.data.data.app_secret;
-                   }
+                   };
                 });
             },
             _updataSecret() {
@@ -52,6 +52,11 @@
                         this.isUsed = true;
                       let secretDetail = res.data.data;
                      console.log(secretDetail, '更新过的短信秘钥管理');
+                      this.$message({
+                        message: '修改成功',
+                        type: 'success',
+                        showClose: true
+                    });
                    };
                 });
             },

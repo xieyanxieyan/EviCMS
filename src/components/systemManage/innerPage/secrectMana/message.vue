@@ -54,6 +54,11 @@
                         this.isUsed = true;
                       let secretDetail = res.data.data;
                      console.log(secretDetail, '更新过的短信秘钥管理');
+                     this.$message({
+                        message: '修改成功',
+                        type: 'success',
+                        showClose: true
+                    });
                    };
                 });
             },
