@@ -29,7 +29,12 @@ import {task} from '../../api/taskSum';
         data() {
           return {
               name: '',
-              taskSum: {}
+              taskSum: {
+                  report: '',
+                  refund: '',
+                  cert: '',
+                  court: ''
+              }
           };
         },
         methods: {
