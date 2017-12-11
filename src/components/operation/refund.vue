@@ -200,7 +200,7 @@
             },
             // 退款处理
             sureSubmit(num) {
-                if (num === 1) {
+                if (num === 2) {
                     this.isused = false;
                     if (this.repectReason) {
                         this.isused = false;
