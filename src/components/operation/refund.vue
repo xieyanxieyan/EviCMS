@@ -108,7 +108,7 @@
                 <el-form :label-position="labelPosition" label-width="100px;">
                     <el-form-item>
                         <strong>退款理由：</strong>
-                        <span style="color:red">打印失败</span>
+                        <span style="color:red">{{append_info}}</span>
                     </el-form-item>
                     <el-form-item label="拒绝理由：">
                         <el-input v-model="repectReason"></el-input>
@@ -142,6 +142,7 @@
                 currentTabIndex: 0,
                 perPage: 15, // 默认一页显示多少条
                 activeName: '',
+                append_info: '',
                 currentPage: 1,
                 refundDeal: false, // 退款处理的处理按钮是否显示
                 refundList: false, // 退款处理列表是否显示
@@ -267,6 +268,7 @@
             handleRefund(index) {
                 this.refunddialog = true;
                 this.activeId = index;
+                this.append_info = this.tableItem[index].append_info;
             },
             // 权限控制函数
             controlPermission() {

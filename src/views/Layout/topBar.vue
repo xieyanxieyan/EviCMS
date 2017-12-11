@@ -57,8 +57,14 @@ import {task} from '../../api/taskSum';
                     if (res.data.error === 0) {
                         let data = res.data.data;
                         this.taskSum = data;
-                        console.log(this.taskSum);
-                    };
+                        // console.log(this.taskSum);
+                    } else {
+                        this.$message({
+                            message: res.data.data,
+                            type: 'error',
+                            showClose: true
+                        });
+                    }
                 });
             }
         }

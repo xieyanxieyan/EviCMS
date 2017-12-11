@@ -100,7 +100,7 @@
         },
         methods: {
             _adminList() {
-                getAdminLog(this.formInline.user, this.formInline.type, formatDate(this.formInline.time_begin), formatDate(this.formInline.time_end), this.perPage, this.currentPage).then(res => {
+                getAdminLog(this.formInline.user, this.formInline.type, formatDate(this.formInline.time_begin), formatDate(this.formInline.time_end), this.perpage, this.currentPage).then(res => {
                     if (res.data.error === 0) {
                         this.operationData = res.data.data.data;
                         this.total = res.data.data.total;
