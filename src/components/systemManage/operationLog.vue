@@ -125,7 +125,11 @@
 
     #operationLog {
         padding: 0 15px;
-
+        &:before{
+            display:block;
+            clear:both;
+            content:''
+        }
         .el-form {
             margin: 0;
             float: right;
@@ -151,6 +155,7 @@
             text-overflow: ellipsis;
         }
         .operationLogTop {
+
             display: inline-block;
             padding: 15px 0;
             span {

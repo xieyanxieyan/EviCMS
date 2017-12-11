@@ -178,8 +178,11 @@
             width: 16%;
         }
         .histop {
-            padding: 15px 0;
-            padding-bottom: 0;
+            &:before{
+                content:'';
+                display:block;
+                clear:both;
+            }
             &>span{
                 @include span;
             }

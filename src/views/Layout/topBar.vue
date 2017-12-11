@@ -1,7 +1,7 @@
 <template>
     <div id="topbar">
-        <div  class="leftMessage">
-           <div>待处理：</div>
+        <div class="leftMessage">
+            <div>待处理：</div>
             <div>
                 <!-- <span>投诉建议({{taskSum.report}})</span> -->
                 <router-link to="/compManage">投诉建议({{taskSum.report}})</router-link>
@@ -24,40 +24,41 @@
     </div>
 </template>
 <script>
-import {task} from '../../api/taskSum';
+    import {task} from '../../api/taskSum';
+
     export default {
         created() {
             this.getName();
             this.taskTotle();
         },
         data() {
-          return {
-              name: '',
-              taskSum: {
-                  report: '',
-                  refund: '',
-                  cert: '',
-                  court: ''
-              }
-          };
+            return {
+                name: '',
+                taskSum: {
+                    report: '',
+                    refund: '',
+                    cert: '',
+                    court: ''
+                }
+            };
         },
         methods: {
             getName() {
-              this.name = window.localStorage.getItem('name');
+                this.name = window.localStorage.getItem('name');
             },
             logout() {
 //                console.log('d');
                 this.$store.dispatch('adminLogout')
                     .then((res) => {
-                    if (res === 0) {
-                        // 退出登录
-                        location.reload();
-                    } else {
-                        this.$message({
-                            message: res.data.data,
-                            type: 'error',
-                            showClose: true
-                        });
+                        if (res === 0) {
+                            // 退出登录
+                            location.reload();
+                        } else {
+                            this.$message({
+                                message: res.data.data,
+                                type: 'error',
+                                showClose: true
+                            });
                         }
                     });
             },
@@ -81,25 +82,27 @@ import {task} from '../../api/taskSum';
 </script>
 <style lang="scss">
     #topbar {
-        padding-left:20px;
+        padding-left: 20px;
         height: 35px;
         background: #fff;
         line-height: 35px;
-
-     span {
+    span {
         display: inline-block;
         color: #333;
         height: 35px;
         line-height: 35px;
         text-align: center;
     }
-    .rightMessage span{
-        float:right;
+
+    .rightMessage span {
+        float: right;
     }
-    .leftMessage div{
-        display:inline-block;
-        float:left;
+
+    .leftMessage div {
+        display: inline-block;
+        float: left;
     }
+
     a {
         display: inline-block;
         color: #333;
@@ -108,7 +111,7 @@ import {task} from '../../api/taskSum';
         text-align: center;
     }
 
-     .line {
+    .line {
         height: 10px;
         width: 50px;
     }

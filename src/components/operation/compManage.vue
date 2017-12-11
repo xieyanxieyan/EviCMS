@@ -13,7 +13,6 @@
                         </el-tabs>
                     </div>
                 </div>
-                <div class="clear"></div>
             </div>
             <div class="list-area" id="data_list_area">
                 <table border="0" cellspacing="0" cellpadding="=0">
@@ -133,6 +132,12 @@
     a{
         color:#333;
     }
+        .top:before{
+            content:'';
+            display:block;
+            height:0;
+            clear:both;
+        }
    table{
        table-layout:fixed;
        .content{

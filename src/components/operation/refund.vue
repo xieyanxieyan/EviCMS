@@ -72,20 +72,23 @@
                         <template v-if="item.status==0">
                             未处理
                         </template>
-                        <template v-else-if="item.status == 1" >
-                           <span class="redtext"> 已同意</span>
+                        <template v-else-if="item.status == 1">
+                            <span class="redtext"> 已同意</span>
                         </template>
                         <template v-else-if="item.status === 2">
-                           <span class="bluetext"> 已拒绝</span>
+                            <span class="bluetext"> 已拒绝</span>
                         </template>
                     </td>
                     <td>
-                        <el-button type="primary"  class="addStyle" size="small" plain @click="admin_web(index)">用户界面</el-button>
+                        <el-button type="primary" class="addStyle" size="small" plain @click="admin_web(index)">用户界面
+                        </el-button>
                         <template v-if="item.status==0">
-                            <el-button  type="primary"  class="addStyle" size="small" plain @click="handleRefund(index)" v-bind:class="{hide:refundDeal}">处理</el-button>
+                            <el-button type="primary" class="addStyle" size="small" plain @click="handleRefund(index)"
+                                       v-bind:class="{hide:refundDeal}">处理
+                            </el-button>
                         </template>
                         <template v-else>
-                            <el-button  size="small" disabled v-bind:class="{hide:refundDeal}">处理</el-button>
+                            <el-button size="small" disabled v-bind:class="{hide:refundDeal}">处理</el-button>
                         </template>
                     </td>
                 </tr>
@@ -114,8 +117,8 @@
                         <el-input v-model="repectReason"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="info"  @click="sureSubmits(1)">确认退款</el-button>
-                        <el-button type="danger"  @click="sureSubmit(2)">拒绝退款</el-button>
+                        <el-button type="info" @click="sureSubmit(1)">确认退款</el-button>
+                        <el-button type="danger" @click="sureSubmit(2)">拒绝退款</el-button>
                         <el-button type="primary" @click="close">取消</el-button>
                     </el-form-item>
                 </el-form>
@@ -173,13 +176,13 @@
                 getRefundList(this.topForm.username, this.topForm.cert_no, translateTime(this.topForm.value1), translateTime(this.topForm.value2), parseInt(this.activeName) || '', this.perPage, this.currentPage).then(res => {
                     if (res.data.error === 0) {
                         let tableItems = res.data.data.data;
-                        tableItems.forEach(function(item, index) {
+                        tableItems.forEach(function (item, index) {
                             tableItems[index].cash_pay = (item.cash_pay / 100).toFixed(2);
                         });
                         console.log(tableItems);
                         this.tableItem = tableItems;
                         this.total = res.data.data.total;
-                       // console.log(this.tableItem);
+                        // console.log(this.tableItem);
                     }
                 });
             },
@@ -188,7 +191,7 @@
                 let w = window.open();
                 admin_web(this.tableItem[index].user_id).then(res => {
                     if (res.data.error === 0) {
-                        setTimeout(function() {
+                        setTimeout(function () {
                             w.location = 'http://zbb.fa123.com/#/login/admin/' + res.data.data;
                         }, 1000);
                     }
@@ -196,22 +199,6 @@
                 return false;
             },
             // 退款处理
-            sureSubmits() {
-                this.isused = false;
-                    refundHandle(this.tableItem[this.activeId].request_id, this.repectReason, 1).then(res => {
-                        if (res.data.error === 0) {
-                            this._showRefundList();
-                        } else {
-                            this.$message({
-                                message: res.data.data,
-                                type: 'error',
-                                showClose: true
-                            });
-                        }
-                        this.repectReason = '';
-                    });
-                    this.refunddialog = false;
-            },
             sureSubmit(num) {
                 if (num === 1) {
                     this.isused = false;
@@ -291,31 +278,38 @@
                 display: inline-block;
             }
         }
-        .content{
-            white-space:nowrap;
-            overflow:hidden;
-            text-overflow:ellipsis;
+        .content {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .redtext{
-            color:#67C23A; border:0
+        .redtext {
+            color: #67C23A;
+            border: 0
         }
-        .bluetext{
-            color:#FA5555; border:0
+        .bluetext {
+            color: #FA5555;
+            border: 0
         }
-        .tab-wrapper>div{
+        .tab-wrapper > div {
             display: inline-block;
         }
         .refundtop {
-            padding: 15px 0;
-            padding-bottom: 0;
-            &>span {
+            /*padding: 15px 0;*/
+            /*padding-bottom: 0;*/
+            &:before {
+                content: '';
+                clear: both;
+                display: block;
+            }
+            & > span {
                 @include span;
             }
-            .quikeSelect{
-                display:inline-block;
-                height:42px;
+            .quikeSelect {
+                display: inline-block;
+                height: 42px;
                 line-height: 42px;
-                margin-left:20px;
+                margin-left: 20px;
             }
 
         }
@@ -323,10 +317,10 @@
             margin: 0 0 10px;
         }
         /*td span {*/
-            /*cursor: pointer;*/
-            /*border: 1px solid;*/
-            /*padding: 3px;*/
-            /*color: #20a0ff;*/
+        /*cursor: pointer;*/
+        /*border: 1px solid;*/
+        /*padding: 3px;*/
+        /*color: #20a0ff;*/
         /*}*/
 
         .tab-wrapper {
@@ -341,7 +335,7 @@
         }
 
         .refundform {
-            margin-bottom:10px;
+            margin-bottom: 10px;
             display: inline-block;
             .el-form-item__content {
                 width: 115px;
