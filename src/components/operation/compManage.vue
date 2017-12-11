@@ -29,7 +29,7 @@
                     <tbody v-bind:class = "{hide:compList}">
                     <tr v-for="(item,index) in compManage">
                         <td>{{item.request_time}}</td>
-                        <td>+86 {{item.user.cell_phone}}</td>
+                        <td>(+86) {{item.user.cell_phone}}</td>
                         <td class="content">{{item.content}}</td>
                         <td>
 

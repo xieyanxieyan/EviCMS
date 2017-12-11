@@ -3,13 +3,17 @@
         <div  class="leftMessage">
            <div>待处理：</div>
             <div>
-                <span>投诉建议({{taskSum.report}})</span>
+                <!-- <span>投诉建议({{taskSum.report}})</span> -->
+                <router-link to="/compManage">投诉建议({{taskSum.report}})</router-link>
                 <span class="line">|</span>
-                <span>退款({{taskSum.refund}})</span>
+                <!-- <span>退款({{taskSum.refund}})</span> -->
+                <router-link to="/refund">退款({{taskSum.refund}})</router-link>
                 <span class="line">|</span>
-                <span>出证({{taskSum.cert}})</span>
+                <!-- <span>出证({{taskSum.cert}})</span> -->
+                <router-link to="/HisManage">出证({{taskSum.cert}})</router-link>
                 <span class="line">|</span>
-                <span>出庭({{taskSum.court}})</span>
+                <!-- <span>出庭({{taskSum.court}})</span> -->
+                <router-link to="/TrialManage">出庭({{taskSum.court}})</router-link>
             </div>
         </div>
         <div class="rightMessage">
@@ -29,7 +33,12 @@ import {task} from '../../api/taskSum';
         data() {
           return {
               name: '',
-              taskSum: {}
+              taskSum: {
+                  report: '',
+                  refund: '',
+                  cert: '',
+                  court: ''
+              }
           };
         },
         methods: {

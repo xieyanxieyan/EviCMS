@@ -121,11 +121,12 @@
                                    type: 'success',
                                    showClose: true
                                });
-                                this.form.name = '';
-                                this.form.region = '';
-                                this.form.type = '';
-                                this.form.phone = '';
-                                this.form.reason = '';
+                               this.$router.go(-1);
+                                // this.form.name = '';
+                                // this.form.region = '';
+                                // this.form.type = '';
+                                // this.form.phone = '';
+                                // this.form.reason = '';
                             } else {
                                 this.$message({
                                     message: res.data.data,

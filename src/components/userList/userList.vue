@@ -54,7 +54,7 @@
                     <tbody>
                     <tr v-for="(item,index) in userList" v-bind:class="{hide:showList}">
                         <td>{{item.user_id}}</td>
-                        <td>+86 {{item.cell_phone}}</td>
+                        <td>(+86) {{item.cell_phone}}</td>
                         <td>{{item.reg_time}}</td>
                         <td>{{item.cert_count}}</td>
                         <td>
