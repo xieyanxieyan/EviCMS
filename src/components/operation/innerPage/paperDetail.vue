@@ -2,6 +2,7 @@
     <div id="paperDetail">
         <div class="paperDetail">
             <span>出证管理 -- 纸质出证详情</span>
+            <el-button size="small" type="info" @click="returnBack" style="float:right">返回</el-button>
         </div>
         <div class="userMessage">
             <div class="userNum">
@@ -76,6 +77,9 @@
                         }
                     }
                 });
+            },
+            returnBack() {
+                this.$router.go(-1);
             }
         },
         components: {
@@ -91,7 +95,7 @@
         padding: 0 15px;
         .paperDetail {
             padding: 15px 0;
-            span {
+            &>span {
                 border-left: 2px solid #324157;
                 padding-left: 5px;
             }

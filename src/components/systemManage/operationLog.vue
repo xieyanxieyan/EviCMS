@@ -57,7 +57,7 @@
                     <td><span v-if="item.admin"> {{item.admin.name}} </span></td>
                     <td>{{item.add_time}}</td>
                     <td>{{item.log_type}}</td>
-                    <td class="content">{{item.log_content}}</td>
+                    <td>{{item.log_content}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -194,14 +194,6 @@
             .el-date-editor.el-input {
                 width: 150px;
             }
-        }
-        table {
-            table-layout: fixed;
-        }
-        .content{
-            white-space:nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
         .operationLogTop {
 
