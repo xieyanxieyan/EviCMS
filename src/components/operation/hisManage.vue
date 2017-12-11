@@ -89,12 +89,15 @@
                         {{item.status}}
                     </td>
                     <td>
-                        <template v-if="item.with_paper === '纸质版'">
+                        <template >
+                            <el-button size="small" @click="toHisDetail(index)" style="color:#409EFF; border:1px solid;">出证详情</el-button>
+                        </template>
+                        <!-- <template v-if="item.with_paper === '纸质版'">
                             <el-button size="small" @click="toHisDetail(index)" style="color:#409EFF; border:1px solid;">出证详情</el-button>
                         </template>
                         <template v-else>
                             <el-button size="small" disabled>出证详情</el-button>
-                        </template>
+                        </template> -->
                     </td>
                 </tr>
                 </tbody>
