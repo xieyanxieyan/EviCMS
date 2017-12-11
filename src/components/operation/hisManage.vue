@@ -71,7 +71,7 @@
                 <tr v-for="(item,index) in hisData">
                     <td>{{item.req_time}}</td>
                     <td>+86 {{item.user.cell_phone}}</td>
-                    <td>{{item.cert_id}}</td>
+                    <td>{{item.cert_no}}</td>
                     <td>{{item.with_paper}}</td>
                     <td>
                         <!--<template v-if="item.status === 1">-->
