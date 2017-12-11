@@ -9,26 +9,31 @@
                     <el-input v-model="formInline.user" @keyup.enter.native="_adminList"></el-input>
                 </el-form-item>
                 <el-form-item label="类别">
-                    <el-input v-model="formInline.type" @keyup.enter.native="_adminList"></el-input>
+                    <el-select v-model="formInline.type" placeholder="请选择">
+                        <el-option
+                            v-for="item in formInline.option"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <!--<el-input v-model="formInline.type" ></el-input>-->
                 </el-form-item>
                 <el-form-item label="统计时间">
-                    <el-col :span="8">
                         <el-date-picker
                             v-model="formInline.time_begin"
                             type="datetime"
                             placeholder="选择开始日期时间">
                         </el-date-picker>
+                </el-form-item>
+                <el-form-item label="至">
                         <!--<el-input type="text" placeholder="2017-09-04 01:43:13" v-model="formInline.time_begin"></el-input>-->
-                    </el-col>
-                    <el-col :span="4">至</el-col>
-                    <el-col :span="8">
                         <el-date-picker
                             v-model="formInline.time_end"
                             type="datetime"
                             placeholder="选择结束日期时间">
                         </el-date-picker>
                         <!--<el-input type="text" placeholder="2017-09-04 01:43:13" v-model="formInline.time_end"></el-input>-->
-                    </el-col>
                 </el-form-item>
                 <el-form-item>
                     <el-button style="background:#999999;color:#fff" @click="_adminList" size="small">搜索</el-button>
@@ -48,7 +53,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="(item,index) in operationData" :key="item.id">
-                    <td>{{item.admin_id}}</td>
+                    <td>{{item.id}}</td>
                     <td><span v-if="item.admin"> {{item.admin.name}} </span></td>
                     <td>{{item.add_time}}</td>
                     <td>{{item.log_type}}</td>
@@ -93,7 +98,49 @@
                     type: '',
                     region: '',
                     time_begin: '',
-                    time_end: ''
+                    time_end: '',
+                    option: [
+                        {
+                            value: 1,
+                            label: '修改用户信息'
+                        },
+                        {
+                            value: 2,
+                            label: '添加用户'
+                        },
+                        {
+                            value: 3,
+                            label: '投诉建议恢复'
+                        },
+                        {
+                            value: 4,
+                            label: '退款处理'
+                        },
+                        {
+                            value: 5,
+                            label: '存证盖章'
+                        },
+                        {
+                            value: 6,
+                            label: '存证发件'
+                        },
+                        {
+                            value: 7,
+                            label: '确认收件'
+                        },
+                        {
+                            value: 8,
+                            label: '编辑收件人信息'
+                        },
+                        {
+                            value: 9,
+                            label: '确认出庭交易'
+                        },
+                        {
+                            value: 10,
+                            label: '确认出庭'
+                        }
+                    ]
                 },
                 operationData: []
             };
@@ -133,7 +180,6 @@
         .el-form {
             margin: 0;
             float: right;
-
             .el-form-item {
                 margin-bottom: 0px;
                 .el-col-4 {
@@ -142,8 +188,11 @@
             }
             .el-input__inner {
                 display: inline-block;
-                width: inherit;
+                width: 150px;
                 height: 30px;
+            }
+            .el-date-editor.el-input {
+                width: 150px;
             }
         }
         table {
