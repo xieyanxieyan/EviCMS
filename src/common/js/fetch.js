@@ -30,7 +30,7 @@ service.interceptors.response.use(
         return response;
     },
     error => {
-        console.log('err' + error); // for debug
+       // console.log('err' + error); // for debug
         return Promise.reject(error);
     });
 export default service;

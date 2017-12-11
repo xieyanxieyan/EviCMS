@@ -110,7 +110,7 @@
                         },
                         {
                             value: 3,
-                            label: '投诉建议恢复'
+                            label: '投诉建议回复'
                         },
                         {
                             value: 4,
@@ -211,5 +211,6 @@
         .pagination {
             text-align: center;
         }
+
     }
 </style>
