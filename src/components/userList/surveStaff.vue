@@ -35,14 +35,14 @@
                 </thead>
                 <tbody>
                 <tr v-for="(item, index) in manageDate">
-                    <td> <span v-if="item.user">+86 {{item.cell_phone}}</span></td>
+                    <td> <span>+86 {{item.phone}}</span></td>
                     <td>{{item.user_name}}</td>
                     <td>{{item.recommend_user}}</td>
                     <td>{{item.expire_time}}</td>
-                    <td><template v-if="item.gift_cash">{{item.gift_cash / 100}}</template>
+                    <td><template v-if="item.gift_cash">{{item.gift_cash}}</template>
                         <template v-else>{{item.gift_amount}}</template>
                     </td>
-                    <td><span v-if="item.user">{{item.status_alias}}</span></td>
+                    <td><span>{{item.status_alias}}</span></td>
                     <td><span style="margin-right:20px;border:1px solid #437DFF;color:#437DFF;"
                               v-bind:class="{hide: editButton}"
                               @click="edit(index)">编辑</span>
@@ -281,7 +281,7 @@
                         this.form.surveerName = data.user_name;
                         this.form.surveerReferral = data.recommend_user;
                         this.form.phoneNum = data.phone;
-                        this.form.vacancies = data.gift_cash.toString();
+                        this.form.vacancies = ((parseFloat(data.gift_cash) / 100).toFixed(2)).toString();
                         this.form.duetime = data.created_at;
                     } else {
                         this.$message({

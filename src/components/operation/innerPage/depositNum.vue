@@ -56,7 +56,7 @@
 </template>
 <script>
     import {certifyUpdate} from '../../../api/operation';
-
+    import {mapActions} from 'vuex';
     export default {
         props: ['cert'],
         data() {
@@ -153,6 +153,7 @@
                         });
                         this.$emit('update');
                         this.cancel();
+                        this.waitToDo();
                     } else {
                         this.$message({
                             message: res.data.data,
@@ -184,7 +185,10 @@
                         });
                     }
                 });
-            }
+            },
+            ...mapActions([
+                'waitToDo'
+            ])
         },
         watch: {
             status() {

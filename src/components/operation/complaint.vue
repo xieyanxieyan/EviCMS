@@ -61,6 +61,7 @@
     import {feedbackdetail, feedbackreplay} from '../../api/operation';
     import {contains} from '../../assets/public';
     import {admin_web} from '../../api/user';
+    import {mapActions} from 'vuex';
     export default {
         created() {
             this.feedbackDetail();
@@ -91,9 +92,6 @@
                         this.imgs = imgs;
                         this.detail = res.data.data || [];
                         this.content = res.data.data.content;
-//                        for (let img in imgs) {
-//                            this.imgs.push(img.split('"').join());
-//                        }
                     } else {
                         this.$message({
                             message: res.data.data,
@@ -113,6 +111,7 @@
                                type: 'success',
                                showClose: true
                            });
+                           this.waitToDo();
                        } else {
                            this.$message({
                                message: res.data.data,
@@ -158,7 +157,10 @@
          //  权限控制函数
             permissionControl() {
                 this.detail = !contains('operation_feedback_detail') ? this.details : {}; // 是否有显示投诉建议详情的权限
-            }
+            },
+            ...mapActions([
+                'waitToDo'
+            ])
         }
     };
 </script>

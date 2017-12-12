@@ -64,7 +64,7 @@
                         v-model="addMenu.fatherMenu"
                         :options="options"
                         :value="value"
-                        :show-all-levels="true"
+                        :show-all-levels="false"
                         filterable
                         expand-trigger="hover"
                         :change-on-select="true"
@@ -199,8 +199,8 @@
                         this.addMenu.username = res.data.data.name;
                         this.addMenu.link = res.data.data.link;
                         this.addMenu.status = res.data.data.status === 1 ? '显示' : '隐藏';
-                        console.log(res.data.data.pid, 'PID', res.data.data.menu_id, '子级');
-                        let father = [0, res.data.data.pid, res.data.data.menu_id];
+                        // console.log(res.data.data.pid, 'PID', res.data.data.menu_id, '子级');
+                        let father = [0, res.data.data.pid];
                         this.addMenu.fatherMenu = father;
                         // this.addMenu.fatherMenu.push(res.data.data.pid);
                         // this.addMenu.fatherMenu.push(res.data.data.menu_id);
@@ -247,7 +247,7 @@
                         let array = res.data.data;
                         this.parseTreeJson(array);
                         this.options[0].children = array;
-                        console.log(array, '层级菜单选项');
+                       // console.log(array, '层级菜单选项');
                     }
                 });
             },

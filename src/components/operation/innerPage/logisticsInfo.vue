@@ -50,7 +50,7 @@
 <script>
     import {certifyUpdate, certifyExpresslist} from '../../../api/operation';
     import {formatDate} from '../../../assets/public';
-
+    import {mapActions} from 'vuex';
     export default {
         props: ['cert'],
         data() {
@@ -151,36 +151,6 @@
                     }
                 });
             },
-            // 显示信息详情
-//            deta() {
-//                getCertifyDetail(this.$route.params.detailId).then(res => {
-//                    if (res.data.error === 0) {
-//                        this.detail = res.data.data;
-//                        this.isused = false;
-//                        this.formLabelAlign.name = this.detail.user_name;
-//                        this.formLabelAlign.phone = this.detail.phone;
-//                        this.formLabelAlign.address = this.detail.rec_addr;
-//                        this.pdf_url = this.detail.pdf_url;
-//                        this.pdf_raw_url = this.detail.pdf_raw_url;
-//                        this.exp_records = this.detail.exp_records || [];
-//                        this.status = this.detail.status;
-//                        if (this.status === 2) {
-//                            this.caniuse = true; // 是否隐藏预览证书按钮
-//                        } else if (this.status === 3) {
-//                            this.caniuse = true;
-//                        } else if (this.status === 4) {
-//                            this.caniuse = false;
-//                        } else if (this.status === 5) {
-//                            this.iaccept = false;
-//                            this.hassaved = true;
-//                        } else if (this.status === 6) {
-//                            this.iaccept = true;
-//                            this.hassaved = true;
-//                        }
-//                        this.isused = true;
-//                    }
-//                });
-//            },
             // 已签收
             accept() {
                 certifyUpdate(this.cert.apply_id, 4).then(res => {
@@ -190,6 +160,7 @@
                             type: 'success',
                             showClose: true
                         });
+                        this.taskTotle();
                         this.$emit('update');
                     } else {
                         this.$message({
@@ -199,7 +170,10 @@
                         });
                     }
                 });
-            }
+            },
+            ...mapActions([
+                'taskTotle'
+            ])
         },
         watch: {
             status() {

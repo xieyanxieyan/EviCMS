@@ -65,7 +65,11 @@
                     <td>{{item.time}}</td>
                     <td>(+86) {{item.user.cell_phone}}</td>
                     <td>{{item.consumption.cert_no}}</td>
-                    <td class="content">{{item.append_info}}</td>
+                    <td  class="content">
+                        <!--<a href="javascript:void(0)" :title="item.append_info">-->
+                            {{item.append_info}}
+                        <!--</a>-->
+                    </td>
                     <td>{{item.consumption.op_code}}</td>
                     <td>{{item.cash_pay}}</td>
                     <td>
@@ -130,7 +134,7 @@
     import {getRefundList, refundHandle} from '../../api/operation';
     import {translateTime, contains} from '../../assets/public';
     import {admin_web} from '../../api/user';
-    //    import {setToken} from '../../common/js/auth';
+    import {mapActions} from 'vuex';
     export default {
         created() {
             this._showRefundList();
@@ -152,10 +156,10 @@
                 repectReason: '',
                 total: 0,
                 topForm: {
-                    username: '',
+                    username: undefined,
                     value1: '',
                     value2: '',
-                    cert_no: ''
+                    cert_no: undefined
                 },
                 tableItem: []
             };
@@ -173,7 +177,7 @@
             },
 //            退款列表
             _showRefundList() {
-                getRefundList(this.topForm.username, this.topForm.cert_no, translateTime(this.topForm.value1), translateTime(this.topForm.value2), parseInt(this.activeName) || '', this.perPage, this.currentPage).then(res => {
+                getRefundList(this.topForm.username, this.topForm.cert_no, translateTime(this.topForm.value1), translateTime(this.topForm.value2), parseInt(this.activeName) || undefined, this.perPage, this.currentPage).then(res => {
                     if (res.data.error === 0) {
                         let tableItems = res.data.data.data;
                         tableItems.forEach(function (item, index) {
@@ -212,6 +216,7 @@
                                     showClose: true
                                 });
                                 this._showRefundList();
+                                this.waitToDo();
                             } else {
                                 this.$message({
                                     message: res.data.data,
@@ -239,6 +244,7 @@
                                 type: 'success',
                                 showClose: true
                             });
+                            this.waitToDo();
                             this._showRefundList();
                         } else {
                             this.$message({
@@ -261,7 +267,10 @@
             controlPermission() {
                 this.refundList = !contains('operation_refund_list'); // 是否有显示列表权限
                 this.refundDeal = !contains('operation_refund_handle');  // 是否有退款处理的权限
-            }
+            },
+            ...mapActions([
+                'waitToDo'
+            ])
         }
     };
 </script>
@@ -279,10 +288,12 @@
             }
         }
         .content {
+            max-width:200px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        /*.content:hover {height: auto; word-break:break-all; white-space: pre-wrap;  text-decoration: none;}*/
         .redtext {
             color: #67C23A;
             border: 0
@@ -349,6 +360,9 @@
                     width: 45px;
                 }
             }
+        }
+        table{
+            table-layout: auto;
         }
     }
 </style>

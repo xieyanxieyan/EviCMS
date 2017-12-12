@@ -3,11 +3,11 @@
 const getters = {
     // user.js
     // avatar: state => state.user.avatar,
-    token: state => state.user.auth_token
+    token: state => state.user.auth_token,
     // area_code: state => state.user.area_code,
     // user_id: state => state.user.user_id,
     // status: state => state.user.status,
-    // cell_phone: state => state.user.cell_phone,
+    task: state => state.user.task
     // cash_available: state => (state.user.cash_available / 100).toFixed(2),
     // gift_available: state => (state.user.gift_available / 100).toFixed(2),
     // available: state => (state.user.cash_available / 100 + state.user.gift_available / 100).toFixed(2),

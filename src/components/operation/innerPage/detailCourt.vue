@@ -161,6 +161,7 @@
 <script>
     import {courtDetail, courtUpdate, courtCommunicate} from '../../../api/operation';
     import {translateTime} from '../../../assets/public';
+    import {mapActions} from 'vuex';
 
     export default {
         created() {
@@ -305,6 +306,7 @@
                                 });
                             }
                         });
+                    this.waitToDo();
                 } else {
                     let money = parseInt(this.formInline.money).toFixed(2) || 0.00;
                     courtUpdate(this.$route.params.courtId, num, this.formInline.username, translateTime(this.formInline.datatime), this.formInline.address, money, this.formInline.trailPerson, this.formInline.method, this.formInline.transportation, this.formInline.tradingNote, this.formInline.commodity)
@@ -335,6 +337,7 @@
                                     showClose: true
                                 });
                             }
+                            this.waitToDo();
                         });
                 }
             },
@@ -389,7 +392,10 @@
                     window.open(this.url);
                 }
                 return false;
-            }
+            },
+            ...mapActions([
+                'waitToDo'
+            ])
         }
     };
 </script>

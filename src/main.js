@@ -19,7 +19,7 @@ Vue.use(Vuex);
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requireAuth)) {
         if (getToken()) {
-           // store.
+           // store.dispatch('waitToDo');
             next();
         } else {
             next({

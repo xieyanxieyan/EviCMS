@@ -211,6 +211,8 @@
         .pagination {
             text-align: center;
         }
-
+table{
+    table-layout: auto;
+}
     }
 </style>

@@ -31,7 +31,6 @@
     import depositNum from './depositNum.vue';
     import logisticsInfo from './logisticsInfo.vue';
     import {getCertifyDetail} from '../../../api/operation';
-
     export default {
         created() {
             this.getDetail();
@@ -60,7 +59,7 @@
                     if (res.data.error === 0) {
                         this.detail = res.data.data;
                         let detail = res.data.data;
-                        console.log(detail);
+                       // console.log(detail);
                         this.req_time = detail.req_time;
                         this.confirm_time = detail.confirm_time;
                         this.exp_time = detail.exp_time;

@@ -4,16 +4,16 @@
             <div>待处理：</div>
             <div>
                 <!-- <span>投诉建议({{taskSum.report}})</span> -->
-                <router-link to="/compManage">投诉建议({{taskSum.report}})</router-link>
+                <router-link to="/compManage">投诉建议({{task.report}})</router-link>
                 <span class="line">|</span>
                 <!-- <span>退款({{taskSum.refund}})</span> -->
-                <router-link to="/refund">退款({{taskSum.refund}})</router-link>
+                <router-link to="/refund">退款({{task.refund}})</router-link>
                 <span class="line">|</span>
                 <!-- <span>出证({{taskSum.cert}})</span> -->
-                <router-link to="/HisManage">出证({{taskSum.cert}})</router-link>
+                <router-link to="/HisManage">出证({{task.cert}})</router-link>
                 <span class="line">|</span>
                 <!-- <span>出庭({{taskSum.court}})</span> -->
-                <router-link to="/TrialManage">出庭({{taskSum.court}})</router-link>
+                <router-link to="/TrialManage">出庭({{task.court}})</router-link>
             </div>
         </div>
         <div class="rightMessage">
@@ -25,11 +25,11 @@
 </template>
 <script>
 //    import {task} from '../../api/taskSum';
-
+import {mapGetters, mapActions} from 'vuex';
     export default {
         created() {
             this.getName();
-            this.taskTotle();
+            this.waitToDo();
         },
         data() {
             return {
@@ -43,12 +43,9 @@
             };
         },
         computed: {
-            task() { return this.$store.state.task; }
-        },
-        watch: {
-            task() {
-
-            }
+            ...mapGetters([
+                'task'
+            ])
         },
         methods: {
             getName() {
@@ -70,21 +67,9 @@
                         }
                     });
             },
-            taskTotle() {
-                this.$store.dispatch('waitDetai').then(res => {
-                    if (res.data.error === 0) {
-                        let data = res.data.data;
-                        this.taskSum = data;
-                        // console.log(this.taskSum);
-                    } else {
-                        this.$message({
-                            message: res.data.data,
-                            type: 'error',
-                            showClose: true
-                        });
-                    }
-                });
-            }
+            ...mapActions([
+                'waitToDo'
+            ])
         }
     };
 </script>

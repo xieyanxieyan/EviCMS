@@ -78,7 +78,7 @@ const user = {
             });
         },
         // 待处理
-        waitDetai({commit}) {
+        waitToDo({commit}) {
             return new Promise((resolve, reject) => {
                 task()
                     .then(res => {
