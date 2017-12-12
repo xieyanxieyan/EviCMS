@@ -24,7 +24,7 @@
     </div>
 </template>
 <script>
-    import {task} from '../../api/taskSum';
+//    import {task} from '../../api/taskSum';
 
     export default {
         created() {
@@ -42,6 +42,14 @@
                 }
             };
         },
+        computed: {
+            task() { return this.$store.state.task; }
+        },
+        watch: {
+            task() {
+
+            }
+        },
         methods: {
             getName() {
                 this.name = window.localStorage.getItem('name');
@@ -50,7 +58,7 @@
 //                console.log('d');
                 this.$store.dispatch('adminLogout')
                     .then((res) => {
-                        if (res === 0) {
+                        if (res.data.error === 0) {
                             // 退出登录
                             location.reload();
                         } else {
@@ -63,7 +71,7 @@
                     });
             },
             taskTotle() {
-                task().then(res => {
+                this.$store.dispatch('waitDetai').then(res => {
                     if (res.data.error === 0) {
                         let data = res.data.data;
                         this.taskSum = data;

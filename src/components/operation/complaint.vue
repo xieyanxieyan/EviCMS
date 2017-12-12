@@ -108,7 +108,6 @@
                     this.rep = false;
                     feedbackreplay(this.$route.params.report_id, this.replay).then(res => {
                        if (res.data.error === 0) {
-                           this.$router.go(-1);
                            this.$message({
                                message: '操作成功',
                                type: 'success',

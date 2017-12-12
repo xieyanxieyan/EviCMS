@@ -19,3 +19,10 @@ export function logOut() {
         url: '/admin/logout'
     });
 }
+// 待处理事件统计
+export function task() {
+    return fetch({
+        method: 'get',
+        url: 'statistic/task'
+    });
+}

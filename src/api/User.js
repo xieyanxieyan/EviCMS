@@ -69,11 +69,9 @@ export function userFreeze(user_id, status) {
     });
 }
 // 公测用户列表
-export function getBetaList(phone, reg_time_begin, reg_time_end, perPage, page) {
+export function getBetaList(name, perPage, page) {
     const params = {
-        phone,
-        reg_time_begin,
-        reg_time_end,
+       name,
         perPage,
         page
     };
@@ -84,13 +82,14 @@ export function getBetaList(phone, reg_time_begin, reg_time_end, perPage, page) 
     });
 }
 // 公测用户添加
-export function addetaUser(phone, amount, area_code, expire_time, recommend_user) {
+export function addetaUser(user_name, recommend_user, phone, gift_amount, expire_time, area_code) {
   const params = {
+      user_name,
+      recommend_user,
       phone,
-      amount,
-      area_code,
+      gift_amount,
       expire_time,
-      recommend_user
+      area_code
   };
   return fetch({
      method: 'post',
@@ -99,9 +98,9 @@ export function addetaUser(phone, amount, area_code, expire_time, recommend_user
   });
 }
 // 公测用户详情
-export function betaDetail(user_id) {
+export function betaDetail(id) {
   const params = {
-      user_id
+      id
   };
   return fetch({
       method: 'get',
@@ -110,14 +109,15 @@ export function betaDetail(user_id) {
   });
 }
 // 公测用户编辑
-export function betaUpdate(phone, amount, area_code, expire_time, recommend_user, user_id) {
+export function betaUpdate(id, user_name, recommend_user, area_code, phone, gift_amount, expire_time) {
 const params = {
-    phone,
-    amount,
-    area_code,
-    expire_time,
+    id,
+    user_name,
     recommend_user,
-    user_id
+    area_code,
+    phone,
+    gift_amount,
+    expire_time
 };
 return fetch({
     method: 'post',

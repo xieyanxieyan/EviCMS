@@ -6,13 +6,13 @@
                 <el-form-item label="手机号或名称:">
                     <el-input v-model="formInline.user" size="small" @keyup.enter.native="_surveStaffList"></el-input>
                 </el-form-item>
-                <el-form-item label="状态" label-width="100">
-                    <el-select v-model="formInline.region" size="small" style="width:100px;">
-                        <el-option label="已过期" value="1"></el-option>
-                        <el-option label="未注册" value="2"></el-option>
-                        <el-option label="已注册" value="3"></el-option>
-                    </el-select>
-                </el-form-item>
+                <!--<el-form-item label="状态" label-width="100">-->
+                    <!--<el-select v-model="formInline.region" size="small" style="width:100px;">-->
+                        <!--<el-option label="已过期" value=1></el-option>-->
+                        <!--<el-option label="未注册" value=2></el-option>-->
+                        <!--<el-option label="已注册" value=3></el-option>-->
+                    <!--</el-select>-->
+                <!--</el-form-item>-->
                 <el-form-item>
                     <el-button style="background:#999999;color:#fff" @click="_surveStaffList">搜索</el-button>
                     <span>|</span>
@@ -35,12 +35,14 @@
                 </thead>
                 <tbody>
                 <tr v-for="(item, index) in manageDate">
-                    <td> <span v-if="item.user">+86 {{item.user.cell_phone}}</span></td>
-                    <td>{{item.id}}</td>
+                    <td> <span v-if="item.user">+86 {{item.cell_phone}}</span></td>
+                    <td>{{item.user_name}}</td>
                     <td>{{item.recommend_user}}</td>
                     <td>{{item.expire_time}}</td>
-                    <td>{{item.complimentary}}</td>
-                    <td><span v-if="item.user">{{item.user.status}}</span></td>
+                    <td><template v-if="item.gift_cash">{{item.gift_cash / 100}}</template>
+                        <template v-else>{{item.gift_amount}}</template>
+                    </td>
+                    <td><span v-if="item.user">{{item.status_alias}}</span></td>
                     <td><span style="margin-right:20px;border:1px solid #437DFF;color:#437DFF;"
                               v-bind:class="{hide: editButton}"
                               @click="edit(index)">编辑</span>
@@ -78,7 +80,7 @@
                     <el-col :span="6">
                         <el-select v-model="form.region">
                             <el-option label="(+86)" value="86"></el-option>
-                            <el-option label="(+85)" value="85"></el-option>
+                            <!--<el-option label="(+85)" value="85"></el-option>-->
                         </el-select>
                     </el-col>
                     <!--<el-col :span="2"> </el-col>-->
@@ -160,8 +162,8 @@
                     ]
                 },
                 formInline: {
-                    user: '',
-                    region: ''
+                    user: undefined,
+                    region: undefined
                 },
                 form: {
                     id: '',
@@ -218,8 +220,12 @@
             },
 //            公测用户列表
             _surveStaffList() {
-                getBetaList(this.formInline.user, '', '', this.size, this.currentPage).then(res => {
+                getBetaList(this.formInline.user, this.size, this.currentPage).then(res => {
                     this.manageDate = res.data.data.data || [];
+                    for (let item of this.manageDate) {
+                        item.gift_cash = item.gift_cash ? (parseFloat(item.gift_cash) / 100).toFixed(2) : undefined;
+                        item.gift_amount = (parseFloat(item.gift_amount) / 100).toFixed(2);
+                    }
                     this.total = res.data.data.total;
                     console.log(this.manageDate);
                 });
@@ -243,7 +249,8 @@
 //            公测用户添加
             addSubmit() {
                 let phone_code = parseInt(this.form.region);
-                addetaUser(this.form.phoneNum, this.form.vacancies, phone_code, translateTime(this.form.duetime), this.form.surveerReferral).then(res => {
+                let money = this.form.vacancies ? parseFloat(this.form.vacancies).toFixed(2) : 0.00;
+                addetaUser(this.form.surveerName, this.form.surveerReferral, this.form.phoneNum, money, translateTime(this.form.duetime), phone_code).then(res => {
                     console.log(res);
                     if (res.data.error === 0) {
                         this.isVisible = false;
@@ -265,16 +272,17 @@
             edit(index) {
                 this.operation = '编辑公测员';
                 this.isVisible = true;
-                betaDetail(this.manageDate[index].user_id).then(res => {
+                betaDetail(this.manageDate[index].id).then(res => {
                     if (res.data.error === 0) {
+                        console.log(res.data.data);
                         let data = res.data.data;
                         console.log(data);
-                        this.form.id = data.user[0].user_id;
-                        this.form.surveerName = data.user[0].user.id;
-                        this.form.surveerReferral = data.user[0].recommend_user;
-                        this.form.phoneNum = data.user[0].user.cell_phone;
+                        this.form.id = data.id;
+                        this.form.surveerName = data.user_name;
+                        this.form.surveerReferral = data.recommend_user;
+                        this.form.phoneNum = data.phone;
                         this.form.vacancies = data.gift_cash.toString();
-                        this.form.duetime = data.user[0].expire_time.toString();
+                        this.form.duetime = data.created_at;
                     } else {
                         this.$message({
                             message: res.data.error,
@@ -286,18 +294,18 @@
             },
 //            公测员编辑
             updateSubmit() {
-                let time = this.form.duetime;
                 let phone_code = parseInt(this.form.region);
-                let timestamp2 = translateTime(Date.parse(new Date(time)));
-                betaUpdate(parseInt(this.form.phoneNum), parseInt(this.form.vacancies), phone_code, timestamp2, this.form.surveerReferral, this.form.id).then(res => {
+              // let timestamp2 = translateTime(Date.parse(new Date(time)));
+                betaUpdate(this.form.id, this.form.surveerName, this.form.surveerReferral, phone_code, this.form.phoneNum, this.form.vacancies, translateTime(this.form.duetime)).then(res => {
                     console.log(res);
                     if (res.data.error === 0) {
                         this.$message({
-                            type: 'warning',
+                            type: 'success',
                             message: '成功啦',
                             showClose: true,
                             duration: 3000
                         });
+                        this._surveStaffList();
                         this.isVisible = false;
                     }
                 });

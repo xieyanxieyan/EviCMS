@@ -1,5 +1,6 @@
-import {adminLogin, logOut} from '../../api/login';
+import {adminLogin, logOut, task} from '../../api/login';
 import {getToken, setToken, removeToken} from '../../common/js/auth';
+
 const user = {
     state: {
         user: '',
@@ -7,7 +8,8 @@ const user = {
         auth_token: getToken(),
         menus: [],
         permission: [],
-        admin_id: ''
+        admin_id: '',
+        task: ''
     },
     mutations: {
         SET_AUTH_TOKEN: (state, auth_token) => {
@@ -24,6 +26,9 @@ const user = {
         },
         SET_LOGIN_EXPIRE: (state, login_expire) => {
             state.login_expire = login_expire;
+        },
+        TASK: (state, task) => {
+            state.task = task;
         }
     },
     actions: {
@@ -58,23 +63,32 @@ const user = {
             });
         },
         // 退出登录
-        adminLogout ({commit}) {
+        adminLogout({commit}) {
             return new Promise((resolve, reject) => {
                 logOut()
-                    .then((res) => {
-                    // console.log(res);
-                    //     if (res.data.error === 0) {
-                            commit('SET_AUTH_TOKEN', ''); //  将token置为空
-                            removeToken(); // 移除cookie中的token
-                            localStorage.clear();
-                            resolve(0);
-                        // } else {
-                        //     commit('SET_AUTH_TOKEN', ''); //  将token置为空
-                        //     removeToken(); // 移除cookie中的token
-                        //     localStorage.clear();
-                        //     resolve(0);
-                        //     resolve(res.data.error);
-                        // }
+                    .then(res => {
+                        commit('SET_AUTH_TOKEN', ''); //  将token置为空
+                        removeToken(); // 移除cookie中的token
+                        localStorage.clear();
+                        resolve(0);
+                    })
+                    .catch(error => {
+                        reject(error);
+                    });
+            });
+        },
+        // 待处理
+        waitDetai({commit}) {
+            return new Promise((resolve, reject) => {
+                task()
+                    .then(res => {
+                        if (res.data.error === 0) {
+                            const task = res.data.data;
+                            commit('TASK', task);
+                            resolve(res);
+                        } else {
+                            resolve(res);
+                        }
                     })
                     .catch(error => {
                         reject(error);
