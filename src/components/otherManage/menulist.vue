@@ -64,7 +64,9 @@
                         v-model="addMenu.fatherMenu"
                         :options="options"
                         :value="value"
-                        :show-all-levels="false"
+                        :show-all-levels="true"
+                        filterable
+                        expand-trigger="hover"
                         :change-on-select="true"
                         :props="props"
                         @change="handleChange">
@@ -129,7 +131,7 @@
                     username: '',
                     status: '显示',
                     link: '',
-                    fatherMenu: []
+                    fatherMenu: [0]
                 },
                 rules: {
                     username: [
@@ -197,12 +199,15 @@
                         this.addMenu.username = res.data.data.name;
                         this.addMenu.link = res.data.data.link;
                         this.addMenu.status = res.data.data.status === 1 ? '显示' : '隐藏';
-                        // this.parseTreeJson(this.options, res.data.data.pid);
-//                        for (let item of this.list) {
-//                            if (res.data.data.pid === item.menu_id) {
-//                                this.addMenu.fatherMenu.push(item.menu_id);
-//                            }
-//                        }
+                        console.log(res.data.data.pid, 'PID', res.data.data.menu_id, '子级');
+                        this.addMenu.fatherMenu.push(res.data.data.pid);
+                        this.addMenu.fatherMenu.push(res.data.data.menu_id);
+                    //     this.parseTreeJson(this.options, res.data.data.pid);
+                    //    for (let item of this.list) {
+                    //        if (res.data.data.pid === item.menu_id) {
+                    //            this.addMenu.fatherMenu.push(item.menu_id.toNumber());
+                    //        }
+                    //    }
                     } else {
                         this.$message({
                             message: res.data.data,
@@ -240,6 +245,7 @@
                         let array = res.data.data;
                         this.parseTreeJson(array);
                         this.options[0].children = array;
+                        console.log(array, '层级菜单选项');
                     }
                 });
             },
