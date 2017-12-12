@@ -200,8 +200,10 @@
                         this.addMenu.link = res.data.data.link;
                         this.addMenu.status = res.data.data.status === 1 ? '显示' : '隐藏';
                         console.log(res.data.data.pid, 'PID', res.data.data.menu_id, '子级');
-                        this.addMenu.fatherMenu.push(res.data.data.pid);
-                        this.addMenu.fatherMenu.push(res.data.data.menu_id);
+                        let father = [0, res.data.data.pid, res.data.data.menu_id];
+                        this.addMenu.fatherMenu = father;
+                        // this.addMenu.fatherMenu.push(res.data.data.pid);
+                        // this.addMenu.fatherMenu.push(res.data.data.menu_id);
                     //     this.parseTreeJson(this.options, res.data.data.pid);
                     //    for (let item of this.list) {
                     //        if (res.data.data.pid === item.menu_id) {
