@@ -70,7 +70,7 @@
                 <tbody v-bind:class="{hide: hisList}">
                 <tr v-for="(item,index) in hisData">
                     <td>{{item.req_time}}</td>
-                    <td>(+86) {{item.user.cell_phone}}</td>
+                    <td>(+{{item.user.area_code}}) {{item.user.cell_phone}}</td>
                     <td>{{item.cert_no}}</td>
                     <td>{{item.with_paper}}</td>
                     <td>

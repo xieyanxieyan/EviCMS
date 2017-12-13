@@ -28,7 +28,7 @@
                     <tbody v-bind:class = "{hide:compList}">
                     <tr v-for="(item,index) in compManage">
                         <td>{{item.request_time}}</td>
-                        <td>(+86) {{item.user.cell_phone}}</td>
+                        <td>(+{{item.user.area_code}}) {{item.user.cell_phone}}</td>
                         <td class="content">{{item.content}}</td>
                         <td>
 
@@ -104,7 +104,7 @@
                    if (res.data.error === 0) {
                        this.compManage = res.data.data.data;
                      this.total = res.data.data.total;
-//                     console.log(res.data.data.data);
+                    console.log(res.data.data.data);
                       // console.log(this.compManage);
                    }
                 });
