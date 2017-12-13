@@ -108,9 +108,11 @@
         created() {
             this._userList();
             this.permissionControl();
+            console.log('当前的用户', this.addmin_current);
         },
         data() {
             return {
+                addmin_current: Number(localStorage.admin_id),
                 addManage: false, // 添加管理员权限
                 userSet: false, // 管理员角色设置
                 adminList: false, // 管理员列表是否显示
@@ -161,9 +163,20 @@
             // 点击冻结
             frozen(index) {
                 if (this.adminMessage[index].status === 1) {
+                    if (this.adminMessage[index].admin_id === this.addmin_current) {
+                        console.log('不能冻结自己');
+                        this.$message({
+                                message: '您是当前管理员，不能冻结自己',
+                                type: 'warning',
+                                showClose: true
+                            });
+                    } else {
                     this.frozenStatus(index, 2);
+                    console.log('冻结');
+                    }
                 } else if (this.adminMessage[index].status === 2) {
                     this.frozenStatus(index, 1);
+                    console.log('没有冻结');
                 }
             },
             // 权限控制函数
