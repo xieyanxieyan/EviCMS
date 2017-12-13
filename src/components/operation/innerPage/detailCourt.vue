@@ -337,7 +337,6 @@
                                     showClose: true
                                 });
                             }
-                            this.waitToDo();
                         });
                 }
             },

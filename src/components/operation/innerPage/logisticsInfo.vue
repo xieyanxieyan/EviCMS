@@ -50,9 +50,13 @@
 <script>
     import {certifyUpdate, certifyExpresslist} from '../../../api/operation';
     import {formatDate} from '../../../assets/public';
-    import {mapActions} from 'vuex';
+    import {mapActions, mapGetters} from 'vuex';
+
     export default {
-        props: ['cert'],
+        created() {
+            this.getSomeMessage();
+            this.getMessage();
+        },
         data() {
             return {
                 isused: false, // 右边的信息是否可编辑
@@ -61,12 +65,11 @@
                 caniuse: false, // 是否可以编辑快递信息
                 iaccept: true, // 是否显示签收按钮
                 hassaved: false, // 是否显示保存按钮
-                exp_records: this.cert.exp_records,
-                status: this.cert.status,
+                exp_records: '',
                 formLabelAlign: {
-                    time: this.cert.exp_time,
-                    company: this.cert.exp_company_name,
-                    number: this.cert.exp_order_no,
+                    time: '',
+                    company: '',
+                    number: '',
                     options: []
 //                isdisabled: true
                 },
@@ -83,23 +86,25 @@
                 }
             };
         },
-        mounted() {
-            this.getMessage();
-            this.getStatus();
+        computed: {
+            ...mapGetters([
+                'statu',
+                'details'
+            ])
         },
         methods: {
             getStatus() {
                 this.isused = false;
-                if (this.status === 2) {
+                if (this.statu === 2) {
                     this.caniuse = true; // 是否隐藏预览证书按钮
-                } else if (this.status === 3) {
+                } else if (this.statu === 3) {
                     this.caniuse = true;
-                } else if (this.status === 4) {
+                } else if (this.statu === 4) {
                     this.caniuse = false;
-                } else if (this.status === 5) {
+                } else if (this.statu === 5) {
                     this.iaccept = false;
                     this.hassaved = true;
-                } else if (this.status === 6) {
+                } else if (this.statu === 6) {
                     this.iaccept = true;
                     this.hassaved = true;
                 }
@@ -112,18 +117,17 @@
                 } else {
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
-                            this.formLabelAlign.time = formatDate(this.formLabelAlign.time.toString());
                             this.formLabelAlign.number = parseInt(this.formLabelAlign.number);
-                            // console.log(this.formLabelAlign.time);
-                            certifyUpdate(this.cert.apply_id, 3, undefined, undefined, this.formLabelAlign.time, this.formLabelAlign.company, undefined, this.formLabelAlign.number).then(res => {
+                            this.formLabelAlign.company = parseInt(this.formLabelAlign.company);
+                            this.formLabelAlign.time = formatDate(this.formLabelAlign.time.toString());
+                            certifyUpdate(this.$route.params.detailId, 3, undefined, undefined, this.formLabelAlign.time, this.formLabelAlign.company, undefined, this.formLabelAlign.number).then(res => {
                                 if (res.data.error === 0) {
                                     this.$message({
                                         message: '保存成功',
                                         type: 'success',
                                         showClose: true
                                     });
-                                    this.$emit('update');
-                                    this.$refs[formName].resetFields();
+                                    this.getSomeMessage();
                                     this.hassaved = true;
                                 } else {
                                     this.$message({
@@ -132,6 +136,7 @@
                                         showClose: true
                                     });
                                 }
+                                this.getSomeMessage();
                             });
                         } else {
                             console.log('error submit!!');
@@ -151,17 +156,29 @@
                     }
                 });
             },
+            getSomeMessage() {
+                this.$store.dispatch('getDetail', {detailId: this.$route.params.detailId}).then(res => {
+                    if (res.data.error === 0) {
+                        this.rules = {};
+                        this.exp_records = this.details.exp_records;
+                        this.formLabelAlign.time = this.details.exp_time;
+                        this.formLabelAlign.company = this.details.exp_company_name;
+                        this.formLabelAlign.number = this.details.exp_order_no;
+                        this.getStatus();
+                    }
+                });
+            },
             // 已签收
             accept() {
-                certifyUpdate(this.cert.apply_id, 4).then(res => {
+                certifyUpdate(this.$route.params.detailId, 4).then(res => {
                     if (res.data.error === 0) {
                         this.$message({
                             message: '签收成功',
                             type: 'success',
                             showClose: true
                         });
-                        this.taskTotle();
-                        this.$emit('update');
+                        this.getSomeMessage();
+                        this.waitToDo();
                     } else {
                         this.$message({
                             message: res.data.data,
@@ -172,23 +189,14 @@
                 });
             },
             ...mapActions([
-                'taskTotle'
+                'waitToDo'
             ])
         },
         watch: {
-            status() {
-                this.getStatus();
+            statu() {
+                this.getSomeMessage();
             }
         }
-//        watch: {
-//            status: {
-//                handler: function (val, oldVal) {
-//                    console.log(this.status);
-//                    return this.getStatus();
-//                },
-//                immediate: true
-//            }
-//        }
     };
 </script>
 <style lang="scss">

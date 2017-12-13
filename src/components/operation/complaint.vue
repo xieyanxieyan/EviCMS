@@ -18,7 +18,7 @@
                     <el-form-item>
                         <el-row>
                             <el-col :span="12">
-                                <el-input type="textarea" size="medium" resize="none" :readonly="isread"
+                                <el-input type="textarea" size="medium" autosize :readonly="isread"
                                           :value="content">
                                 </el-input>
                             </el-col>
@@ -190,9 +190,6 @@
                 }
             }
 
-            .el-textarea__inner {
-                resize: none
-            }
             .el-form-item {
                 /*margin-bottom:0;*/
                 .el-button {

@@ -4,7 +4,6 @@ import {getToken, setToken, removeToken} from '../../common/js/auth';
 const user = {
     state: {
         user: '',
-        status: '',
         auth_token: getToken(),
         menus: [],
         permission: [],

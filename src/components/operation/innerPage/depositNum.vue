@@ -2,9 +2,9 @@
     <div id="depositNum">
         <div class="depositeTop">
             <strong>存证编号：</strong>
-            <small>{{cert.cert_no}}</small>
+            <small>{{details.cert_no}}</small>
             <strong style="float:right">
-                出证次数：{{cert.cert_num}}次
+                出证次数：{{details.cert_num}}次
             </strong>
         </div>
         <div class="depositForm">
@@ -45,7 +45,7 @@
                         </el-button>
                         <el-button size="small" type="success" @click="stamp" :class="{hide:isHideStamp}">已盖章
                         </el-button>
-                        <el-button size="small" type="info" :class="{hide:isTrail}" @click="printed">已打印</el-button>
+                        <!--<el-button size="small" type="info" :class="{hide:isTrail}" @click="printed">已打印</el-button>-->
                     </el-form-item>
                 </el-form>
             </div>
@@ -56,9 +56,12 @@
 </template>
 <script>
     import {certifyUpdate} from '../../../api/operation';
-    import {mapActions} from 'vuex';
+    import {mapActions, mapGetters} from 'vuex';
+
     export default {
-        props: ['cert'],
+        created() {
+            this.getMessage();
+        },
         data() {
             return {
                 isused: true,
@@ -69,42 +72,51 @@
                 saveButton: false, // 是否可用保存按钮
                 labelPosition: 'left',
                 updatemessage: '信息更改',
-                pdf_url: this.cert.pdf_url, // 预览证书链接
-                pdf_raw_url: this.cert.pdf_raw_url, // 打印证书链接
-                status: this.cert.status, // 状态
+                pdf_url: '', // 预览证书链接
+                pdf_raw_url: '', // 打印证书链接
                 formLabelAlign: {
-                    name: this.cert.user_name,
-                    phone: this.cert.phone,
-                    address: this.cert.rec_addr
+                    name: '',
+                    phone: '',
+                    address: ''
                 }
             };
         },
-        mounted() {
-            this.getStatus();
+        computed: {
+            ...mapGetters([
+                'details',
+                'statu'
+            ])
         },
         methods: {
+            initMessage() {
+                this.pdf_url = this.details.pdf_url; // 预览证书链接
+                this.pdf_raw_url = this.details.pdf_raw_url; // 打印证书链接
+                this.formLabelAlign.name = this.details.user_name;
+                this.formLabelAlign.phone = this.details.phone;
+                this.formLabelAlign.address = this.details.rec_addr;
+            },
             // 判断状态
             getStatus() {
-                if (this.status === 2) {
+                if (this.statu === 2) {
                     this.ishidePreview = false; // 是否隐藏预览证书按钮
                     this.isHidePrint = false; // 是否隐藏打印证书按钮
                     this.isHideStamp = false; // 是否隐藏已盖章按钮
                     this.isTrail = true; // 是否隐藏已出证按钮
-                } else if (this.status === 3) {
+                } else if (this.statu === 3) {
                     this.ishidePreview = false; // 是否隐藏预览证书按钮
                     this.isHidePrint = false; // 是否隐藏打印证书按钮
                     this.isHideStamp = true; // 是否隐藏已盖章按钮
                     this.isTrail = false; // 是否隐藏已出证按钮
-                } else if (this.status === 4) {
+                } else if (this.statu === 4) {
                     this.isHidePrint = false; // 是否隐藏打印证书按钮
                     this.isTrail = true;
                     this.isHideStamp = true; // 是否隐藏已盖章按钮
                     this.saveButton = true;
-                } else if (this.status === 5) {
+                } else if (this.statu === 5) {
                     this.isHideStamp = true; // 是否隐藏已盖章按钮
                     this.isTrail = true; // 是否隐藏已出证按钮
                     this.saveButton = true;
-                } else if (this.status === 6) {
+                } else if (this.statu === 6) {
                     this.ishidePreview = false; // 是否隐藏预览证书按钮
                     this.isHidePrint = false; // 是否隐藏打印证书按钮
                     this.isHideStamp = true; // 是否隐藏已盖章按钮
@@ -126,6 +138,7 @@
             // 盖章
             stamp() {
                 this.toDo(1);
+                this.getMessage();
             },
             certupdateSubmit(formName) {
                 this.$refs[formName].validate((valid) => {
@@ -144,7 +157,7 @@
             },
             // 操作
             toDo(num) {
-                certifyUpdate(this.cert.apply_id, num, this.formLabelAlign.phone, this.formLabelAlign.address, this.formLabelAlign.name).then(res => {
+                certifyUpdate(this.$route.params.detailId, num, this.formLabelAlign.phone, this.formLabelAlign.address, this.formLabelAlign.name).then(res => {
                     if (res.data.error === 0) {
                         this.$message({
                             message: '保存成功',
@@ -161,6 +174,15 @@
                             type: 'success'
                         });
                     }
+                    this.getMessage();
+                });
+            },
+            getMessage() {
+                this.$store.dispatch('getDetail', {detailId: this.$route.params.detailId}).then(res => {
+                    if (res.data.error === 0) {
+                        this.initMessage();
+                        this.getStatus();
+                    }
                 });
             },
             cancel() {
@@ -169,7 +191,7 @@
             },
             // 点击已打印按钮
             printed() {
-                certifyUpdate(this.cert.apply_id, 2).then(res => {
+                certifyUpdate(this.$route.params.detailId, 2).then(res => {
                     if (res.data.error === 0) {
                         this.$message({
                             message: '保存成功',
@@ -191,8 +213,8 @@
             ])
         },
         watch: {
-            status() {
-                this.getStatus();
+            statu() {
+                this.getMessage();
             }
         }
     };

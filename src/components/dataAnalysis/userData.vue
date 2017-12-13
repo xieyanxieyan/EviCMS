@@ -37,26 +37,68 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="统计时间:">
-                    <el-col :span=10>
+                <template v-if="searchForm.value === '1'">
+                    <el-form-item label="统计时间:">
                         <el-date-picker
                             size="small"
                             v-model="searchForm.value1"
                             type="date"
+                            @keyup.enter.native="searchList"
                             placeholder="选择开始时间"
                             :picker-options="searchForm.pickerOptions0">
                         </el-date-picker>
-                    </el-col>
-                    <el-col :span=3>至</el-col>
-                    <el-col :span=10>
+                    </el-form-item>
+                    <el-form-item label="至">
                         <el-date-picker
                             size="small"
                             v-model="searchForm.value2"
                             type="date"
+                            @keyup.enter.native="searchList"
                             placeholder="选择结束时间"
                             :picker-options="searchForm.pickerOptions0">
                         </el-date-picker>
-                    </el-col>
+                    </el-form-item>
+                </template>
+                <template v-else-if="searchForm.value === '2'">
+                    <el-form-item label="统计时间:">
+                        <el-date-picker
+                            v-model="searchForm.value1"
+                            type="month"
+                            @keyup.enter.native="searchList"
+                            size="small"
+                            placeholder="选择开始月份">
+                        </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="至">
+                        <el-date-picker
+                            v-model="searchForm.value2"
+                            type="month"
+                            size="small"
+                            @keyup.enter.native="searchList"
+                            placeholder="选择结束月份">
+                        </el-date-picker>
+                    </el-form-item>
+                </template>
+                <template v-else-if="searchForm.value === '3'">
+                    <el-form-item label="统计时间:">
+                        <el-date-picker
+                            v-model="searchForm.value1"
+                            type="year"
+                            size="small"
+                            @keyup.enter.native="searchList"
+                            placeholder="选择开始年份">
+                        </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="至">
+                        <el-date-picker
+                            v-model="searchForm.value2"
+                            type="year"
+                            @keyup.enter.native="searchList"
+                            size="small"
+                            placeholder="选择结束年份">
+                        </el-date-picker>
+                    </el-form-item>
+                </template>
                 </el-form-item>
                 <el-form-item>
                     <el-button @click="searchList" size="small">搜索</el-button>
@@ -92,24 +134,25 @@
 <script>
     import {userTotal, userTime} from '../../api/statistic';
     import {translateTime, contains} from '../../assets/public';
+
     export default {
         created() {
             this._userTotalDate();
             this.searchList();
-           this.chartData;
-           this.chartSettings;
+            this.chartData;
+            this.chartSettings;
         },
-        data () {
+        data() {
             return {
                 showList: false, // 是否有显示列表权限
                 chartData: {
-                columns: ['时间', '新增注册用户数', '新增充值用户数', '登录用户数'],
-                rows: []
-            },
-            chartSettings: {
-                metrics: ['新增注册用户数', '新增充值用户数', '登录用户数'],
-                dimension: ['']
-            },
+                    columns: ['时间', '新增注册用户数', '新增充值用户数', '登录用户数'],
+                    rows: []
+                },
+                chartSettings: {
+                    metrics: ['新增注册用户数', '新增充值用户数', '登录用户数'],
+                    dimension: ['']
+                },
                 searchForm: {
                     value: '1',
                     value1: '',
@@ -136,8 +179,7 @@
                     pastnewData: 9999,
                     nownewData: 9999
                 },
-                statisticalData: [
-                ]
+                statisticalData: []
             };
         },
         methods: {
@@ -153,18 +195,23 @@
             ArrayList(list, array) {
 //                array = [];
                 for (let i = 0; i < list.length; i++) {
-                   array.push({'新增注册用户数': list[i].userCount, '时间': list[i].date, '新增充值用户数': list[i].userLoginCount, '登录用户数': list[i].userTopUpCount});
+                    array.push({
+                        '新增注册用户数': list[i].userCount,
+                        '时间': list[i].date,
+                        '新增充值用户数': list[i].userLoginCount,
+                        '登录用户数': list[i].userTopUpCount
+                    });
                 }
             },
             // 按时间查询数据
             searchList() {
                 this.chartData.rows = [];
                 userTime(translateTime(this.searchForm.value1), translateTime(this.searchForm.value2), parseInt(this.searchForm.value)).then(res => {
-                   if (res.data.error === 0) {
-                   this.statisticalData = res.data.data;
-                   console.log(this.statisticalData);
-                  this.ArrayList(this.statisticalData, this.chartData.rows);
-                   }
+                    if (res.data.error === 0) {
+                        this.statisticalData = res.data.data;
+                        console.log(this.statisticalData);
+                        this.ArrayList(this.statisticalData, this.chartData.rows);
+                    }
                 });
             },
             // 权限控制函数
@@ -184,11 +231,11 @@
         .userDataTop {
             padding: 15px 0;
             span {
-               @include span;
+                @include span;
             }
         }
-        .paginnation{
-            text-align:center;
+        .paginnation {
+            text-align: center;
         }
         .DataCount {
             padding: 20px 0;
@@ -229,22 +276,22 @@
                 }
             }
         }
-        .el-form-item{
-            margin-bottom:0;
-            .el-select{
-                width:100px;
+        .el-form-item {
+            margin-bottom: 0;
+            .el-select {
+                width: 100px;
             }
-            .el-col-3{
-                text-align:right;
+            .el-col-3 {
+                text-align: right;
             }
         }
         .statistical {
             padding: 20px 0;
             border-top: 1px solid #ddd
         }
-        .chart{
-            background:#fff;
-            margin-top:10px;
+        .chart {
+            background: #fff;
+            margin-top: 10px;
         }
     }
 </style>

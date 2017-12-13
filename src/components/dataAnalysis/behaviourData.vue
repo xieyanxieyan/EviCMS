@@ -54,27 +54,68 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="统计时间:">
-                    <el-col :span=10>
+                <template v-if="searchForm.value === '1'">
+                    <el-form-item label="统计时间:">
                         <el-date-picker
                             size="small"
                             v-model="searchForm.value1"
                             type="date"
                             placeholder="选择开始时间"
+                            @keyup.enter.native="searchList"
                             :picker-options="searchForm.pickerOptions0">
                         </el-date-picker>
-                    </el-col>
-                    <el-col :span=3>至</el-col>
-                    <el-col :span=10>
+                    </el-form-item>
+                    <el-form-item label="至">
                         <el-date-picker
+                            size="small"
                             v-model="searchForm.value2"
                             type="date"
-                            size="small"
+                            @keyup.enter.native="searchList"
                             placeholder="选择结束时间"
                             :picker-options="searchForm.pickerOptions0">
                         </el-date-picker>
-                    </el-col>
-                </el-form-item>
+                    </el-form-item>
+                </template>
+                <template v-else-if="searchForm.value === '2'">
+                    <el-form-item label="统计时间:">
+                        <el-date-picker
+                            v-model="searchForm.value1"
+                            type="month"
+                            size="small"
+                            @keyup.enter.native="searchList"
+                            placeholder="选择开始月份">
+                        </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="至">
+                        <el-date-picker
+                            v-model="searchForm.value2"
+                            type="month"
+                            size="small"
+                            @keyup.enter.native="searchList"
+                            placeholder="选择结束月份">
+                        </el-date-picker>
+                    </el-form-item>
+                </template>
+                <template v-else-if="searchForm.value === '3'">
+                    <el-form-item label="统计时间:">
+                        <el-date-picker
+                            v-model="searchForm.value1"
+                            type="year"
+                            size="small"
+                            @keyup.enter.native="searchList"
+                            placeholder="选择开始年份">
+                        </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="至">
+                        <el-date-picker
+                            v-model="searchForm.value2"
+                            type="year"
+                            size="small"
+                            @keyup.enter.native="searchList"
+                            placeholder="选择结束年份">
+                        </el-date-picker>
+                    </el-form-item>
+                </template>
                 <el-form-item>
                     <el-button @click="searchList" size="small">搜索</el-button>
                 </el-form-item>
