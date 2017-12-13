@@ -24,8 +24,9 @@
     </div>
 </template>
 <script>
-//    import {task} from '../../api/taskSum';
-import {mapGetters, mapActions} from 'vuex';
+    //    import {task} from '../../api/taskSum';
+    import {mapGetters, mapActions} from 'vuex';
+
     export default {
         created() {
             this.getName();
@@ -75,10 +76,14 @@ import {mapGetters, mapActions} from 'vuex';
 </script>
 <style lang="scss">
     #topbar {
+        position: fixed;
+        top: 0;
+        z-index: 100;
         padding-left: 20px;
         height: 35px;
         background: #fff;
         line-height: 35px;
+        width: calc(100vw - 240px);
     span {
         display: inline-block;
         color: #333;
@@ -87,8 +92,14 @@ import {mapGetters, mapActions} from 'vuex';
         text-align: center;
     }
 
-    .rightMessage span {
+    .rightMessage {
+        position: absolute;
+        right: 0;
+
+    span {
         float: right;
+    }
+
     }
 
     .leftMessage div {

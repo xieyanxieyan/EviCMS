@@ -88,7 +88,6 @@
                         this.user_id = res.data.data.user_id;
                         this.user = res.data.data;
                         let imgs = res.data.data.imgs === '' ? [] : JSON.parse(res.data.data.imgs);
-                        console.log(imgs);
                         this.imgs = imgs;
                         this.detail = res.data.data || [];
                         this.content = res.data.data.content;

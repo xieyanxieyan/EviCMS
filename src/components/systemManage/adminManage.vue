@@ -133,7 +133,6 @@
             _userList() {
                 getAdminList(this.formInline.user, formatDate(this.formInline.time_begin), formatDate(this.formInline.time_end), this.perpage, this.currentPage).then(res => {
                     this.adminMessage = res.data.data.data;
-                    console.log(this.adminMessage);
                    this.total = res.data.data.total;
                 });
             },

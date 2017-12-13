@@ -114,7 +114,6 @@
                         let num = parseFloat(this.form.type);
                         let phone = parseInt(this.form.phone);
                         editUser(this.$route.params.detailId, this.form.name, this.form.region || 0, phone, num.toFixed(2), this.form.reason).then(res => {
-//                    console.log(res);
                             if (res.data.error === 0) {
                                this.$message({
                                    message: '保存成功',
@@ -144,7 +143,7 @@
             _userMessage() {
                 userDetail(this.$route.params.detailId).then(res => {
                     let detail = res.data.data;
-                    console.log(detail);
+                  //  console.log(detail);
                     this.userdetails = detail || [];
                     this.isUsed = false;
                     this.form.name = detail.user.cell_phone;

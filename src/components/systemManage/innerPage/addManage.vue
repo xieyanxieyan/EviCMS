@@ -118,7 +118,6 @@
                     this.pass = '密码不修改不填';
                     adminDetail(this.cert_id).then(res => {
                        if (res.data.error === 0) {
-                           console.log(res);
                            res = res.data.data;
                            this.form.account = res.username;
                            this.form.name = res.name;

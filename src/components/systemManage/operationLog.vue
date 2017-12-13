@@ -151,7 +151,6 @@
                     if (res.data.error === 0) {
                         this.operationData = res.data.data.data;
                         this.total = res.data.data.total;
-                         console.log(this.operationData, 'admin_logs_list');
                     }
                 });
             },

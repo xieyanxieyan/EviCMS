@@ -50,12 +50,10 @@
                     getRoleList().then(res => {
                         if (res.data.error === 0) {
                             this.roles = res.data.data;
-                            console.log(this.roles);
                         }
                     }).then(res => {
                         detailmenu(this.$route.params.rovokeId).then(res => {
                             this.detail = res.data.data;
-                            console.log(res.data.data.role_id);
                             for (let s of this.roles) {
                                 if (res.data.data.role_id.indexOf(s.id) !== -1) {
                                     this.checkedRoles.push(s);

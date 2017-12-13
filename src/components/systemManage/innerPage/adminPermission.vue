@@ -56,7 +56,6 @@
 //            获取角色列表
             getRole() {
                 getRole().then((res) => {
-//                    console.log(res);
                     if (res.data.error === 0) {
                       res = res.data.data;
                       for (let i = 0; i < res.length; i++) {

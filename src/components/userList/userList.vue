@@ -112,7 +112,6 @@
         created() {
             this.getList();
             this.controlPermission();
-            console.log(this.$store.state);
         },
         computed: {
             admin_id() {
@@ -143,7 +142,6 @@
             getList() {
                 getUserList(this.form.phone, translateTime(this.form.begin_time), translateTime(this.form.end_time), this.perpage, this.currentPage).then(res => {
                     this.userList = res.data.data.data;
-                    console.log(this.userList);
                     this.total = res.data.data.total;
                 });
             },
@@ -170,7 +168,6 @@
                 let w = window.open();
                 admin_web(this.userList[index].user_id).then(res => {
                     if (res.data.error === 0) {
-                        console.log(res);
                         // setToken(res.data.data.data.auth_token);
                         setTimeout(function () {
                             w.location = 'http://zbb.fa123.com/#/login/admin/' + res.data.data;

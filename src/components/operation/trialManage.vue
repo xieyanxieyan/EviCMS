@@ -159,7 +159,6 @@
                     trailManage(translateTime(this.timeFrom.value1), translateTime(this.timeFrom.value2), undefined, this.perPage, this.currentPage).then(res => {
                         this.TrialData = res.data.data.data;
                         this.total = res.data.data.total;
-                        console.log(this.TrialData, this.activeName);
                     });
                 } else {
                     trailManage(translateTime(this.timeFrom.value1), translateTime(this.timeFrom.value2), parseInt(this.activeName), this.perPage, this.currentPage).then(res => {

@@ -116,7 +116,6 @@
             //     更新列表
             updateList() {
                 getRole().then((res) => {
-//                    console.log(res);
                     res = res.data;
                     if (res.error === 0) {
                         this.userMessage = res.data || [];
@@ -125,7 +124,6 @@
             },
 //            到权限设置页
             toNextPage(index) {
-//                console.log(this.userMessage[index].id);
                 this.$router.push({name: 'adminPermission', params: {adminPer_id: this.userMessage[index].id}});
             },
 //            打开添加角色弹窗

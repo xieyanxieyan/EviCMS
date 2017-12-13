@@ -183,10 +183,8 @@
                         tableItems.forEach(function (item, index) {
                             tableItems[index].cash_pay = (item.cash_pay / 100).toFixed(2);
                         });
-                        console.log(tableItems);
                         this.tableItem = tableItems;
                         this.total = res.data.data.total;
-                        // console.log(this.tableItem);
                     }
                 });
             },

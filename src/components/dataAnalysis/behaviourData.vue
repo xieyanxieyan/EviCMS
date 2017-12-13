@@ -253,7 +253,6 @@
                        this.searchData = res.data.data;
                       this.ArrayList(this.searchData, this.chartData.rows);
                       this.total = res.data.total;
-//                      console.log(res.data);
                    }
                 });
             },

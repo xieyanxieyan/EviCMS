@@ -227,7 +227,6 @@
                         item.gift_amount = (parseFloat(item.gift_amount) / 100).toFixed(2);
                     }
                     this.total = res.data.data.total;
-                    console.log(this.manageDate);
                 });
             },
 //            表单提交

@@ -34,6 +34,7 @@
     .main {
         margin-left: 200px;
         min-width: 900px;
+        margin-top:35px;
     }
 
     .main {

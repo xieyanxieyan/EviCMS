@@ -386,7 +386,6 @@
             },
             // 预览
             preview() {
-                console.log(this.url);
                 if (this.url) {
                     window.open(this.url);
                 }

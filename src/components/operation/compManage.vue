@@ -104,8 +104,6 @@
                    if (res.data.error === 0) {
                        this.compManage = res.data.data.data;
                      this.total = res.data.data.total;
-//                     console.log(res.data.data.data);
-                      // console.log(this.compManage);
                    }
                 });
             },
