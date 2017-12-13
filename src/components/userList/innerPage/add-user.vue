@@ -16,7 +16,7 @@
                         </el-select>
                     </el-col>
                     <el-col :span="16">
-                        <el-input v-model="form.name" :maxlength='11'></el-input>
+                        <el-input v-model="form.name" :maxlength='11' placeholder="phone number"></el-input>
                     </el-col>
                 </el-form-item>
                 <el-form-item label="初始密码:" prop="region">

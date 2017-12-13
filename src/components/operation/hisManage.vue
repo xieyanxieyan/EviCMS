@@ -29,7 +29,7 @@
             <!--</form>-->
             <el-form :inline="true" :model="formIn">
                 <el-form-item label="用户名称:">
-                    <el-input v-model="formIn.userName"  @keyup.enter.native="certList" size="small"></el-input>
+                    <el-input v-model="formIn.username"  @keyup.enter.native="certList" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="存证号：">
                     <el-input v-model="formIn.cert_num"  @keyup.enter.native="certList" size="small"></el-input>
@@ -70,7 +70,7 @@
                 <tbody v-bind:class="{hide: hisList}">
                 <tr v-for="(item,index) in hisData">
                     <td>{{item.req_time}}</td>
-                    <td>(+86) {{item.user.cell_phone}}</td>
+                    <td>(+{{item.user.area_code}}) {{item.user.cell_phone}}</td>
                     <td>{{item.cert_no}}</td>
                     <td>{{item.with_paper}}</td>
                     <td>
@@ -144,9 +144,10 @@
             // 获取列表
             certList() {
                 let status = this.activeName === '0' ? undefined : parseInt(this.activeName);
-                certifyList(this.formIn.username || undefined, this.formIn.cert_num || undefined, translateTime(this.formIn.time_begin), translateTime(this.formIn.time_end), status, this.perPage, this.currentPage).then(res => {
+                certifyList(this.formIn.username, this.formIn.cert_num, translateTime(this.formIn.time_begin), translateTime(this.formIn.time_end), status, this.perPage, this.currentPage).then(res => {
                     this.hisData = res.data.data.data;
                     this.total = res.data.data.total;
+                    console.log(this.hisData);
                 });
             },
             handleCurrentChange() {

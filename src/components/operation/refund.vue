@@ -63,7 +63,7 @@
                 <tbody>
                 <tr v-for="(item,index) in tableItem">
                     <td>{{item.time}}</td>
-                    <td>(+86) {{item.user.cell_phone}}</td>
+                    <td>(+{{item.user.area_code}}) {{item.user.cell_phone}}</td>
                     <td>{{item.consumption.cert_no}}</td>
                     <td  class="content">
                         <!--<a href="javascript:void(0)" :title="item.append_info">-->

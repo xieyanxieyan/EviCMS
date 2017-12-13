@@ -35,7 +35,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="(item, index) in manageDate">
-                    <td> <span>+86 {{item.phone}}</span></td>
+                    <td> <span>(+{{item.area_code}}) {{item.phone}}</span></td>
                     <td>{{item.user_name}}</td>
                     <td>{{item.recommend_user}}</td>
                     <td>{{item.expire_time}}</td>
@@ -281,7 +281,7 @@
                         this.form.surveerReferral = data.recommend_user;
                         this.form.phoneNum = data.phone;
                         this.form.vacancies = ((parseFloat(data.gift_cash) / 100).toFixed(2)).toString();
-                        this.form.duetime = data.created_at;
+                        this.form.duetime = data.expire_time * 1000;
                     } else {
                         this.$message({
                             message: res.data.error,

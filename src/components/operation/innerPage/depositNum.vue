@@ -43,7 +43,7 @@
                         </el-button>
                         <el-button size="small" type="warning" @click="print" :class="{hide: isHidePrint}">打印证书
                         </el-button>
-                        <el-button size="small" type="success" @click="stamp" :class="{hide:isHideStamp}">已盖章
+                        <el-button size="small" type="success" :disabled="isHideStamp" @click="stamp" :class="{hide:isHideStamp}">已盖章
                         </el-button>
                         <!--<el-button size="small" type="info" :class="{hide:isTrail}" @click="printed">已打印</el-button>-->
                     </el-form-item>
